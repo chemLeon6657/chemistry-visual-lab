@@ -89,6 +89,12 @@
   @media(max-width:1120px){.shell{padding-left:20px;padding-right:20px}.main{grid-template-columns:278px minmax(0,1fr)}.stage-head{padding-left:16px;padding-right:16px}.progress-dock,.energy-panel{margin-left:14px;margin-right:14px}.type-btn{padding:0 8px}}
   @media(max-width:980px){.shell{padding:18px 16px 14px}.main{grid-template-columns:1fr;grid-template-areas:"stage" "sidebar";min-height:0}.stage-card{min-height:720px}.sidebar{display:grid;grid-template-columns:1fr 1fr;overflow:visible}.sidebar .card:nth-child(1){grid-column:1/-1}.sidebar .card:nth-child(2){grid-column:1}.sidebar .card:nth-child(3){grid-column:2;align-self:start}.steps{grid-template-columns:1fr 1fr}.step:nth-child(2)::after{display:none}.site-header{padding-bottom:14px}}
   @media(max-width:680px){.shell{padding:14px 12px 10px}.brand{gap:11px}.brand-mark{width:44px;height:44px;border-radius:13px}.brand-mark svg{width:34px;height:34px}.brand h1{font-size:clamp(23px,7vw,31px)}.brand p{display:none}.kicker{font-size:8.5px;letter-spacing:.14em}.header-meta{display:none}.stage-card{min-height:0}.stage-head{flex-direction:column;align-items:stretch;gap:11px;padding:15px 13px 0}.stage-controls{justify-content:flex-start;padding-top:0;width:100%}.type-tabs{flex:1;min-width:0}.type-btn{flex:1;padding:0 5px}.icon-btn{width:33px}.stage-view{min-height:290px}.equation-overlay{left:9px;top:9px;font-size:8.5px}.stage-badge{right:9px;top:9px}.stage-foot{padding:8px 13px;gap:9px;font-size:8.5px}.foot-spacer{margin-left:0}.energy-panel{height:142px;margin:0 10px;padding:7px 8px 5px}.progress-dock{margin:8px 10px 10px;padding:11px 12px 7px}.progress-message{display:none}.slider-row{gap:10px}.play-btn{min-width:44px;width:44px;height:44px;padding:0;border-radius:50%}.play-btn span:last-child{display:none}.stage-legend{left:9px;bottom:8px;gap:7px;font-size:8px;padding:5px 7px}.sidebar{grid-template-columns:1fr}.sidebar .card:nth-child(2),.sidebar .card:nth-child(3){grid-column:1}.steps{grid-template-columns:1fr;margin-top:13px}.step:not(:last-child)::after{display:none}.site-footer{flex-direction:column;gap:5px}}
+  @media(max-width:680px){
+    .card,.progress-dock{backdrop-filter:none;-webkit-backdrop-filter:none}
+    .stage-glow{filter:blur(16px)}
+    .stage-card{box-shadow:0 18px 50px rgba(0,0,0,.32)}
+    .card{box-shadow:0 12px 32px rgba(0,0,0,.18)}
+  }
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -282,7 +288,13 @@
   let vw=1,vh=1,dpr=1,cssW=1,cssH=1;
   let ew=1,eh=1;
   let cx=0,cy=0,S=1;
+  const mobileView = window.matchMedia("(max-width: 680px)").matches;
+  const FRAME_MS = mobileView ? 33 : 16;
   let lastFrame=performance.now();
+  let lastDraw=0;
+  let needsDraw=true;
+  let lastPct=-1;
+  let lastPhase="";
 
   function syncUI(){
     reactionName.textContent=model.name;
@@ -321,7 +333,7 @@
 
   function setReaction(key){
     if(!REACTIONS[key]||key===current)return;
-    current=key;model=REACTIONS[key];progress=0;stopPlaying();syncUI();
+    current=key;model=REACTIONS[key];progress=0;stopPlaying();syncUI();needsDraw=true;lastPct=-1;
     stageCard.classList.remove("is-switching");void stageCard.offsetWidth;stageCard.classList.add("is-switching");
     setTimeout(()=>stageCard.classList.remove("is-switching"),450);
   }
@@ -381,7 +393,7 @@
 
   function drawSubstitution(p){
     const approach=smooth(.04,.6,p), brk=smooth(.35,.68,p), form=smooth(.44,.82,p);
-    const C=[0,0], H=[[-.68,-.57],[.68,-.57],[0,-.98]];
+    const C=[0,0], H=[[0,.92],[-.82,-.55],[.82,-.55]];
     const O=[-2.05+1.05*approach,.16], Br=[1.38+.62*brk,.08];
     const ohH=[O[0]-.43,O[1]-.35];
     for(const h of H) drawBond(C,h,1,"rgba(148,163,184,.35)",2);
@@ -488,9 +500,10 @@
   }
 
   function resize(){
-    const r=stageView.getBoundingClientRect();vw=Math.max(1,Math.floor(r.width));vh=Math.max(1,Math.floor(r.height));dpr=Math.min(devicePixelRatio||1,2);
+    const r=stageView.getBoundingClientRect();vw=Math.max(1,Math.floor(r.width));vh=Math.max(1,Math.floor(r.height));dpr=Math.min(devicePixelRatio||1,mobileView?1.5:2);
     scene.width=Math.round(vw*dpr);scene.height=Math.round(vh*dpr);sctx.setTransform(dpr,0,0,dpr,0,0);cssW=vw;cssH=vh;
     const er=energyCanvas.getBoundingClientRect();ew=Math.max(1,Math.floor(er.width));eh=Math.max(1,Math.floor(er.height));energyCanvas.width=Math.round(ew*dpr);energyCanvas.height=Math.round(eh*dpr);ectx.setTransform(dpr,0,0,dpr,0,0);
+    needsDraw=true;
   }
 
   function frame(now){
@@ -500,11 +513,22 @@
       progress=clamp(playFrom+(1-playFrom)*e,0,1);
       if(u>=1){progress=1;stopPlaying();}
     }
-    syncUI();drawScene();drawEnergy();requestAnimationFrame(frame);
+    if(document.hidden){requestAnimationFrame(frame);return;}
+    const pct=Math.round(progress*100);
+    const phase=progress<.2?"反应物":progress<.62?"过渡态":progress<.96?"产物形成":"产物";
+    if(pct!==lastPct || phase!==lastPhase){
+      lastPct=pct;lastPhase=phase;syncUI();needsDraw=true;
+    }
+    if(needsDraw || playing){
+      if(now-lastDraw>=FRAME_MS){
+        drawScene();drawEnergy();lastDraw=now;needsDraw=false;
+      }
+    }
+    requestAnimationFrame(frame);
   }
 
   for(const btn of typeButtons)btn.addEventListener("click",()=>setReaction(btn.dataset.reaction));
-  progressRange.addEventListener("input",()=>{stopPlaying();progress=clamp(Number(progressRange.value)/100,0,1);syncUI();});
+  progressRange.addEventListener("input",()=>{stopPlaying();progress=clamp(Number(progressRange.value)/100,0,1);needsDraw=true;syncUI();});
   playBtn.addEventListener("click",()=>{if(playing)stopPlaying();else startPlaying();lastFrame=performance.now();});
   fullscreenBtn.addEventListener("click",async()=>{try{if(!document.fullscreenElement)await stageCard.requestFullscreen();else await document.exitFullscreen();}catch(e){}});
   document.addEventListener("fullscreenchange",()=>{fullscreenBtn.title=document.fullscreenElement?"退出全屏":"全屏观察";setTimeout(resize,60);});
