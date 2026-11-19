@@ -229,6 +229,7 @@
     "up-jar":{slot:"collect",name:"向上排空气",short:"密度比空气大",art:"jar-up",desc:"集气瓶"},
     "down-jar":{slot:"collect",name:"向下排空气",short:"密度比空气小",art:"jar-down",desc:"集气瓶"},
     "water":{slot:"collect",name:"排水法",short:"难溶于水",art:"water",desc:"水槽 + 集气瓶"},
+    "brine-collect":{slot:"collect",name:"排饱和食盐水",short:"Cl₂ 溶解度小",art:"water",desc:"饱和食盐水 + 集气瓶"},
     "naoh-tail":{slot:"tail",name:"NaOH 溶液吸收",short:"防倒吸",art:"tail",desc:"烧杯 + 倒扣漏斗"},
     "water-tail":{slot:"tail",name:"水吸收",short:"防倒吸",art:"tail",desc:"烧杯 + 倒扣漏斗"},
     "none-tail":{slot:"tail",name:"无需尾气处理",short:"可直接排放",art:"none",desc:"无"}
@@ -267,9 +268,9 @@
       key:"cl2",name:"氯气",formula:"Cl₂",color:"#bef264",badge:"黄绿色气体",
       requirement:"用 MnO₂ 与浓盐酸制取一瓶干燥的 Cl₂，并处理尾气。",
       equation:"MnO₂ + 4HCl(浓) —Δ→ MnCl₂ + Cl₂↑ + 2H₂O",
-      method:"向上排空气法",test:"湿润淀粉碘化钾试纸变蓝",difficulty:"饱和食盐水除 HCl，NaOH 吸收尾气",
-      note:"Cl₂ 有毒，必须在通风条件下进行，尾气用 NaOH 溶液吸收；不能用排水法收集。",
-      allowed:{generate:["cl2-gen"],purify:["nacl-wash"],dry:["h2so4-dry"],collect:["up-jar"],tail:["naoh-tail"]},
+      method:"向上排空气法 / 排饱和食盐水",test:"湿润淀粉碘化钾试纸变蓝",difficulty:"饱和食盐水除 HCl，NaOH 吸收尾气",
+      note:"Cl₂ 有毒，必须在通风条件下进行，尾气用 NaOH 溶液吸收。可用向上排空气法收集；因 Cl₂ 在饱和食盐水中溶解度很小，也可排饱和食盐水收集，不能用普通排水法。",
+      allowed:{generate:["cl2-gen"],purify:["nacl-wash"],dry:["h2so4-dry"],collect:["up-jar","brine-collect"],tail:["naoh-tail"]},
       required:["generate","purify","dry","collect","tail"],
       correct:{generate:"cl2-gen",purify:"nacl-wash",dry:"h2so4-dry",collect:"up-jar",tail:"naoh-tail"},
       challenge:{setup:{purify:"naoh-wash",tail:"none-tail"},errors:[

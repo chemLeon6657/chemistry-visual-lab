@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#04070f" />
+<title>反应观察台 · 过氧化氢 / 高锰酸钾 / 高铁酸钾 · 高中化学可视化平台</title>
+<meta name="description" content="过氧化氢、高锰酸钾和高铁酸钾反应合集：氧化还原、电子转移、颜色变化、气体、沉淀和胶体现象。" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#04070f;--line:rgba(148,163,184,.14);--text:#eaf3ff;--muted:#8ea4c0;--dim:#5e728c;
+    --cyan:#67e8f9;--teal:#5eead4;--violet:#a78bfa;--pink:#f472b6;--amber:#fbbf24;
+    --mono:"Cascadia Code","SFMono-Regular",Consolas,"Liberation Mono",monospace;color-scheme:dark;
+  }
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:"Segoe UI Variable","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  button{font:inherit}a{color:inherit}button,a{-webkit-tap-highlight-color:transparent}:focus-visible{outline:2px solid rgba(103,232,249,.8);outline-offset:3px}
+  .page-glow{position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(920px 650px at 5% -8%,rgba(20,184,166,.15),transparent 64%),radial-gradient(1000px 760px at 98% 2%,rgba(91,33,182,.15),transparent 68%),radial-gradient(900px 700px at 55% 108%,rgba(14,116,144,.11),transparent 66%),linear-gradient(160deg,#050a14 0%,#04070f 55%,#050811 100%)}
+  .page-glow::after{content:"";position:absolute;inset:0;opacity:.22;background-image:linear-gradient(rgba(148,163,184,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.04) 1px,transparent 1px);background-size:46px 46px;mask-image:radial-gradient(circle at 50% 38%,black,transparent 77%);-webkit-mask-image:radial-gradient(circle at 50% 38%,black,transparent 77%)}
+  .shell{width:min(1660px,100%);min-height:100vh;margin:0 auto;padding:22px 28px 14px;display:flex;flex-direction:column}
+  .site-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding:0 2px 15px;animation:rise .7s cubic-bezier(.22,.8,.3,1) both}
+  .brand{display:flex;align-items:center;gap:15px;min-width:0;color:inherit;text-decoration:none}.brand:hover{opacity:.85}
+  .brand-mark{width:52px;height:52px;flex:0 0 auto;border-radius:16px;border:1px solid rgba(103,232,249,.2);background:radial-gradient(circle at 32% 24%,rgba(103,232,249,.2),transparent 55%),linear-gradient(150deg,rgba(11,28,46,.9),rgba(5,11,22,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 34px rgba(0,0,0,.34);display:grid;place-items:center}
+  .brand-mark svg{width:40px;height:40px}
+  .kicker{display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:9.5px;font-weight:650;letter-spacing:.19em;text-transform:uppercase}
+  .kicker::before{content:"";width:16px;height:1px;background:linear-gradient(90deg,var(--cyan),transparent)}
+  .brand h1{margin:4px 0 2px;font-size:clamp(26px,2.7vw,37px);line-height:1.05;letter-spacing:-.04em;font-weight:760}
+  .brand h1 span{background:linear-gradient(105deg,#e7fdff,var(--cyan) 45%,#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand p{margin:0;color:var(--muted);font-size:12px;letter-spacing:.02em}
+  .header-meta{display:flex;flex-direction:column;align-items:flex-end;gap:7px;padding-top:4px;flex:0 0 auto}
+  .meta-pill{display:inline-flex;align-items:center;gap:8px;height:29px;padding:0 11px;border:1px solid rgba(103,232,249,.16);border-radius:999px;background:rgba(8,20,34,.62);color:#c7e9ef;font-size:10px;letter-spacing:.08em;white-space:nowrap}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(94,234,212,.08),0 0 12px rgba(94,234,212,.8);animation:breathe 2.6s ease-in-out infinite}
+  .meta-note{color:var(--dim);font-size:9.5px;letter-spacing:.08em}
+  .substance-bar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:12px;padding:7px;border:1px solid rgba(148,163,184,.12);border-radius:15px;background:rgba(7,15,28,.55);animation:rise .62s .03s cubic-bezier(.22,.8,.3,1) both}
+  .sub-tab{display:flex;align-items:center;gap:7px;height:38px;padding:0 14px;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--dim);font-size:11px;cursor:pointer;transition:.2s;white-space:nowrap}
+  .sub-tab:hover{color:#e9fdff;background:rgba(103,232,249,.055)}
+  .sub-tab.active{color:#f2ffff;border-color:rgba(103,232,249,.3);background:linear-gradient(145deg,rgba(103,232,249,.14),rgba(94,234,212,.05));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 24px rgba(34,211,238,.08)}
+  .sub-tab .dot{width:6px;height:6px;border-radius:50%;background:var(--sub-color,#67e8f9);box-shadow:0 0 9px var(--sub-color,#67e8f9)}
+  .sub-tab .count{color:rgba(148,163,184,.7);font-family:var(--mono);font-size:8.5px}
+  .bar-hint{margin-left:auto;color:rgba(94,114,140,.8);font-size:8.8px;padding-right:8px}
+  .workspace{display:grid;grid-template-columns:282px minmax(0,1fr) 326px;gap:14px;align-items:stretch;flex:1}
+  .panel{position:relative;border:1px solid var(--line);border-radius:20px;background:radial-gradient(100% 100% at 0% 0%,rgba(103,232,249,.045),transparent 48%),linear-gradient(155deg,rgba(13,24,43,.83),rgba(7,14,27,.72));box-shadow:0 22px 60px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.045);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);animation:rise .62s cubic-bezier(.22,.8,.3,1) both}
+  .reaction-panel{display:flex;flex-direction:column;min-height:0;padding:13px 11px 9px;overflow:hidden}
+  .panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:0 3px 9px}
+  .panel-kicker{color:var(--dim);font-size:8.8px;font-weight:650;letter-spacing:.18em;text-transform:uppercase}
+  .panel-title{margin:3px 0 0;font-size:14px;line-height:1.25;font-weight:650}
+  .reaction-list{overflow-y:auto;min-height:0;padding:1px 2px 4px;scrollbar-width:thin;scrollbar-color:rgba(103,232,249,.18) transparent}
+  .reaction-list::-webkit-scrollbar{width:4px}.reaction-list::-webkit-scrollbar-thumb{background:rgba(103,232,249,.18);border-radius:99px}
+  .reaction-group{margin:3px 0 5px;padding:4px 6px 2px;color:rgba(94,114,140,.85);font-size:8px;letter-spacing:.06em}
+  .reaction-card{display:block;width:100%;padding:9px 10px;margin-bottom:6px;border:1px solid rgba(148,163,184,.11);border-radius:10px;background:rgba(4,10,20,.31);color:inherit;text-align:left;cursor:pointer;transition:.18s}
+  .reaction-card:hover{border-color:rgba(103,232,249,.28);background:rgba(103,232,249,.045)}
+  .reaction-card.active{border-color:rgba(103,232,249,.4);background:linear-gradient(140deg,rgba(103,232,249,.1),rgba(94,234,212,.025));box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+  .card-top{display:flex;justify-content:space-between;gap:6px;align-items:baseline}.card-title{color:#e4f7ff;font-size:10px;font-weight:600;line-height:1.35}.card-num{color:rgba(103,232,249,.48);font-family:var(--mono);font-size:7.5px;white-space:nowrap}
+  .card-eq{margin:4px 0 0;color:rgba(192,215,234,.75);font-family:var(--mono);font-size:8px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+  .card-bottom{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:5px}.card-cond{color:var(--dim);font-size:7.5px}.card-kind{color:rgba(103,232,249,.58);font-size:7.5px;white-space:nowrap}
+  .observation-panel{display:flex;flex-direction:column;min-width:0;min-height:0;padding:14px 15px 12px;overflow:hidden}
+  .obs-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:9px}
+  .obs-title{margin:3px 0 0;font-size:17px;line-height:1.25;font-weight:660;letter-spacing:-.02em}.obs-title span{color:var(--obs-color,#67e8f9)}
+  .obs-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:5px;color:var(--dim);font-size:8.5px}.obs-meta span{display:inline-flex;align-items:center;gap:4px}.obs-meta i{width:5px;height:5px;border-radius:50%;background:var(--obs-color,#67e8f9);box-shadow:0 0 7px var(--obs-color,#67e8f9)}
+  .play-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:35px;padding:0 12px;flex:0 0 auto;border:1px solid rgba(103,232,249,.28);border-radius:10px;background:linear-gradient(145deg,rgba(103,232,249,.14),rgba(94,234,212,.045));color:#eaffff;font-size:9.5px;font-weight:600;cursor:pointer;transition:.2s}
+  .play-btn:hover{border-color:rgba(103,232,249,.5);box-shadow:0 0 22px rgba(34,211,238,.1)}.play-btn:disabled{opacity:.6;cursor:default}
+  .play-icon{width:0;height:0;border-top:4.5px solid transparent;border-bottom:4.5px solid transparent;border-left:7px solid currentColor}
+  .obs-stage{position:relative;flex:1;min-height:310px;border:1px solid rgba(148,163,184,.1);border-radius:14px;background:radial-gradient(70% 90% at 50% 45%,rgba(12,47,68,.33),transparent 70%),linear-gradient(180deg,rgba(4,11,22,.4),rgba(4,9,18,.7));overflow:hidden;isolation:isolate}
+  .obs-stage::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(148,163,184,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.035) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(circle at 50% 45%,black,transparent 78%);-webkit-mask-image:radial-gradient(circle at 50% 45%,black,transparent 78%);pointer-events:none}
+  #scene{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center}
+  .lab-svg{width:100%;height:100%;display:block;overflow:visible}
+  .stage-caption{position:absolute;left:12px;bottom:10px;z-index:3;padding:4px 8px;border:1px solid rgba(148,163,184,.1);border-radius:7px;background:rgba(4,10,20,.55);color:rgba(148,163,184,.8);font-size:8px;backdrop-filter:blur(8px);pointer-events:none}
+  .stage-status{position:absolute;right:12px;bottom:10px;z-index:3;color:rgba(103,232,249,.72);font-size:8px;pointer-events:none}
+  .swatches{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:8px;color:var(--dim)}
+  .swatch-item{display:inline-flex;align-items:center;gap:4px;padding:3px 6px;border:1px solid rgba(148,163,184,.1);border-radius:999px;background:rgba(4,10,20,.3)}
+  .swatch{width:9px;height:9px;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}
+  .phenomena{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;min-height:21px}
+  .phen{display:inline-flex;align-items:center;height:21px;padding:0 7px;border:1px solid rgba(148,163,184,.1);border-radius:6px;background:rgba(4,10,20,.28);color:rgba(185,210,230,.8);font-size:7.8px}
+  .equation-bar{margin-top:8px;padding:8px 10px;border:1px solid rgba(148,163,184,.1);border-radius:9px;background:rgba(4,10,20,.32);color:#e7fbff;font-family:var(--mono);font-size:10px;line-height:1.55;word-break:break-word}
+  .analysis-panel{display:flex;flex-direction:column;gap:0;min-height:0;padding:14px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(103,232,249,.16) transparent}
+  .analysis-panel::-webkit-scrollbar{width:4px}.analysis-panel::-webkit-scrollbar-thumb{background:rgba(103,232,249,.16);border-radius:99px}
+  .analysis-section{padding-bottom:11px;margin-bottom:10px;border-bottom:1px solid rgba(148,163,184,.075)}.analysis-section:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+  .analysis-title{display:flex;align-items:center;gap:6px;color:#dff8ff;font-size:10px;font-weight:600;margin-bottom:7px}.analysis-title i{width:5px;height:5px;border-radius:50%;background:var(--obs-color,#67e8f9);box-shadow:0 0 8px var(--obs-color,#67e8f9)}
+  .electron-grid{display:grid;gap:6px}
+  .electron-card{padding:7px 8px;border:1px solid rgba(148,163,184,.1);border-radius:8px;background:rgba(4,10,20,.3)}
+  .electron-card .ec-label{display:block;color:var(--dim);font-size:7.5px;letter-spacing:.05em}.electron-card strong{display:block;margin-top:2px;color:#e5f9ff;font-size:10px;font-weight:600}.electron-card p{margin:3px 0 0;color:#9fb7ce;font-size:8px;line-height:1.45}.electron-card p b{color:#bdfbf1;font-weight:550}
+  .media-table{width:100%;border-collapse:collapse;font-size:8px}.media-table th{color:var(--dim);font-weight:500;text-align:left;padding:4px 3px;border-bottom:1px solid rgba(148,163,184,.1)}.media-table td{padding:5px 3px;border-bottom:1px solid rgba(148,163,184,.06);color:#c8deed;line-height:1.4}.media-table td:first-child{display:flex;align-items:center;gap:4px}.media-dot{width:6px;height:6px;border-radius:50%;flex:0 0 auto}.media-table .m-product{color:#efffff;font-weight:600}
+  .half-list{display:grid;gap:4px;margin-top:2px}.half-item{padding:5px 7px;border-left:1px solid rgba(103,232,249,.24);background:rgba(4,10,20,.25);color:rgba(190,220,235,.82);font-family:var(--mono);font-size:7.8px;line-height:1.45;word-break:break-word}
+  .analysis-note{margin:0;padding:8px 9px;border:1px solid rgba(148,163,184,.09);border-radius:8px;background:rgba(4,10,20,.3);color:var(--dim);font-size:8.5px;line-height:1.6}.analysis-note strong{color:#e7f8ff;font-weight:550}
+  .caution{color:#fbcfe8;border-color:rgba(244,114,182,.18);background:rgba(244,114,182,.045)}
+  .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .map-panel,.tips-panel{padding:14px 16px}
+  .map-title,.tips-title{margin:3px 0 9px;font-size:13px;font-weight:650}
+  .map-rows{display:grid;gap:6px}.map-row{display:grid;grid-template-columns:90px minmax(0,1fr);gap:8px;align-items:center;padding:5px 0;border-top:1px solid rgba(148,163,184,.06);font-size:8.5px}.map-name{color:var(--dim)}.map-chain{display:flex;align-items:center;gap:5px;flex-wrap:wrap;color:#d7ecf8}.state{display:inline-flex;align-items:center;height:20px;padding:0 6px;border:1px solid rgba(148,163,184,.12);border-radius:5px;font-family:var(--mono);font-size:8px}.arrow{color:rgba(103,232,249,.35)}.state.hot{color:#fbcfe8;border-color:rgba(244,114,182,.22);background:rgba(244,114,182,.05)}
+  .tips-list{margin:0;padding-left:15px;color:var(--dim);font-size:8.8px;line-height:1.7}.tips-list li{margin:3px 0}.tips-list b{color:#d9fbff;font-weight:550}
+  .site-footer{display:flex;justify-content:space-between;gap:22px;padding:14px 4px 0;color:rgba(94,114,140,.9);font-size:8.8px;line-height:1.55}.site-footer p{margin:0;max-width:1000px}.footer-tag{flex:0 0 auto;color:rgba(103,232,249,.48);white-space:nowrap}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes breathe{0%,100%{opacity:.65;transform:scale(.9)}50%{opacity:1;transform:scale(1.12)}}
+  @keyframes bubbleUp{0%{opacity:0;transform:translateY(0)}18%{opacity:.8}100%{opacity:0;transform:translateY(-115px)}}
+  @keyframes settle{0%{opacity:0;transform:translateY(-18px)}30%{opacity:.8}100%{opacity:.8;transform:translateY(0)}}
+  @keyframes dropFall{0%{opacity:0;transform:translateY(-15px)}25%{opacity:.9}100%{opacity:0;transform:translateY(95px)}}
+  @keyframes flamePulse{0%,100%{transform:scaleY(.9);opacity:.7}50%{transform:scaleY(1.08);opacity:1}}
+  @keyframes laserPulse{0%,100%{opacity:.65}50%{opacity:1}}
+  @keyframes impurityMove{0%{opacity:.2;transform:translate(0,0)}100%{opacity:.9;transform:translate(var(--dx,0),var(--dy,0))}}
+  .scene .liquid{fill:var(--liquid-start);transition:fill 1.7s ease}
+  .scene.playing .liquid,.scene.played .liquid{fill:var(--liquid-end)}
+  .scene .bubble{opacity:0;fill:var(--gas,#a5f3fc)}.scene.playing .bubble{animation:bubbleUp var(--dur,1.9s) ease-in infinite;animation-delay:var(--delay,0s)}.scene.played .bubble{opacity:.5;animation:none}
+  .scene .ppt{opacity:0}.scene.playing .ppt{animation:settle 1.4s ease forwards;animation-delay:var(--delay,.3s)}.scene.played .ppt{opacity:.8;animation:none}
+  .scene .solid{opacity:.9;transition:opacity 1.7s ease}.scene.playing .solid,.scene.played .solid{opacity:0}
+  .scene .solid-main{transition:fill 1.8s ease}.scene.playing .solid-main,.scene.played .solid-main{fill:var(--solid-end)}
+  .scene.playing .media-tube .liquid,.scene.played .media-tube .liquid{fill:var(--liquid-end)}
+  .scene .drop{opacity:0}.scene.playing .drop{animation:dropFall 1.2s ease-in forwards}
+  .scene .flame{transform-origin:center bottom}.scene.playing .flame{animation:flamePulse .55s ease-in-out infinite}
+  .scene .laser{opacity:.16;transition:opacity .7s ease}.scene.playing .laser,.scene.played .laser{opacity:1;animation:laserPulse 1.5s ease-in-out infinite}
+  .scene .impurity{opacity:0}.scene.playing .impurity{animation:impurityMove 1.7s ease-in forwards;animation-delay:var(--delay,.2s)}.scene.played .impurity{opacity:.75;animation:none}
+  .scene .gas-cloud{opacity:.15;transition:opacity .6s ease}.scene.playing .gas-cloud,.scene.played .gas-cloud{opacity:.5}
+  @media(max-width:1240px){.shell{padding-left:20px;padding-right:20px}.workspace{grid-template-columns:250px minmax(0,1fr) 292px}.obs-stage{min-height:290px}}
+  @media(max-width:1050px){.workspace{grid-template-columns:1fr;grid-template-areas:"obs" "list" "analysis"}.reaction-panel{grid-area:list;max-height:none}.observation-panel{grid-area:obs}.analysis-panel{grid-area:analysis;max-height:none}.reaction-list{overflow:visible}.substance-bar{position:static}.bottom-grid{grid-template-columns:1fr}.analysis-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}.analysis-panel>.analysis-section{border-bottom:0;margin-bottom:0;padding-bottom:0}.analysis-panel>.analysis-section:nth-child(n+3){grid-column:1/-1}}
+  @media(max-width:700px){.shell{padding:14px 12px 10px}.brand{gap:11px}.brand-mark{width:44px;height:44px;border-radius:13px}.brand-mark svg{width:34px;height:34px}.brand h1{font-size:clamp(23px,7vw,31px)}.brand p{display:none}.kicker{font-size:8.5px;letter-spacing:.14em}.header-meta{display:none}.substance-bar{gap:4px;padding:5px;border-radius:12px}.sub-tab{height:34px;padding:0 8px;font-size:9px;gap:4px}.sub-tab .count{display:none}.bar-hint{display:none}.workspace{gap:10px}.observation-panel{padding:11px;border-radius:16px}.obs-head{gap:8px}.obs-title{font-size:14px}.obs-stage{min-height:270px}.play-btn{height:32px;padding:0 9px;font-size:8.5px}.stage-caption{left:7px;bottom:7px;font-size:7px}.stage-status{right:7px;bottom:7px;font-size:7px}.equation-bar{font-size:8.5px;padding:7px 8px}.phen{font-size:7px;height:19px}.reaction-panel{padding:10px 8px;border-radius:16px;max-height:none}.reaction-card{padding:7px 8px}.card-title{font-size:9px}.card-eq{font-size:7.4px}.analysis-panel{padding:12px;border-radius:16px;display:block}.analysis-panel>.analysis-section{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(148,163,184,.075)}.map-panel,.tips-panel{padding:12px}.bottom-grid{gap:10px}.site-footer{flex-direction:column;gap:5px}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="page-glow" aria-hidden="true"></div>
+<div class="shell">
+  <header class="site-header">
+    <a class="brand" href="./" title="返回平台首页" aria-label="返回高中化学可视化平台首页">
+      <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none"><defs><linearGradient id="markGrad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#67e8f9"/><stop offset=".55" stop-color="#5eead4"/><stop offset="1" stop-color="#a78bfa"/></linearGradient><radialGradient id="coreGrad" cx="0" cy="0" r="1" gradientTransform="translate(32 32) rotate(90) scale(6)" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".45" stop-color="#c7feff"/><stop offset="1" stop-color="#67e8f9" stop-opacity="0"/></radialGradient></defs><circle cx="32" cy="32" r="7" fill="url(#coreGrad)"/><ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(28 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".8"/><ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(-32 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".5"/><ellipse cx="32" cy="32" rx="24" ry="8" transform="rotate(90 32 32)" stroke="url(#markGrad)" stroke-width="1.1" opacity=".32"/><circle cx="32" cy="32" r="2.5" fill="#f4ffff"/></svg></div>
+      <div><div class="kicker">高中化学可视化平台 · 元素化合物</div><h1>反应<span>观察台</span></h1><p>过氧化氢 · 高锰酸钾 · 高铁酸钾</p></div>
+    </a>
+    <div class="header-meta"><div class="meta-pill"><span class="live-dot"></span>3 种物质 · 14 个反应</div><div class="meta-note">看颜色 · 看气体 · 看沉淀 · 看电子转移</div></div>
+  </header>
+
+  <div class="substance-bar" role="group" aria-label="选择物质">
+    <button class="sub-tab active" type="button" data-sub="h2o2" style="--sub-color:#67e8f9"><span class="dot"></span>H₂O₂<span class="count">5</span></button>
+    <button class="sub-tab" type="button" data-sub="kmno4" style="--sub-color:#a78bfa"><span class="dot"></span>KMnO₄<span class="count">4</span></button>
+    <button class="sub-tab" type="button" data-sub="k2feo4" style="--sub-color:#f472b6"><span class="dot"></span>K₂FeO₄<span class="count">5</span></button>
+    <div class="bar-hint">同一物质，换个条件，产物和现象可能完全不同。</div>
+  </div>
+
+  <main class="workspace">
+    <section class="panel reaction-panel">
+      <div class="panel-head"><div><div class="panel-kicker">REACTION LIST</div><h2 class="panel-title">反应清单</h2></div></div>
+      <div class="reaction-list" id="reactionList"></div>
+    </section>
+
+    <section class="panel observation-panel">
+      <div class="obs-head">
+        <div><div class="panel-kicker">OBSERVATION WINDOW</div><h2 class="obs-title" id="obsTitle">—</h2><div class="obs-meta" id="obsMeta"></div></div>
+        <button class="play-btn" id="playBtn" type="button"><span class="play-icon" aria-hidden="true"></span><span id="playLabel">播放反应</span></button>
+      </div>
+      <div class="obs-stage" id="obsStage">
+        <div id="scene" class="scene" aria-label="反应装置观察窗"></div>
+        <div class="stage-caption" id="sceneCaption">试管 · 酸性条件</div>
+        <div class="stage-status" id="sceneStatus">等待播放</div>
+      </div>
+      <div class="swatches" id="swatches"></div>
+      <div class="phenomena" id="phenomena"></div>
+      <div class="equation-bar" id="equationBar">—</div>
+    </section>
+
+    <aside class="panel analysis-panel">
+      <div class="analysis-section">
+        <div class="analysis-title"><i></i>氧化数变化 / 电子转移</div>
+        <div id="electronArea"></div>
+      </div>
+      <div class="analysis-section">
+        <div class="analysis-title"><i></i>半反应</div>
+        <div class="half-list" id="halfList"></div>
+      </div>
+      <div class="analysis-section">
+        <div class="analysis-title"><i></i>一句话理解</div>
+        <p class="analysis-note" id="analysisNote"></p>
+      </div>
+      <div class="analysis-section">
+        <div class="analysis-title"><i></i>易错点</div>
+        <p class="analysis-note caution" id="cautionNote"></p>
+      </div>
+    </aside>
+  </main>
+
+  <section class="bottom-grid">
+    <div class="panel map-panel">
+      <div class="panel-kicker">OXIDATION MAP</div><h2 class="map-title">价态地图</h2>
+      <div class="map-rows">
+        <div class="map-row"><span class="map-name">H₂O₂ 中的 O</span><div class="map-chain"><span class="state">−2</span><span class="arrow">←</span><span class="state hot">−1</span><span class="arrow">→</span><span class="state">0</span><span style="color:var(--dim);font-size:8px">既可被还原，也可被氧化</span></div></div>
+        <div class="map-row"><span class="map-name">MnO₄⁻ 中的 Mn</span><div class="map-chain"><span class="state hot">+7</span><span class="arrow">→</span><span class="state">+6</span><span class="arrow">/</span><span class="state">+4</span><span class="arrow">/</span><span class="state">+2</span><span style="color:var(--dim);font-size:8px">酸性越强，降价越多</span></div></div>
+        <div class="map-row"><span class="map-name">FeO₄²⁻ 中的 Fe</span><div class="map-chain"><span class="state hot">+6</span><span class="arrow">→</span><span class="state">+3</span><span class="arrow">→</span><span class="state">Fe(OH)₃ 胶体</span><span style="color:var(--dim);font-size:8px">净水</span></div></div>
+      </div>
+    </div>
+    <div class="panel tips-panel">
+      <div class="panel-kicker">EXAM NOTES</div><h2 class="tips-title">三条主线</h2>
+      <ul class="tips-list">
+        <li><b>H₂O₂：</b>O 为 −1 价，遇强还原剂显氧化性，遇强氧化剂显还原性。</li>
+        <li><b>KMnO₄：</b>先看介质，再定产物：酸性 Mn²⁺、中性 MnO₂、强碱 MnO₄²⁻。</li>
+        <li><b>K₂FeO₄：</b>强碱稳定，酸性分解；净水靠 Fe(OH)₃ 胶体吸附，不是 Fe³⁺ 直接杀菌。</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="site-footer"><p>科学说明：本页为反应现象与电子转移的教学示意，装置图未按真实仪器比例绘制；反应条件、浓度和滴加顺序会影响实际现象。高铁酸钾在强碱中较稳定，酸性条件下会分解，实验需在通风条件下进行。</p><span class="footer-tag">高中化学可视化平台 · 反应观察台</span></footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+  const hexA=(hex,a)=>{const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;};
+
+  const SUBS={
+    h2o2:{name:"过氧化氢",formula:"H₂O₂",color:"#67e8f9",desc:"O 为 −1 价，中间价态"},
+    kmno4:{name:"高锰酸钾",formula:"KMnO₄",color:"#a78bfa",desc:"Mn 为 +7 价，强氧化剂"},
+    k2feo4:{name:"高铁酸钾",formula:"K₂FeO₄",color:"#f472b6",desc:"Fe 为 +6 价，强氧化性"}
+  };
+
+  const REACTIONS=[
+    {
+      id:"h2o2-i2",sub:"h2o2",group:"H₂O₂ 作氧化剂",
+      title:"把 I⁻ 氧化成 I₂",kind:"氧化还原 · H₂O₂ 作氧化剂",
+      equation:"H₂O₂ + 2I⁻ + 2H⁺ → I₂ + 2H₂O",condition:"酸性",
+      scene:"tube",caption:"试管 · 酸性条件",
+      colorStart:"#e2e8f0",colorEnd:"#b45309",gas:null,
+      phenomena:["无色溶液逐渐变棕黄色","I₂ 遇淀粉变蓝","H₂O₂ 被还原为 H₂O"],
+      electron:{oxidant:{name:"H₂O₂",change:"O：−1 → −2",e:"得 2e⁻"},reductant:{name:"I⁻",change:"I：−1 → 0",e:"失 2e⁻"}},
+      half:["H₂O₂ + 2H⁺ + 2e⁻ → 2H₂O","2I⁻ − 2e⁻ → I₂"],
+      note:"H₂O₂ 中 O 是 −1 价；遇到还原剂 I⁻ 时，它把 I⁻ 氧化，自己表现氧化性。",
+      caution:"I₂ 是棕黄色溶液，不是黑色沉淀；淀粉变蓝是检验 I₂ 的方法。"
+    },
+    {
+      id:"h2o2-fe2",sub:"h2o2",group:"H₂O₂ 作氧化剂",
+      title:"把 Fe²⁺ 氧化成 Fe³⁺",kind:"氧化还原 · H₂O₂ 作氧化剂",
+      equation:"2Fe²⁺ + H₂O₂ + 2H⁺ → 2Fe³⁺ + 2H₂O",condition:"酸性",
+      scene:"tube",caption:"试管 · 浅绿色 → 黄色",
+      colorStart:"#bbf7d0",colorEnd:"#f59e0b",gas:null,
+      phenomena:["浅绿色溶液逐渐变黄","Fe²⁺ 被氧化为 Fe³⁺","可用 KSCN 检验 Fe³⁺"],
+      electron:{oxidant:{name:"H₂O₂",change:"O：−1 → −2",e:"得 2e⁻"},reductant:{name:"Fe²⁺",change:"Fe：+2 → +3",e:"失 2e⁻（2 个）"}},
+      half:["H₂O₂ + 2H⁺ + 2e⁻ → 2H₂O","Fe²⁺ − e⁻ → Fe³⁺"],
+      note:"H₂O₂ 把 Fe²⁺ 氧化成 Fe³⁺，自身被还原为水。",
+      caution:"Fe²⁺ 溶液本身浅绿色，Fe³⁺ 黄色；颜色变化受浓度影响，KSCN 变红更可靠。"
+    },
+    {
+      id:"h2o2-mno2-h",sub:"h2o2",group:"H₂O₂ 作还原剂",
+      title:"酸性条件下还原 MnO₂",kind:"氧化还原 · H₂O₂ 作还原剂",
+      equation:"MnO₂ + H₂O₂ + 2H⁺ → Mn²⁺ + O₂↑ + 2H₂O",condition:"酸性",
+      scene:"tube",caption:"试管 · 黑色 MnO₂ 逐渐溶解",
+      colorStart:"#e2e8f0",colorEnd:"#e2e8f0",gas:"O₂",gasColor:"#a5f3fc",solid:"MnO₂",
+      phenomena:["黑色 MnO₂ 逐渐溶解","有无色气泡产生","溶液接近无色（Mn²⁺）"],
+      electron:{oxidant:{name:"MnO₂",change:"Mn：+4 → +2",e:"得 2e⁻"},reductant:{name:"H₂O₂",change:"O：−1 → 0",e:"失 2e⁻"}},
+      half:["MnO₂ + 4H⁺ + 2e⁻ → Mn²⁺ + 2H₂O","H₂O₂ − 2e⁻ → O₂ + 2H⁺"],
+      note:"这里的 MnO₂ 是反应物，不是催化剂；它被 H₂O₂ 还原成 Mn²⁺。",
+      caution:"不要和“MnO₂ 催化 H₂O₂ 分解”混淆：中性条件下 MnO₂ 才主要作催化剂，反应后仍存在。"
+    },
+    {
+      id:"h2o2-cat",sub:"h2o2",group:"H₂O₂ 分解",
+      title:"催化分解",kind:"歧化反应",
+      equation:"2H₂O₂ → 2H₂O + O₂↑",condition:"MnO₂ 或 Fe³⁺ 催化",
+      scene:"flask",caption:"锥形瓶 · 催化剂存在",
+      colorStart:"#e2e8f0",colorEnd:"#e2e8f0",gas:"O₂",gasColor:"#a5f3fc",
+      phenomena:["产生大量气泡","带火星木条复燃","反应放热","催化剂质量和化学性质不变"],
+      electron:{self:{name:"H₂O₂",change:"O：−1 → −2 和 0",e:"歧化：一部分 O 得电子，一部分 O 失电子"}},
+      half:["H₂O₂ + 2H⁺ + 2e⁻ → 2H₂O","H₂O₂ − 2e⁻ → O₂ + 2H⁺"],
+      note:"同一物质中 O 既被氧化又被还原，所以叫歧化反应；MnO₂ 只改变速率，不改变产物。",
+      caution:"催化剂不参与总反应计量；催化分解和酸性条件下 MnO₂ 被还原是两件事。"
+    },
+    {
+      id:"h2o2-kmno4",sub:"h2o2",group:"H₂O₂ 作还原剂",
+      title:"还原酸性 KMnO₄",kind:"氧化还原 · H₂O₂ 作还原剂",
+      equation:"2MnO₄⁻ + 5H₂O₂ + 6H⁺ → 2Mn²⁺ + 5O₂↑ + 8H₂O",condition:"酸性",
+      scene:"tube",caption:"试管 · 紫红色褪去并放出气体",
+      colorStart:"#7c3aed",colorEnd:"#e2e8f0",gas:"O₂",gasColor:"#a5f3fc",
+      phenomena:["紫红色逐渐褪去","有无色气泡（O₂）","Mn²⁺ 近无色"],
+      electron:{oxidant:{name:"MnO₄⁻",change:"Mn：+7 → +2",e:"得 5e⁻ × 2"},reductant:{name:"H₂O₂",change:"O：−1 → 0",e:"失 2e⁻ × 5"}},
+      half:["MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O","H₂O₂ − 2e⁻ → O₂ + 2H⁺"],
+      note:"KMnO₄ 是强氧化剂，H₂O₂ 在这里作还原剂；系数 2:5 来自 10e⁻ 的电子守恒。",
+      caution:"酸性 KMnO₄ 的还原产物是 Mn²⁺；不要写成 MnO₂。"
+    },
+
+    {
+      id:"kmno4-media",sub:"kmno4",group:"不同介质中的还原",
+      title:"酸性 / 中性 / 强碱性",kind:"介质决定产物",
+      equation:"MnO₄⁻ 的还原产物随介质改变",condition:"酸性 / 中性 / 强碱性",
+      scene:"tubes3",caption:"三支试管 · 同一浓度 KMnO₄",
+      colorStart:"#7c3aed",
+      media:[
+        {label:"酸性",product:"Mn²⁺",os:"+2",e:"5e⁻",color:"#e2e8f0",half:"MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O"},
+        {label:"中性/弱碱性",product:"MnO₂",os:"+4",e:"3e⁻",color:"#92400e",half:"MnO₄⁻ + 2H₂O + 3e⁻ → MnO₂↓ + 4OH⁻"},
+        {label:"强碱性",product:"MnO₄²⁻",os:"+6",e:"1e⁻",color:"#22c55e",half:"MnO₄⁻ + e⁻ → MnO₄²⁻"}
+      ],
+      phenomena:["酸性：紫红 → 近无色","中性：紫红 → 棕褐色沉淀","强碱：紫红 → 绿色"],
+      half:["MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O","MnO₄⁻ + 2H₂O + 3e⁻ → MnO₂↓ + 4OH⁻","MnO₄⁻ + e⁻ → MnO₄²⁻"],
+      note:"酸性越强，MnO₄⁻ 氧化性越强，Mn 的化合价降得越多：+7 → +2 / +4 / +6。",
+      caution:"不是“KMnO₄ 褪色就一定是 Mn²⁺”；先判断介质，再判断产物和颜色。"
+    },
+    {
+      id:"kmno4-hcl",sub:"kmno4",group:"实验室制氯气",
+      title:"MnO₂ 与浓盐酸",kind:"实验室制法 · 加热",
+      equation:"MnO₂ + 4HCl(浓) —Δ→ MnCl₂ + Cl₂↑ + 2H₂O",condition:"加热",
+      scene:"flask",caption:"烧瓶 · 固液加热",
+      colorStart:"#e2e8f0",colorEnd:"#d9f99d",gas:"Cl₂",gasColor:"#bef264",solid:"MnO₂",
+      phenomena:["黑色 MnO₂ 逐渐溶解","产生黄绿色气体","湿润淀粉碘化钾试纸变蓝"],
+      electron:{oxidant:{name:"MnO₂",change:"Mn：+4 → +2",e:"得 2e⁻"},reductant:{name:"HCl",change:"Cl：−1 → 0",e:"失 2e⁻"}},
+      half:["MnO₂ + 4H⁺ + 2e⁻ → Mn²⁺ + 2H₂O","2Cl⁻ − 2e⁻ → Cl₂"],
+      note:"这是实验室制 Cl₂ 的经典方法，需要加热；尾气用 NaOH 吸收。",
+      caution:"4 个 HCl 中只有 2 个 Cl⁻ 被氧化，另外 2 个进入 MnCl₂，起酸的作用。"
+    },
+    {
+      id:"kmno4-cl",sub:"kmno4",group:"实验室制氯气",
+      title:"酸性 KMnO₄ 与 Cl⁻",kind:"氧化还原 · 流程题高频",
+      equation:"2MnO₄⁻ + 10Cl⁻ + 16H⁺ → 2Mn²⁺ + 5Cl₂↑ + 8H₂O",condition:"酸性",
+      scene:"flask",caption:"烧瓶 · 紫红色褪去并产生黄绿色气体",
+      colorStart:"#7c3aed",colorEnd:"#e2e8f0",gas:"Cl₂",gasColor:"#bef264",
+      phenomena:["紫红色褪去","产生黄绿色 Cl₂","MnO₄⁻ 被还原为 Mn²⁺"],
+      electron:{oxidant:{name:"MnO₄⁻",change:"Mn：+7 → +2",e:"得 5e⁻ × 2"},reductant:{name:"Cl⁻",change:"Cl：−1 → 0",e:"失 2e⁻ × 5"}},
+      half:["MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O","2Cl⁻ − 2e⁻ → Cl₂"],
+      note:"KMnO₄ 与浓盐酸也能制 Cl₂；流程题中容易只写 MnO₂，而漏掉 KMnO₄ 与 Cl⁻ 的反应。",
+      caution:"要注意酸性条件；碱性条件下 Cl₂ 会被碱吸收，不能稳定存在。"
+    },
+    {
+      id:"kmno4-oxalate",sub:"kmno4",group:"滴定反应",
+      title:"酸性 KMnO₄ 滴定草酸",kind:"氧化还原滴定",
+      equation:"2MnO₄⁻ + 5C₂O₄²⁻ + 16H⁺ → 2Mn²⁺ + 10CO₂↑ + 8H₂O",condition:"酸性，加热至 60–80 ℃",
+      scene:"titration",caption:"滴定管 + 锥形瓶 · 紫红色褪去",
+      colorStart:"#7c3aed",colorEnd:"#e2e8f0",gas:"CO₂",gasColor:"#cbd5e1",
+      phenomena:["紫红色逐渐褪去","产生 CO₂ 气泡","终点：最后一滴后紫色不褪"],
+      electron:{oxidant:{name:"MnO₄⁻",change:"Mn：+7 → +2",e:"得 5e⁻ × 2"},reductant:{name:"C₂O₄²⁻",change:"C：+3 → +4",e:"失 2e⁻ × 5"}},
+      half:["MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O","C₂O₄²⁻ − 2e⁻ → 2CO₂"],
+      note:"草酸根中 C 为 +3 价，具有还原性；KMnO₄ 自身作指示剂，终点为浅紫红色。",
+      caution:"滴定需要加热（60–80 ℃），但温度过高会使草酸分解；开始褪色慢，生成的 Mn²⁺ 有自催化作用。"
+    },
+
+    {
+      id:"feo4-cl2-prep",sub:"k2feo4",group:"高铁酸钾的制取",
+      title:"氯气氧化法",kind:"制取 · 湿法氧化",
+      equation:"2Fe(OH)₃ + 3Cl₂ + 10KOH → 2K₂FeO₄ + 6KCl + 8H₂O",condition:"强碱、低温",
+      scene:"beaker",caption:"烧杯 · 强碱 + Cl₂，红褐色 → 紫红色",
+      colorStart:"#b45309",colorEnd:"#7c3aed",gasIn:"Cl₂",gasColor:"#bef264",
+      phenomena:["红褐色 Fe(OH)₃ 悬浊液逐渐变为紫红色","Cl₂ 被消耗","强碱条件，低温抑制分解"],
+      electron:{oxidant:{name:"Cl₂",change:"Cl：0 → −1",e:"得 2e⁻ × 3"},reductant:{name:"Fe(OH)₃",change:"Fe：+3 → +6",e:"失 3e⁻ × 2"}},
+      half:["Fe(OH)₃ + 5OH⁻ − 3e⁻ → FeO₄²⁻ + 4H₂O","Cl₂ + 2e⁻ → 2Cl⁻"],
+      note:"这是高铁酸钾的湿法制取：强碱中把 Fe(III) 氧化到 Fe(VI)，得到紫红色的 FeO₄²⁻。",
+      caution:"必须强碱、低温；高铁酸钾在酸性或高温下容易分解。"
+    },
+    {
+      id:"feo4-clo-prep",sub:"k2feo4",group:"高铁酸钾的制取",
+      title:"次氯酸盐氧化法",kind:"制取 · 湿法氧化",
+      equation:"2Fe(OH)₃ + 3KClO + 4KOH → 2K₂FeO₄ + 3KCl + 5H₂O",condition:"强碱",
+      scene:"beaker",caption:"烧杯 · 强碱 + 次氯酸盐",
+      colorStart:"#b45309",colorEnd:"#7c3aed",gasIn:"ClO⁻",gasColor:"#67e8f9",
+      phenomena:["红褐色悬浊液逐渐变为紫红色","ClO⁻ 被还原为 Cl⁻","强碱条件"],
+      electron:{oxidant:{name:"ClO⁻",change:"Cl：+1 → −1",e:"得 2e⁻ × 3"},reductant:{name:"Fe(OH)₃",change:"Fe：+3 → +6",e:"失 3e⁻ × 2"}},
+      half:["Fe(OH)₃ + 5OH⁻ − 3e⁻ → FeO₄²⁻ + 4H₂O","ClO⁻ + H₂O + 2e⁻ → Cl⁻ + 2OH⁻"],
+      note:"次氯酸盐也能把 Fe(III) 氧化成 Fe(VI)；相比 Cl₂，操作更方便。",
+      caution:"次氯酸盐和强碱都有腐蚀性；高铁酸钾在酸性条件下不稳定。"
+    },
+    {
+      id:"feo4-dry-prep",sub:"k2feo4",group:"高铁酸钾的制取",
+      title:"干法氧化",kind:"制取 · 高温熔融",
+      equation:"Fe₂O₃ + 3KNO₃ + 4KOH → 2K₂FeO₄ + 3KNO₂ + 2H₂O",condition:"高温熔融",
+      scene:"dry",caption:"坩埚 · 高温熔融",
+      colorStart:"#b45309",solidStart:"#b45309",solidEnd:"#7c3aed",
+      phenomena:["固体熔融","红棕色固体逐渐变为紫红色","KNO₃ 被还原为 KNO₂"],
+      electron:{oxidant:{name:"KNO₃",change:"N：+5 → +3",e:"得 2e⁻ × 3"},reductant:{name:"Fe₂O₃",change:"Fe：+3 → +6",e:"失 3e⁻ × 2"}},
+      half:["Fe₂O₃ + 10OH⁻ − 6e⁻ → 2FeO₄²⁻ + 5H₂O","NO₃⁻ + H₂O + 2e⁻ → NO₂⁻ + 2OH⁻"],
+      note:"干法用 KNO₃ 作氧化剂、KOH 提供强碱环境，高温熔融制得高铁酸钾。",
+      caution:"高温强碱对设备腐蚀性强；不要把“干法”与湿法 Cl₂/ClO⁻ 的条件混淆。"
+    },
+    {
+      id:"feo4-acid",sub:"k2feo4",group:"高铁酸钾的性质",
+      title:"酸性条件下分解",kind:"氧化还原 · 自身分解",
+      equation:"4FeO₄²⁻ + 20H⁺ → 4Fe³⁺ + 3O₂↑ + 10H₂O",condition:"酸性",
+      scene:"colloid",caption:"烧杯 · 紫红色 → 棕褐色胶体 + O₂",
+      colorStart:"#7c3aed",colorEnd:"#92400e",gas:"O₂",gasColor:"#a5f3fc",
+      phenomena:["紫红色褪去","产生 O₂ 气泡","Fe³⁺ 水解生成棕褐色 Fe(OH)₃ 胶体","激光笔可见丁达尔光路"],
+      electron:{oxidant:{name:"FeO₄²⁻",change:"Fe：+6 → +3",e:"得 3e⁻ × 4"},reductant:{name:"H₂O",change:"O：−2 → 0",e:"失 2e⁻ × 6"}},
+      half:["FeO₄²⁻ + 8H⁺ + 3e⁻ → Fe³⁺ + 4H₂O","2H₂O − 4e⁻ → O₂ + 4H⁺"],
+      note:"高铁酸根在酸性条件下不稳定：它把水氧化成 O₂，自身被还原为 Fe³⁺，随后 Fe³⁺ 水解。",
+      caution:"不是“FeO₄²⁻ 直接变成 Fe(OH)₃ 沉淀”这么简单；先发生氧化还原，再水解成胶体。"
+    },
+    {
+      id:"feo4-water",sub:"k2feo4",group:"高铁酸钾的性质",
+      title:"Fe(OH)₃ 胶体与净水",kind:"水解 · 胶体吸附",
+      equation:"Fe³⁺ + 3H₂O ⇌ Fe(OH)₃(胶体) + 3H⁺",condition:"弱酸性 / 中性",
+      scene:"colloid",caption:"烧杯 · 棕褐色胶体 + 激光光路",
+      colorStart:"#92400e",colorEnd:"#92400e",colloid:true,impurities:true,
+      phenomena:["形成棕褐色 Fe(OH)₃ 胶体","胶体粒子吸附悬浮杂质","激光笔可见丁达尔效应"],
+      electron:{hydrolysis:{name:"Fe³⁺ 水解",change:"无电子转移",e:"胶体吸附"}},
+      half:["Fe³⁺ + 3H₂O ⇌ Fe(OH)₃(胶体) + 3H⁺"],
+      note:"胶体比表面积大，能吸附水中的悬浮杂质，这是高铁酸盐净水的主要原理。",
+      caution:"净水主要靠胶体吸附，不是 Fe³⁺ 直接杀菌；酸性过强时胶体也不易稳定存在。"
+    }
+  ];
+
+  const subsTabs=Array.from(document.querySelectorAll(".sub-tab"));
+  const listEl=document.getElementById("reactionList");
+  const obsTitle=document.getElementById("obsTitle");
+  const obsMeta=document.getElementById("obsMeta");
+  const sceneEl=document.getElementById("scene");
+  const sceneCaption=document.getElementById("sceneCaption");
+  const sceneStatus=document.getElementById("sceneStatus");
+  const playBtn=document.getElementById("playBtn");
+  const playLabel=document.getElementById("playLabel");
+  const swatches=document.getElementById("swatches");
+  const phenomenaEl=document.getElementById("phenomena");
+  const equationBar=document.getElementById("equationBar");
+  const electronArea=document.getElementById("electronArea");
+  const halfList=document.getElementById("halfList");
+  const analysisNote=document.getElementById("analysisNote");
+  const cautionNote=document.getElementById("cautionNote");
+
+  const params=new URLSearchParams(location.search);
+  let currentSub=SUBS[params.get("sub")]?params.get("sub"):"h2o2";
+  let currentReaction=null;
+  let playTimer=null;
+
+  function bubbles(n,x0,x1,y0,y1){
+    let out="";
+    for(let i=0;i<n;i++){
+      const x=x0+((i*47+23)%(x1-x0));
+      const y=y0+((i*31+17)%(y1-y0));
+      out+=`<circle class="bubble" cx="${x}" cy="${y}" r="${2.2+(i%3)*.8}" style="--delay:${(i*.17).toFixed(2)}s;--dur:${(1.5+(i%4)*.22).toFixed(2)}s"/>`;
+    }
+    return out;
+  }
+  function precip(n,x0,x1,y){
+    let out="";
+    for(let i=0;i<n;i++){
+      const x=x0+((i*37+11)%(x1-x0));
+      out+=`<circle class="ppt" cx="${x}" cy="${y+(i%3)*3}" r="${2.4+(i%3)*.7}" fill="#92400e" style="--delay:${(i*.09).toFixed(2)}s"/>`;
+    }
+    return out;
+  }
+  function solidPieces(){
+    return `<g class="solid"><path d="M354 310l14-12 13 8-6 15-16 2Z" fill="#1e293b" stroke="#64748b" stroke-width="1"/><path d="M386 316l12-10 12 8-4 13-16 1Z" fill="#0f172a" stroke="#64748b" stroke-width="1"/><path d="M365 324l10-6 9 6-4 9-11 1Z" fill="#334155"/></g>`;
+  }
+  function tubeBase(){
+    return `<ellipse cx="380" cy="373" rx="115" ry="10" fill="rgba(0,0,0,.3)"/>
+      <path d="M334 70v208c0 24 20 42 46 42s46-18 46-42V70" fill="rgba(8,22,38,.38)" stroke="rgba(103,232,249,.68)" stroke-width="2.2"/>
+      <path d="M342 198h76v80c0 18-16 31-38 31s-38-13-38-31Z" class="liquid"/>
+      <path d="M334 70h92" stroke="rgba(103,232,249,.45)" stroke-width="1.5"/>`;
+  }
+  function sceneTube(r){
+    return `<svg class="lab-svg" viewBox="0 0 760 420" style="--liquid-end:${r.colorEnd};--gas:${r.gasColor||'#a5f3fc'}" aria-hidden="true">
+      <defs><radialGradient id="tubeGlow"><stop stop-color="${hexA(r.colorEnd,.18)}"/><stop offset="1" stop-color="${hexA(r.colorEnd,0)}"/></radialGradient></defs>
+      <circle cx="380" cy="235" r="155" fill="url(#tubeGlow)"/>
+      <g>${tubeBase()}</g>
+      ${r.solid?solidPieces():""}
+      ${r.gas?bubbles(9,350,410,230,315):""}
+      ${r.ppt?precip(8,352,408,325):""}
+      <g class="drop"><circle cx="380" cy="105" r="5" fill="${r.colorEnd}"/></g>
+      <path d="M372 35h16v43h-16z" fill="rgba(8,22,38,.55)" stroke="rgba(103,232,249,.45)" stroke-width="1.5"/>
+      <path d="M376 44h8" stroke="rgba(103,232,249,.3)"/>
+      ${r.gas?`<text x="540" y="115" fill="${r.gasColor}" font-size="11" font-family="Segoe UI, sans-serif">${r.gas}↑</text>`:""}
+      ${r.solid?`<text x="540" y="310" fill="rgba(148,163,184,.7)" font-size="10" font-family="Segoe UI, sans-serif">${r.solid}</text>`:""}
+    </svg>`;
+  }
+  function flaskBase(){
+    return `<ellipse cx="380" cy="376" rx="160" ry="10" fill="rgba(0,0,0,.3)"/>
+      <path d="M362 80h36v78l62 120c10 20-4 42-27 42H327c-23 0-37-22-27-42l62-120V80Z" fill="rgba(8,22,38,.38)" stroke="rgba(103,232,249,.68)" stroke-width="2.2"/>
+      <path d="M300 286c30 12 58 8 80 10s54 4 80-8v47c0 15-12 25-27 25H327c-15 0-27-10-27-25Z" class="liquid"/>
+      <path d="M362 80h36" stroke="rgba(103,232,249,.45)" stroke-width="1.5"/>`;
+  }
+  function sceneFlask(r){
+    return `<svg class="lab-svg" viewBox="0 0 760 420" style="--liquid-end:${r.colorEnd};--gas:${r.gasColor||'#a5f3fc'}" aria-hidden="true">
+      <defs><radialGradient id="flaskGlow"><stop stop-color="${hexA(r.colorEnd,.16)}"/><stop offset="1" stop-color="${hexA(r.colorEnd,0)}"/></radialGradient></defs>
+      <circle cx="380" cy="250" r="180" fill="url(#flaskGlow)"/>
+      <g>${flaskBase()}</g>
+      ${r.solid?`<g class="solid"><path d="M332 310l18-12 16 10-8 17-20 1Z" fill="#1e293b" stroke="#64748b"/><path d="M372 316l18-9 14 11-7 15-20-1Z" fill="#0f172a" stroke="#64748b"/></g>`:""}
+      ${r.gas?bubbles(12,315,445,280,330):""}
+      ${r.gas?`<text x="535" y="130" fill="${r.gasColor}" font-size="11" font-family="Segoe UI, sans-serif">${r.gas}↑</text>`:""}
+      <path d="M455 84h70v54h-70z" fill="rgba(8,22,38,.4)" stroke="rgba(103,232,249,.28)" stroke-width="1.4"/>
+      <path d="M470 84v-23m20 23v-15" stroke="rgba(103,232,249,.4)" stroke-width="1.2"/>
+    </svg>`;
+  }
+  function sceneTitration(r){
+    return `<svg class="lab-svg" viewBox="0 0 760 420" style="--liquid-end:${r.colorEnd};--gas:${r.gasColor||'#cbd5e1'}" aria-hidden="true">
+      <defs><radialGradient id="titGlow"><stop stop-color="${hexA(r.colorEnd,.15)}"/><stop offset="1" stop-color="${hexA(r.colorEnd,0)}"/></radialGradient></defs>
+      <circle cx="380" cy="260" r="175" fill="url(#titGlow)"/>
+      <path d="M371 38h18v175h-18z" fill="rgba(8,22,38,.45)" stroke="rgba(103,232,249,.65)" stroke-width="2"/>
+      <path d="M373 58h14v142h-14z" fill="rgba(167,139,250,.22)"/>
+      <path d="M371 212h18v14h-18z" fill="rgba(103,232,249,.2)" stroke="rgba(103,232,249,.5)"/>
+      <path d="M380 226v30" stroke="rgba(103,232,249,.55)" stroke-width="1.5"/>
+      <ellipse cx="380" cy="378" rx="160" ry="10" fill="rgba(0,0,0,.3)"/>
+      <path d="M300 250h160l-18 94c-2 12-12 19-24 19h-76c-12 0-22-7-24-19Z" fill="rgba(8,22,38,.38)" stroke="rgba(103,232,249,.68)" stroke-width="2.2"/>
+      <path d="M308 305c35 12 110 12 144 0l-12 40c-2 9-9 14-18 14h-84c-9 0-16-5-18-14Z" class="liquid"/>
+      ${r.gas?bubbles(8,330,430,300,340):""}
+      <g class="drop"><circle cx="380" cy="245" r="4.5" fill="${r.colorEnd}"/></g>
+      ${r.gas?`<text x="520" y="315" fill="${r.gasColor}" font-size="11" font-family="Segoe UI, sans-serif">${r.gas}↑</text>`:""}
+      <text x="407" y="58" fill="rgba(148,163,184,.75)" font-size="9" font-family="Segoe UI, sans-serif">KMnO₄</text>
+    </svg>`;
+  }
+  function sceneTubes3(r){
+    const tubes=r.media.map((m,i)=>{
+      const x=160+i*210;
+      return `<g class="media-tube" style="--liquid-end:${m.color}">
+        <path d="M${x-28} 105v175c0 17 13 29 28 29s28-12 28-29V105" fill="rgba(8,22,38,.38)" stroke="rgba(103,232,249,.55)" stroke-width="1.9"/>
+        <path d="M${x-22} 205h44v75c0 13-10 23-22 23s-22-10-22-23Z" class="liquid"/>
+        <path d="M${x-28} 105h56" stroke="rgba(103,232,249,.4)"/>
+        <text x="${x}" y="345" text-anchor="middle" fill="rgba(226,240,255,.82)" font-size="10" font-family="Segoe UI, sans-serif">${m.label}</text>
+        <text x="${x}" y="365" text-anchor="middle" fill="${m.color}" font-size="9" font-family="Cascadia Code, monospace">${m.product}</text>
+      </g>`;
+    }).join("");
+    return `<svg class="lab-svg" viewBox="0 0 760 420" aria-hidden="true">
+      <defs><radialGradient id="threeGlow"><stop stop-color="rgba(124,58,237,.14)"/><stop offset="1" stop-color="rgba(124,58,237,0)"/></radialGradient></defs>
+      <ellipse cx="380" cy="375" rx="300" ry="12" fill="rgba(0,0,0,.28)"/>
+      <circle cx="380" cy="230" r="245" fill="url(#threeGlow)"/>
+      ${tubes}
+    </svg>`;
+  }
+  function sceneBeaker(r){
+    return `<svg class="lab-svg" viewBox="0 0 760 420" style="--liquid-end:${r.colorEnd};--gas:${r.gasColor||'#bef264'}" aria-hidden="true">
+      <defs><radialGradient id="beakerGlow"><stop stop-color="${hexA(r.colorEnd,.16)}"/><stop offset="1" stop-color="${hexA(r.colorEnd,0)}"/></radialGradient></defs>
+      <circle cx="380" cy="245" r="190" fill="url(#beakerGlow)"/>
+      <ellipse cx="380" cy="378" rx="185" ry="10" fill="rgba(0,0,0,.3)"/>
+      <path d="M235 120h290v215c0 22-18 38-40 38H275c-22 0-40-16-40-38Z" fill="rgba(8,22,38,.36)" stroke="rgba(103,232,249,.65)" stroke-width="2.2"/>
+      <path d="M245 250h270v83c0 18-15 33-34 33H279c-19 0-34-15-34-33Z" class="liquid"/>
+      <path d="M235 120h290" stroke="rgba(103,232,249,.4)"/>
+      <path d="M500 76h22v86h-22z" fill="rgba(8,22,38,.45)" stroke="rgba(103,232,249,.4)"/>
+      <path d="M511 76V35" stroke="rgba(103,232,249,.45)" stroke-width="1.8"/>
+      <g class="gas-cloud"><ellipse cx="530" cy="120" rx="48" ry="28" fill="${hexA(r.gasColor||'#bef264',.22)}"/><text x="530" y="124" text-anchor="middle" fill="${r.gasColor||'#bef264'}" font-size="10" font-family="Segoe UI, sans-serif">${r.gasIn||"Cl₂"}</text></g>
+      <path d="M350 170v95" stroke="rgba(148,163,184,.35)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M350 265l-8 18m8-18 9 18" stroke="rgba(148,163,184,.3)" stroke-width="3"/>
+      ${bubbles(8,280,480,275,340)}
+      <text x="620" y="170" fill="rgba(148,163,184,.6)" font-size="9" font-family="Segoe UI, sans-serif">强碱</text>
+    </svg>`;
+  }
+  function sceneDry(r){
+    return `<svg class="lab-svg" viewBox="0 0 760 420" style="--solid-end:${r.solidEnd}" aria-hidden="true">
+      <defs><radialGradient id="dryGlow"><stop stop-color="${hexA(r.solidEnd,.16)}"/><stop offset="1" stop-color="${hexA(r.solidEnd,0)}"/></radialGradient></defs>
+      <circle cx="380" cy="235" r="180" fill="url(#dryGlow)"/>
+      <ellipse cx="380" cy="375" rx="180" ry="10" fill="rgba(0,0,0,.3)"/>
+      <path d="M280 215h200l-28 90H308Z" fill="rgba(8,22,38,.4)" stroke="rgba(103,232,249,.55)" stroke-width="2"/>
+      <path d="M305 240h150l-20 55H325Z" class="solid-main" fill="${r.solidStart}" style="transition:fill 1.8s ease"/>
+      <path d="M305 240h150" stroke="rgba(103,232,249,.35)" stroke-width="1.2"/>
+      <g class="flame"><path d="M380 315c-18 18-10 42 0 52 10-10 18-34 0-52Z" fill="${hexA('#fbbf24',.32)}" stroke="${hexA('#fbbf24',.7)}" stroke-width="1.3"/><path d="M380 333c-8 8-5 19 0 24 5-5 8-16 0-24Z" fill="${hexA('#fef3c7',.6)}"/></g>
+      <path d="M330 360h100" stroke="rgba(148,163,184,.28)" stroke-width="2.4"/>
+      <text x="520" y="250" fill="rgba(148,163,184,.65)" font-size="9" font-family="Segoe UI, sans-serif">高温熔融</text>
+    </svg>`;
+  }
+  function sceneColloid(r){
+    const laser=r.scene==="colloid";
+    const impurities=r.impurities?Array.from({length:12},(_,i)=>`<circle class="impurity" cx="${280+(i*41)%280}" cy="${220+(i*37)%100}" r="2.2" fill="rgba(148,163,184,.6)" style="--dx:${i%2?18:-14}px;--dy:${i%3?12:-10}px;--delay:${(i*.1).toFixed(2)}s"/>`).join(""):"";
+    return `<svg class="lab-svg" viewBox="0 0 760 420" style="--liquid-end:${r.colorEnd};--gas:${r.gasColor||'#a5f3fc'}" aria-hidden="true">
+      <defs><radialGradient id="colloidGlow"><stop stop-color="${hexA(r.colorEnd,.17)}"/><stop offset="1" stop-color="${hexA(r.colorEnd,0)}"/></radialGradient></defs>
+      <circle cx="380" cy="245" r="195" fill="url(#colloidGlow)"/>
+      <ellipse cx="380" cy="378" rx="185" ry="10" fill="rgba(0,0,0,.3)"/>
+      <path d="M235 120h290v215c0 22-18 38-40 38H275c-22 0-40-16-40-38Z" fill="rgba(8,22,38,.36)" stroke="rgba(103,232,249,.65)" stroke-width="2.2"/>
+      <path d="M245 250h270v83c0 18-15 33-34 33H279c-19 0-34-15-34-33Z" class="liquid"/>
+      <g class="laser"><path d="M80 190L245 240" stroke="rgba(103,232,249,.9)" stroke-width="4" filter="drop-shadow(0 0 8px rgba(103,232,249,.8))"/><path d="M245 240L520 300" stroke="rgba(103,232,249,.22)" stroke-width="2" stroke-dasharray="4 8"/><circle cx="245" cy="240" r="5" fill="#eaffff"/></g>
+      ${r.gas?bubbles(8,280,470,275,340):""}
+      ${impurities}
+      <text x="80" y="180" fill="rgba(103,232,249,.8)" font-size="9" font-family="Segoe UI, sans-serif">激光笔</text>
+      <text x="505" y="320" fill="rgba(148,163,184,.65)" font-size="9" font-family="Segoe UI, sans-serif">胶体</text>
+      ${r.gas?`<text x="520" y="150" fill="${r.gasColor}" font-size="11" font-family="Segoe UI, sans-serif">${r.gas}↑</text>`:""}
+    </svg>`;
+  }
+  function buildScene(r){
+    if(r.scene==="tubes3")return sceneTubes3(r);
+    if(r.scene==="flask")return sceneFlask(r);
+    if(r.scene==="titration")return sceneTitration(r);
+    if(r.scene==="beaker")return sceneBeaker(r);
+    if(r.scene==="dry")return sceneDry(r);
+    if(r.scene==="colloid")return sceneColloid(r);
+    return sceneTube(r);
+  }
+
+  function renderList(){
+    const items=REACTIONS.filter(r=>r.sub===currentSub);
+    let lastGroup="";
+    listEl.innerHTML=items.map((r,i)=>{
+      const group=r.group!==lastGroup?`<div class="reaction-group">${r.group}</div>`:"";
+      lastGroup=r.group;
+      return group+`<button class="reaction-card" type="button" data-id="${r.id}" aria-label="查看反应：${r.title}">
+        <div class="card-top"><span class="card-title">${String(i+1).padStart(2,"0")} ${r.title}</span><span class="card-num">${r.condition}</span></div>
+        <p class="card-eq">${r.equation}</p>
+        <div class="card-bottom"><span class="card-cond">${r.kind}</span><span class="card-kind">观察 →</span></div>
+      </button>`;
+    }).join("");
+    for(const card of listEl.querySelectorAll(".reaction-card")){
+      card.classList.toggle("active",card.dataset.id===currentReaction?.id);
+      card.addEventListener("click",()=>selectReaction(card.dataset.id));
+    }
+  }
+
+  function renderSwatches(r){
+    if(r.media){
+      swatches.innerHTML=r.media.map(m=>`<span class="swatch-item"><i class="swatch" style="background:${m.color}"></i>${m.label} · ${m.product}</span>`).join("");
+      return;
+    }
+    const start=r.solidStart||r.colorStart||"#e2e8f0";
+    const end=r.solidEnd||r.colorEnd||"#e2e8f0";
+    const before=r.scene==="dry"?"反应前固体":"反应前";
+    const after=r.scene==="dry"?"反应后固体":"反应后";
+    swatches.innerHTML=`<span class="swatch-item"><i class="swatch" style="background:${start}"></i>${before}</span><span style="color:var(--dim)">→</span><span class="swatch-item"><i class="swatch" style="background:${end}"></i>${after}</span>${r.gas?`<span class="swatch-item">气体 · ${r.gas}</span>`:""}${r.ppt?`<span class="swatch-item">沉淀 · ${r.ppt}</span>`:""}`;
+  }
+
+  function renderElectron(r){
+    if(r.media){
+      electronArea.innerHTML=`<table class="media-table"><thead><tr><th>介质</th><th>产物</th><th>Mn</th><th>得电子</th></tr></thead><tbody>${r.media.map(m=>`<tr><td><i class="media-dot" style="background:${m.color}"></i>${m.label}</td><td class="m-product">${m.product}</td><td>${m.os}</td><td>${m.e}</td></tr>`).join("")}</tbody></table>`;
+      return;
+    }
+    if(r.electron?.self){
+      const e=r.electron.self;
+      electronArea.innerHTML=`<div class="electron-grid"><div class="electron-card"><span class="ec-label">同一物质中的歧化</span><strong>${e.name}</strong><p>${e.change}</p><p><b>${e.e}</b></p></div></div>`;
+      return;
+    }
+    if(r.electron?.hydrolysis){
+      const e=r.electron.hydrolysis;
+      electronArea.innerHTML=`<div class="electron-grid"><div class="electron-card"><span class="ec-label">水解 / 胶体</span><strong>${e.name}</strong><p>${e.change}</p><p><b>${e.e}</b></p></div></div>`;
+      return;
+    }
+    if(r.electron?.oxidant){
+      const o=r.electron.oxidant,d=r.electron.reductant;
+      electronArea.innerHTML=`<div class="electron-grid"><div class="electron-card"><span class="ec-label">氧化剂 · 被还原</span><strong>${o.name}</strong><p>${o.change} · <b>${o.e}</b></p></div><div class="electron-card"><span class="ec-label">还原剂 · 被氧化</span><strong>${d.name}</strong><p>${d.change} · <b>${d.e}</b></p></div></div>`;
+    }
+  }
+
+  function selectReaction(id){
+    const r=REACTIONS.find(x=>x.id===id);if(!r)return;
+    currentReaction=r;
+    document.documentElement.style.setProperty("--obs-color",SUBS[r.sub].color);
+    document.querySelector(".observation-panel").style.setProperty("--obs-color",SUBS[r.sub].color);
+    document.querySelector(".analysis-panel").style.setProperty("--obs-color",SUBS[r.sub].color);
+    obsTitle.innerHTML=`${r.title} <span>${r.scene==="tubes3"?"· 三介质对比":""}</span>`;
+    obsMeta.innerHTML=`<span><i></i>${r.kind}</span><span>条件：${r.condition}</span>`;
+    sceneCaption.textContent=r.caption;
+    sceneStatus.textContent="等待播放";
+    equationBar.textContent=r.equation;
+    sceneEl.className="scene";
+    sceneEl.innerHTML=buildScene(r);
+    if(r.scene!=="tubes3")sceneEl.style.setProperty("--liquid-end",r.colorEnd||"#e2e8f0");
+    if(r.scene==="dry")sceneEl.style.setProperty("--solid-end",r.solidEnd||"#7c3aed");
+    sceneEl.style.setProperty("--liquid-start",r.colorStart||"#e2e8f0");
+    sceneEl.style.setProperty("--gas",r.gasColor||"#a5f3fc");
+    renderSwatches(r);
+    phenomenaEl.innerHTML=(r.phenomena||[]).map(p=>`<span class="phen">${p}</span>`).join("");
+    renderElectron(r);
+    halfList.innerHTML=(r.half||[]).map(h=>`<div class="half-item">${h}</div>`).join("");
+    analysisNote.innerHTML=`<strong>${SUBS[r.sub].name}：</strong>${r.note}`;
+    cautionNote.textContent=r.caution;
+    playBtn.disabled=false;playLabel.textContent="播放反应";
+    clearTimeout(playTimer);
+    renderList();
+  }
+
+  function playReaction(){
+    if(!currentReaction)return;
+    sceneEl.classList.remove("playing","played");
+    void sceneEl.offsetWidth;
+    sceneEl.classList.add("playing");
+    playBtn.disabled=true;playLabel.textContent="反应中…";sceneStatus.textContent="反应进行中…";
+    clearTimeout(playTimer);
+    playTimer=setTimeout(()=>{
+      sceneEl.classList.remove("playing");
+      sceneEl.classList.add("played");
+      playBtn.disabled=false;playLabel.textContent="再播放";sceneStatus.textContent="反应现象已显示";
+    },3200);
+  }
+
+  function setSub(key){
+    currentSub=key;
+    for(const tab of subsTabs)tab.classList.toggle("active",tab.dataset.sub===key);
+    const first=REACTIONS.find(r=>r.sub===key);
+    renderList();
+    if(first)selectReaction(first.id);
+  }
+
+  for(const tab of subsTabs)tab.addEventListener("click",()=>setSub(tab.dataset.sub));
+  playBtn.addEventListener("click",playReaction);
+
+  setSub(currentSub);
+  if(params.get("id")){
+    const target=REACTIONS.find(r=>r.id===params.get("id")&&r.sub===currentSub);
+    if(target)selectReaction(target.id);
+  }
+})();
+</script>
+</body>
+</html>
