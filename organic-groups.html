@@ -61,6 +61,7 @@
   .group-stage{align-items:stretch;justify-content:stretch}
   #molCanvas{position:absolute;inset:0;z-index:1;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
   #molCanvas:active{cursor:grabbing}
+  #molGeometry{color:rgba(125,211,252,.82)}
   .mol-meta{position:absolute;left:15px;top:13px;z-index:3;pointer-events:none;padding:8px 10px 8px 11px;border:1px solid rgba(148,163,184,.11);border-radius:10px;background:rgba(4,10,20,.55);backdrop-filter:blur(8px)}
   .fragment-symbol{font-size:25px;line-height:1;margin-bottom:3px}
   .fragment-general{font-family:var(--mono);font-size:11px;color:#efffff;letter-spacing:.03em}.fragment-general b{color:var(--g-color,#67e8f9);font-weight:600}
@@ -85,6 +86,33 @@
   .fragment-general{font-family:var(--mono);font-size:19px;color:#efffff;letter-spacing:.04em}.fragment-general b{color:var(--g-color,#67e8f9);font-weight:600}
   .fragment-label{margin-top:4px;padding:4px 8px;border:1px solid rgba(148,163,184,.12);border-radius:999px;background:rgba(4,10,20,.4);color:var(--dim);font-size:9px}
   .fragment-example{color:var(--muted);font-size:11px;text-align:center}.fragment-example strong{color:#e5f9ff;font-family:var(--mono);font-size:14px;font-weight:550}
+
+  .rotation-lab{display:none;margin-top:10px;padding:11px 12px 10px;border:1px solid rgba(103,232,249,.13);border-radius:12px;background:linear-gradient(150deg,rgba(8,28,45,.66),rgba(4,12,24,.6))}
+  .rotation-lab.show{display:grid;grid-template-columns:210px minmax(0,1fr);gap:14px;align-items:stretch}
+  .rotation-kicker{color:rgba(103,232,249,.6);font-size:7.5px;letter-spacing:.12em;font-family:var(--mono);margin-bottom:4px}
+  .rotation-title{color:#e7f9ff;font-size:11px;font-weight:600;line-height:1.35}
+  .rotation-stats{display:flex;gap:10px;margin-top:8px}
+  .rot-stat{display:flex;flex-direction:column;gap:1px}
+  .rot-stat b{color:#dffcff;font-family:var(--mono);font-size:16px;line-height:1.05;font-weight:600}
+  .rot-stat span{color:var(--dim);font-size:7.5px}
+  .rotation-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+  .rotation-tags span{display:inline-flex;align-items:center;gap:4px;padding:3px 6px;border:1px solid rgba(148,163,184,.11);border-radius:5px;background:rgba(4,10,20,.3);color:var(--dim);font-size:7.5px}
+  .rotation-tags i{width:5px;height:5px;border-radius:50%;background:#94a3b8;box-shadow:0 0 6px #94a3b8}
+  .rotation-tags .spin i{background:#f472b6;box-shadow:0 0 6px #f472b6}
+  .rotation-state{margin-top:7px;color:rgba(103,232,249,.78);font-size:8px}
+  .rotation-right{min-width:0;display:flex;flex-direction:column;gap:5px}
+  .energy-head{display:flex;justify-content:space-between;gap:8px;color:var(--dim);font-size:8px}
+  .energy-head span:last-child{color:rgba(103,232,249,.55);font-family:var(--mono);font-size:7px}
+  .energy-plot{height:78px;border-radius:7px;background:rgba(4,10,20,.28);overflow:hidden}
+  #energyPlot{width:100%;height:100%;display:block}
+  .slider-row{position:relative;display:block;padding:1px 0 0}
+  #rotSlider{display:block;width:100%;height:18px;margin:0;background:transparent;appearance:none;-webkit-appearance:none;cursor:pointer}
+  #rotSlider::-webkit-slider-runnable-track{height:6px;border-radius:99px;background:linear-gradient(90deg,rgba(103,232,249,.28),rgba(244,114,182,.3));border:1px solid rgba(103,232,249,.16)}
+  #rotSlider::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;margin-top:-5px;border-radius:50%;background:#67e8f9;border:2px solid #07131f;box-shadow:0 0 0 2px rgba(103,232,249,.22),0 0 12px rgba(103,232,249,.55)}
+  #rotSlider::-moz-range-track{height:6px;border-radius:99px;background:rgba(103,232,249,.25)}
+  #rotSlider::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:#67e8f9;border:2px solid #07131f}
+  .slider-scale{display:flex;justify-content:space-between;width:100%;color:rgba(94,114,140,.9);font-size:6.5px;pointer-events:none;margin-top:-2px}
+  .rotation-note{margin-top:3px;color:var(--dim);font-size:7.5px;line-height:1.5}
   .stage-foot{margin-top:9px;padding-top:9px;border-top:1px solid rgba(148,163,184,.08);display:flex;align-items:center;gap:9px;flex-wrap:wrap;color:var(--dim);font-size:9px}
   .stage-foot .key{color:#dff8ff;font-weight:550}
   .stage-foot .sep{color:rgba(148,163,184,.3)}
@@ -167,10 +195,51 @@
             <div class="fragment-example" id="fragmentExample">乙醇 <strong>CH₃CH₂OH</strong></div>
           </div>
           <div class="mol-legend"><span><i style="background:#cbd5e1"></i>C</span><span><i style="background:#f8fafc"></i>H</span><span><i style="background:#fb7185"></i>O</span><span><i style="background:#60a5fa"></i>N</span><span><i style="background:#f59e0b"></i>Br</span></div>
-          <div class="mol-hint">拖动旋转 · 滚轮缩放</div>
+          <div class="mol-hint">拖动旋转 · 滚轮缩放 · 双/三键为弯杆</div>
           <button class="mol-reset" id="molReset" type="button">重置视角</button>
         </div>
-        <div class="stage-foot"><span class="key" id="footKey">官能团决定性质</span><span class="sep">·</span><span id="footText">—OH 决定醇的取代、氧化和酯化反应</span></div>
+        <div class="rotation-lab" id="rotationLab">
+          <div class="rotation-left">
+            <div class="rotation-kicker">ETHANE / C–C SINGLE BOND</div>
+            <div class="rotation-title">固定一个 CH₃，旋转另一个 CH₃</div>
+            <div class="rotation-stats">
+              <div class="rot-stat"><b id="rotDeg">0°</b><span>二面角</span></div>
+              <div class="rot-stat"><b id="energyNow">0.0</b><span>相对能量 kJ·mol⁻¹</span></div>
+            </div>
+            <div class="rotation-tags"><span class="fixed"><i></i>固定 CH₃</span><span class="spin"><i></i>旋转 CH₃</span></div>
+            <div class="rotation-state" id="rotState">交叉式 · 最低能量</div>
+          </div>
+          <div class="rotation-right">
+            <div class="energy-head"><span>旋转势能曲线</span><span>三重周期 · 360°</span></div>
+            <div class="energy-plot">
+              <svg id="energyPlot" viewBox="0 0 360 78" preserveAspectRatio="none" aria-label="乙烷单键旋转势能曲线">
+                <defs><linearGradient id="energyFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#67e8f9" stop-opacity=".28"/><stop offset="1" stop-color="#67e8f9" stop-opacity="0"/></linearGradient></defs>
+                <line x1="0" y1="66" x2="360" y2="66" stroke="rgba(148,163,184,.16)" stroke-width="1"/>
+                <line x1="0" y1="12" x2="360" y2="12" stroke="rgba(148,163,184,.08)" stroke-width="1" stroke-dasharray="3 5"/>
+                <line x1="60" y1="8" x2="60" y2="68" stroke="rgba(148,163,184,.13)" stroke-width="1" stroke-dasharray="2 5"/>
+                <line x1="120" y1="8" x2="120" y2="68" stroke="rgba(148,163,184,.13)" stroke-width="1" stroke-dasharray="2 5"/>
+                <line x1="180" y1="8" x2="180" y2="68" stroke="rgba(148,163,184,.13)" stroke-width="1" stroke-dasharray="2 5"/>
+                <line x1="240" y1="8" x2="240" y2="68" stroke="rgba(148,163,184,.13)" stroke-width="1" stroke-dasharray="2 5"/>
+                <line x1="300" y1="8" x2="300" y2="68" stroke="rgba(148,163,184,.13)" stroke-width="1" stroke-dasharray="2 5"/>
+                <path id="energyArea" d="" fill="url(#energyFill)"/>
+                <path id="energyPath" d="" fill="none" stroke="#67e8f9" stroke-width="2.2" stroke-linecap="round"/>
+                <line id="energyMarker" x1="0" y1="8" x2="0" y2="68" stroke="rgba(244,114,182,.8)" stroke-width="1.4" stroke-dasharray="3 4"/>
+                <circle id="energyDot" cx="0" cy="66" r="4" fill="#f472b6" stroke="#07131f" stroke-width="1.5"/>
+                <text x="1" y="76" fill="rgba(148,163,184,.7)" font-size="7" font-family="Segoe UI, sans-serif">0°</text>
+                <text x="47" y="76" fill="rgba(251,191,36,.85)" font-size="7" font-family="Segoe UI, sans-serif">60°</text>
+                <text x="174" y="76" fill="rgba(251,191,36,.7)" font-size="7" font-family="Segoe UI, sans-serif">180°</text>
+                <text x="291" y="76" fill="rgba(251,191,36,.7)" font-size="7" font-family="Segoe UI, sans-serif">300°</text>
+                <text x="335" y="76" fill="rgba(148,163,184,.7)" font-size="7" font-family="Segoe UI, sans-serif">360°</text>
+              </svg>
+            </div>
+            <div class="slider-row">
+              <input id="rotSlider" type="range" min="0" max="360" step="1" value="0" aria-label="乙烷 C–C 单键旋转角度" />
+              <div class="slider-scale"><span>0°</span><span>60°</span><span>120°</span><span>180°</span><span>240°</span><span>300°</span><span>360°</span></div>
+            </div>
+            <div class="rotation-note">拖动滑杆旋转右侧甲基；上方模型仍可自由拖动换视角。0° 交叉式最低，60° 重叠式最高，360° 内重复三次。</div>
+          </div>
+        </div>
+        <div class="stage-foot"><span class="key" id="footKey">官能团决定性质</span><span class="sep">·</span><span id="footText">—OH 决定醇的取代、氧化和酯化反应</span><span class="sep">·</span><span id="molGeometry">sp³ 109.5° · C–C 154 pm</span></div>
       </section>
 
       <aside class="panel detail-panel">
@@ -218,19 +287,21 @@
   ];
 
 
-  const MOLECULES={
-    alkane:{atoms:[["C",-0.75,0,0],["C",0.75,0,0],["H",-1.45,.85,.45],["H",-1.45,-.85,.45],["H",-1.45,0,-.95],["H",1.45,.85,-.45],["H",1.45,-.85,-.45],["H",1.45,0,.95]],bonds:[[0,1,1],[0,2,1],[0,3,1],[0,4,1],[1,5,1],[1,6,1],[1,7,1]]},
-    alkene:{atoms:[["C",-.67,0,0],["C",.67,0,0],["H",-1.3,.95,0],["H",-1.3,-.95,0],["H",1.3,.95,0],["H",1.3,-.95,0]],bonds:[[0,1,2],[0,2,1],[0,3,1],[1,4,1],[1,5,1]]},
-    alkyne:{atoms:[["C",-.6,0,0],["C",.6,0,0],["H",-1.65,0,0],["H",1.65,0,0]],bonds:[[0,1,3],[0,2,1],[1,3,1]]},
-    halo:{atoms:[["C",-.75,0,0],["C",.75,0,0],["Br",1.95,.1,0],["H",-1.4,.9,.4],["H",-1.4,-.9,.4],["H",-1.4,0,-.9],["H",1.3,.9,-.35],["H",1.3,-.9,-.35]],bonds:[[0,1,1],[1,2,1],[0,3,1],[0,4,1],[0,5,1],[1,6,1],[1,7,1]]},
-    alcohol:{atoms:[["C",-.8,0,0],["C",.6,0,0],["O",1.9,.35,0],["H",2.45,1.05,0],["H",-1.45,.9,.4],["H",-1.45,-.9,.4],["H",-1.45,0,-.9],["H",1.1,.9,-.35],["H",1.1,-.9,-.35]],bonds:[[0,1,1],[1,2,1],[2,3,1],[0,4,1],[0,5,1],[0,6,1],[1,7,1],[1,8,1]]},
-    phenol:{atoms:[["C",1.35,0,0],["C",.675,1.169,0],["C",-.675,1.169,0],["C",-1.35,0,0],["C",-.675,-1.169,0],["C",.675,-1.169,0],["O",2.45,0,0],["H",3.0,.7,0],["H",1.2,1.9,0],["H",-1.2,1.9,0],["H",-2.3,0,0],["H",-1.2,-1.9,0],["H",1.2,-1.9,0]],bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1],[6,7,1],[1,8,1],[2,9,1],[3,10,1],[4,11,1],[5,12,1]]},
-    aldehyde:{atoms:[["C",-.8,0,0],["C",.6,0,0],["O",1.15,1.1,0],["H",1.15,-1.0,0],["H",-1.45,.9,.4],["H",-1.45,-.9,.4],["H",-1.45,0,-.9]],bonds:[[0,1,1],[1,2,2],[1,3,1],[0,4,1],[0,5,1],[0,6,1]]},
-    ketone:{atoms:[["C",-1.5,0,0],["C",0,0,0],["C",1.5,0,0],["O",0,1.25,0],["H",-2.15,.9,.4],["H",-2.15,-.9,.4],["H",-2.15,0,-.9],["H",2.15,.9,.4],["H",2.15,-.9,.4],["H",2.15,0,-.9]],bonds:[[0,1,1],[1,2,1],[1,3,2],[0,4,1],[0,5,1],[0,6,1],[2,7,1],[2,8,1],[2,9,1]]},
-    acid:{atoms:[["C",-1.0,0,0],["C",.4,0,0],["O",.9,1.1,0],["O",1.2,-1.0,0],["H",1.8,-1.2,0],["H",-1.65,.9,.4],["H",-1.65,-.9,.4],["H",-1.65,0,-.9]],bonds:[[0,1,1],[1,2,2],[1,3,1],[3,4,1],[0,5,1],[0,6,1],[0,7,1]]},
-    ester:{atoms:[["C",-2.2,0,0],["C",-.9,0,0],["O",-.3,1.15,0],["O",0,-1.0,0],["C",1.2,-.5,0],["C",2.4,-.5,0],["H",-2.8,.9,.4],["H",-2.8,-.9,.4],["H",-2.8,0,-.9],["H",1.2,.4,0],["H",1.2,-1.4,0],["H",3.0,.2,.4],["H",3.0,-1.2,.4],["H",3.0,-.5,-.9]],bonds:[[0,1,1],[1,2,2],[1,3,1],[3,4,1],[4,5,1],[0,6,1],[0,7,1],[0,8,1],[4,9,1],[4,10,1],[5,11,1],[5,12,1],[5,13,1]]},
-    amine:{atoms:[["C",-.7,0,0],["N",.7,.25,0],["H",1.25,1.0,0],["H",1.25,-.5,0],["H",-1.35,.9,.4],["H",-1.35,-.9,.4],["H",-1.35,0,-.9]],bonds:[[0,1,1],[1,2,1],[1,3,1],[0,4,1],[0,5,1],[0,6,1]]},
-    amide:{atoms:[["C",-1.0,0,0],["C",.4,0,0],["O",.9,1.15,0],["N",1.0,-1.0,0],["H",1.6,-1.3,0],["H",1.6,-.6,0],["H",-1.65,.9,.4],["H",-1.65,-.9,.4],["H",-1.65,0,-.9]],bonds:[[0,1,1],[1,2,2],[1,3,1],[3,4,1],[3,5,1],[0,6,1],[0,7,1],[0,8,1]]}
+  const MOLECULES={"alkane":{"atoms":[["C",-0.77,0.0,0.0],["C",0.77,0.0,0.0],["H",-1.133,-1.028,0.0],["H",-1.133,0.514,-0.89],["H",-1.133,0.514,0.89],["H",1.133,1.028,0.0],["H",1.133,-0.514,-0.89],["H",1.133,-0.514,0.89]],"bonds":[[0,1,1],[0,2,1],[0,3,1],[0,4,1],[1,5,1],[1,6,1],[1,7,1]]},"alkene":{"atoms":[["C",-0.67,0.0,0.0],["C",0.67,0.0,0.0],["H",-1.21,0.935,0.0],["H",-1.21,-0.935,0.0],["H",1.21,0.935,0.0],["H",1.21,-0.935,0.0]],"bonds":[[0,1,2],[0,2,1],[0,3,1],[1,4,1],[1,5,1]]},"alkyne":{"atoms":[["C",-0.6,0.0,0.0],["C",0.6,0.0,0.0],["H",-1.66,0.0,0.0],["H",1.66,0.0,0.0]],"bonds":[[0,1,3],[0,2,1],[1,3,1]]},"halo":{"atoms":[["C",-0.805,-0.099,0.0],["C",0.735,-0.099,0.0],["Br",1.378,1.721,0.0],["H",1.098,-0.613,-0.89],["H",1.098,-0.613,0.89],["H",-1.168,-1.127,0.0],["H",-1.168,0.415,-0.89],["H",-1.168,0.415,0.89]],"bonds":[[0,1,1],[1,2,1],[1,3,1],[1,4,1],[0,5,1],[0,6,1],[0,7,1]]},"alcohol":{"atoms":[["C",-0.833,-0.252,0.0],["C",0.697,-0.252,0.0],["O",1.174,1.096,0.0],["H",0.427,1.7,0.0],["H",1.06,-0.766,-0.89],["H",1.06,-0.766,0.89],["H",-1.196,-1.28,0.0],["H",-1.196,0.262,-0.89],["H",-1.196,0.262,0.89]],"bonds":[[0,1,1],[1,2,1],[2,3,1],[1,4,1],[1,5,1],[0,6,1],[0,7,1],[0,8,1]]},"phenol":{"atoms":[["C",1.133,-0.07,0.0],["C",0.438,1.134,0.0],["C",-0.952,1.134,0.0],["C",-1.647,-0.07,0.0],["C",-0.952,-1.274,0.0],["C",0.438,-1.274,0.0],["O",2.493,-0.07,0.0],["H",2.806,0.838,0.0],["H",0.978,2.069,0.0],["H",-1.492,2.069,0.0],["H",-2.727,-0.07,0.0],["H",-1.492,-2.209,0.0],["H",0.978,-2.209,0.0]],"bonds":[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1],[6,7,1],[1,8,1],[2,9,1],[3,10,1],[4,11,1],[5,12,1]]},"aldehyde":{"atoms":[["C",0.859,-0.014,0.0],["C",-0.661,-0.014,0.0],["O",1.464,1.034,0.0],["H",1.409,-0.967,0.0],["H",-1.024,-1.042,0.0],["H",-1.024,0.5,-0.89],["H",-1.024,0.5,0.89]],"bonds":[[1,0,1],[0,2,2],[0,3,1],[1,4,1],[1,5,1],[1,6,1]]},"ketone":{"atoms":[["C",-0.0,0.595,0.0],["O",-0.0,1.815,0.0],["C",-1.316,-0.165,0.0],["H",-1.117,-1.237,0.0],["H",-1.888,0.098,-0.89],["H",-1.888,0.098,0.89],["C",1.316,-0.165,0.0],["H",2.145,0.543,0.0],["H",1.374,-0.792,-0.89],["H",1.374,-0.792,0.89]],"bonds":[[0,1,2],[0,2,1],[2,3,1],[2,4,1],[2,5,1],[0,6,1],[6,7,1],[6,8,1],[6,9,1]]},"acid":{"atoms":[["C",-0.497,0.576,0.0],["O",-0.497,1.806,0.0],["O",-1.666,-0.099,0.0],["H",-1.491,-1.043,0.0],["C",0.802,-0.174,0.0],["H",1.63,0.534,0.0],["H",0.86,-0.801,-0.89],["H",0.86,-0.801,0.89]],"bonds":[[0,1,2],[0,2,1],[2,3,1],[0,4,1],[4,5,1],[4,6,1],[4,7,1]]},"ester":{"atoms":[["C",1.295,0.461,0.0],["O",1.295,1.681,0.0],["O",0.048,-0.259,0.0],["C",2.594,-0.289,0.0],["H",3.422,0.419,0.0],["H",2.652,-0.916,-0.89],["H",2.652,-0.916,0.89],["C",-1.199,0.461,0.0],["C",-2.354,-0.527,0.0],["H",-1.257,1.088,-0.89],["H",-1.257,1.088,0.89],["H",-1.962,-1.544,0.0],["H",-2.964,-0.373,-0.89],["H",-2.964,-0.373,0.89]],"bonds":[[0,1,2],[0,2,1],[0,3,1],[3,4,1],[3,5,1],[3,6,1],[2,7,1],[7,8,1],[7,9,1],[7,10,1],[8,11,1],[8,12,1],[8,13,1]]},"amine":{"atoms":[["N",0.899,-0.068,0.118],["C",-0.571,-0.068,0.118],["H",-0.934,-1.096,0.118],["H",-0.934,0.446,-0.772],["H",-0.934,0.446,1.008],["H",1.236,0.884,0.118],["H",1.236,-0.544,-0.707]],"bonds":[[1,0,1],[1,2,1],[1,3,1],[1,4,1],[0,5,1],[0,6,1]]},"amide":{"atoms":[["C",-0.203,0.543,0.0],["O",-0.203,1.773,0.0],["N",-1.372,-0.132,0.0],["H",-2.247,0.373,0.0],["H",-1.372,-1.142,0.0],["C",1.113,-0.217,0.0],["H",1.941,0.491,0.0],["H",1.171,-0.844,-0.89],["H",1.171,-0.844,0.89]],"bonds":[[0,1,2],[0,2,1],[2,3,1],[2,4,1],[0,5,1],[5,6,1],[5,7,1],[5,8,1]]}};
+
+  const MOL_GEOM={
+    alkane:"sp³ 109.5° · C–C 154 pm · C–H 109 pm",
+    alkene:"sp² 120° · C=C 134 pm · C–H 108 pm",
+    alkyne:"sp 180° · C≡C 120 pm · C–H 106 pm",
+    halo:"sp³ 109.5° · C–Br 193 pm · C–C 154 pm",
+    alcohol:"sp³ 109.5° · C–O 143 pm · O–H 96 pm",
+    phenol:"sp² 120° · 芳环 C–C 139 pm · C–O 136 pm",
+    aldehyde:"sp² 120° · C=O 121 pm · C–C 152 pm",
+    ketone:"sp² 120° · C=O 122 pm · C–C 152 pm",
+    acid:"sp² 120° · C=O 123 pm · C–O 135 pm",
+    ester:"sp² 120° · C=O 122 pm · C–O 144 pm",
+    amine:"sp³ ≈109° · C–N 147 pm · N–H 101 pm",
+    amide:"sp² 120° · C=O 123 pm · C–N 135 pm"
   };
   const SETS=[
     {id:"c4h10",formula:"C₄H₁₀",name:"丁烷",count:2,isomers:[
@@ -286,6 +357,16 @@
   const detailNote=document.getElementById("detailNote");
   const footKey=document.getElementById("footKey");
   const footText=document.getElementById("footText");
+  const molGeometry=document.getElementById("molGeometry");
+  const rotationLab=document.getElementById("rotationLab");
+  const rotSlider=document.getElementById("rotSlider");
+  const rotDeg=document.getElementById("rotDeg");
+  const energyNow=document.getElementById("energyNow");
+  const rotState=document.getElementById("rotState");
+  const energyPath=document.getElementById("energyPath");
+  const energyArea=document.getElementById("energyArea");
+  const energyMarker=document.getElementById("energyMarker");
+  const energyDot=document.getElementById("energyDot");
   const formulaTabs=document.getElementById("formulaTabs");
   const isomerGrid=document.getElementById("isomerGrid");
   const compareItems=document.getElementById("compareItems");
@@ -293,6 +374,9 @@
   const compareSummary=document.getElementById("compareSummary");
 
 
+  const ETHANE_BASE=JSON.parse(JSON.stringify(MOLECULES.alkane));
+  const ETHANE_BARRIER=12.0;
+  let ethaneAngle=0;
   const ATOM_STYLE={C:{color:"#cbd5e1",r:.27,label:"C"},H:{color:"#f8fafc",r:.17,label:"H"},O:{color:"#fb7185",r:.25,label:"O"},N:{color:"#60a5fa",r:.25,label:"N"},Br:{color:"#f59e0b",r:.31,label:"Br"}};
   let currentMolecule=null, molMaxR=2, molYaw=.55, molPitch=.18, molZoom=1, molDragging=false, molAuto=true, molLastX=0, molLastY=0, molW=1, molH=1;
 
@@ -304,12 +388,57 @@
     molCanvas.width=Math.round(molW*dpr);molCanvas.height=Math.round(molH*dpr);
     if(molCtx)molCtx.setTransform(dpr,0,0,dpr,0,0);
   }
+
+  function energyFraction(deg){
+    return (1-Math.cos(3*deg*Math.PI/180))/2;
+  }
+  function buildEnergyPath(){
+    if(!energyPath||!energyArea)return;
+    let d="";
+    for(let a=0;a<=360;a+=2){
+      const x=a,y=66-energyFraction(a)*54;
+      d+=`${a===0?"M":"L"}${x.toFixed(1)} ${y.toFixed(1)} `;
+    }
+    energyPath.setAttribute("d",d.trim());
+    energyArea.setAttribute("d",d+`L360 66 L0 66 Z`);
+  }
+  function setEthaneAngle(deg){
+    const shown=Math.max(0,Math.min(360,Math.round(deg)));
+    const d=shown===360?360:((shown%360)+360)%360;
+    ethaneAngle=shown;
+    const c0=ETHANE_BASE.atoms[0],c1=ETHANE_BASE.atoms[1];
+    const ax=[c1[1]-c0[1],c1[2]-c0[2],c1[3]-c0[3]];
+    const al=Math.hypot(...ax)||1,axis=[ax[0]/al,ax[1]/al,ax[2]/al];
+    const next=ETHANE_BASE.atoms.map(a=>a.slice());
+    const cos=Math.cos(d*Math.PI/180),sin=Math.sin(d*Math.PI/180);
+    for(const [i,j] of ETHANE_BASE.bonds){
+      const other=i===1?j:(j===1?i:null);
+      if(other===null||ETHANE_BASE.atoms[other][0]!=="H")continue;
+      const p=next[other],rel=[p[1]-c1[1],p[2]-c1[2],p[3]-c1[3]];
+      const cross=[axis[1]*rel[2]-axis[2]*rel[1],axis[2]*rel[0]-axis[0]*rel[2],axis[0]*rel[1]-axis[1]*rel[0]];
+      const dot=axis[0]*rel[0]+axis[1]*rel[1]+axis[2]*rel[2];
+      next[other]=["H",+(c1[1]+rel[0]*cos+cross[0]*sin+axis[0]*dot*(1-cos)).toFixed(3),+(c1[2]+rel[1]*cos+cross[1]*sin+axis[1]*dot*(1-cos)).toFixed(3),+(c1[3]+rel[2]*cos+cross[2]*sin+axis[2]*dot*(1-cos)).toFixed(3)];
+    }
+    MOLECULES.alkane.atoms=next;
+    if(currentGroup&&currentGroup.id==="alkane")currentMolecule=MOLECULES.alkane;
+    const e=energyFraction(d),kJ=e*ETHANE_BARRIER;
+    if(rotSlider&&+rotSlider.value!==shown)rotSlider.value=shown;
+    if(rotDeg)rotDeg.textContent=`${shown}°`;
+    if(energyNow)energyNow.textContent=kJ.toFixed(1);
+    const rising=(shown%120)<60;
+    if(rotState)rotState.textContent=e<.03?"交叉式 · 最低能量":e>.97?"重叠式 · 最高能量":(rising?"旋转中 · 能量上升":"旋转中 · 能量下降");
+    if(energyMarker){energyMarker.setAttribute("x1",shown);energyMarker.setAttribute("x2",shown);}
+    if(energyDot){energyDot.setAttribute("cx",shown);energyDot.setAttribute("cy",66-e*54);}
+  }
+
   function loadMolecule(id){
     currentMolecule=MOLECULES[id]||null;
+    if(molGeometry)molGeometry.textContent=MOL_GEOM[id]||"";
     molYaw=.55;molPitch=.18;molZoom=1;molAuto=true;molDragging=false;
     let maxR=1;
     if(currentMolecule)for(const [,x,y,z] of currentMolecule.atoms)maxR=Math.max(maxR,Math.hypot(x,y,z));
     molMaxR=maxR;
+    if(id==="alkane")setEthaneAngle(0);
   }
   function rotatePoint(p){
     const cy=Math.cos(molYaw),sy=Math.sin(molYaw),cp=Math.cos(molPitch),sp=Math.sin(molPitch);
@@ -330,11 +459,19 @@
     for(const b of bonds){
       const a=pts[b.i],c=pts[b.j];if(!a||!c)continue;
       const dx=c.x-a.x,dy=c.y-a.y,len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len;
-      const offs=b.order===2?[-3.2,3.2]:b.order===3?[-4.2,0,4.2]:[0];
-      molCtx.save();molCtx.lineCap="round";
+      const base=Math.max(2.2,3.4*(scale/70));
+      const gap=Math.max(5.2,6.4*(scale/80));
+      const offs=b.order===2?[-gap,gap]:b.order===3?[-gap,0,gap]:[0];
+      molCtx.save();molCtx.lineCap="round";molCtx.lineJoin="round";
       for(const o of offs){
-        molCtx.strokeStyle=b.order>1?"rgba(205,230,245,.82)":"rgba(180,205,225,.68)";molCtx.lineWidth=Math.max(2,3.0*(scale/55));
-        molCtx.beginPath();molCtx.moveTo(a.x+nx*o,a.y+ny*o);molCtx.lineTo(c.x+nx*o,c.y+ny*o);molCtx.stroke();
+        const bow=b.order===1?0:(o===0?0:Math.sign(o)*(b.order===2?8.0:10.0));
+        const sx=a.x+nx*o,sy=a.y+ny*o,ex=c.x+nx*o,ey=c.y+ny*o;
+        const mx=(sx+ex)/2+nx*bow,my=(sy+ey)/2+ny*bow;
+        const path=()=>{molCtx.beginPath();molCtx.moveTo(sx,sy);molCtx.quadraticCurveTo(mx,my,ex,ey);};
+        // dark rim makes the rod read as a cylinder
+        molCtx.strokeStyle="rgba(3,10,20,.88)";molCtx.lineWidth=base+2.2;path();molCtx.stroke();
+        molCtx.strokeStyle=b.order>1?"rgba(218,240,252,.9)":"rgba(187,211,231,.78)";molCtx.lineWidth=base;path();molCtx.stroke();
+        molCtx.strokeStyle="rgba(255,255,255,.2)";molCtx.lineWidth=Math.max(1,base*.3);path();molCtx.stroke();
       }
       molCtx.restore();
     }
@@ -390,6 +527,7 @@
     fragmentGeneral.innerHTML=`通式：<b>${g.general}</b>`;
     fragmentExample.innerHTML=`${g.example} <strong>${g.formula}</strong>`;
     loadMolecule(g.id);
+    if(rotationLab)rotationLab.classList.toggle("show",g.id==="alkane");
     detailName.textContent=g.name;
     detailSub.textContent=g.type;
     detailBadge.textContent=g.type;
@@ -440,6 +578,9 @@
     if(mode==="isomers"){renderFormulaTabs();renderIsomers();}
   });
 
+  buildEnergyPath();
+  if(rotSlider)rotSlider.addEventListener("input",e=>setEthaneAngle(+e.target.value));
+  setEthaneAngle(0);
   renderGroupList();
   selectGroup("alcohol");
   const params=new URLSearchParams(location.search);
@@ -447,6 +588,7 @@
     const g=GROUPS.find(x=>x.id===params.get("group"));
     if(g)selectGroup(g.id);
   }
+  if(params.get("angle"))setEthaneAngle(+params.get("angle"));
   renderFormulaTabs();
   renderIsomers();
   if(params.get("mode")==="isomers")document.querySelector('[data-mode="isomers"]').click();
