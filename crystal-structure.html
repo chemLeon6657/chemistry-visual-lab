@@ -275,14 +275,17 @@
   }
 
   function buildCsCl() {
-    const atoms=[], bonds=[];
-    for (const x of [-1,0,1]) for (const y of [-1,0,1]) for (const z of [-1,0,1]) {
-      atoms.push(makeAtom([x*1.6,y*1.6,z*1.6],"#c4b5fd",.17,"Cs⁺","Cs",{labelColor:"#2e1065"}));
-    }
-    for (const x of [-.8,.8]) for (const y of [-.8,.8]) for (const z of [-.8,.8]) {
+    const atoms=[],bonds=[];
+    // One CsCl cell: Cl- at the eight corners, Cs+ at the body centre.
+    atoms.push(makeAtom([0,0,0],"#c4b5fd",.17,"Cs⁺","Cs",{labelColor:"#2e1065"}));
+    for(const x of [-.8,.8])for(const y of [-.8,.8])for(const z of [-.8,.8]){
       atoms.push(makeAtom([x,y,z],"#86efac",.19,"Cl⁻","Cl",{labelColor:"#052e16"}));
     }
-    return { atoms,bonds,cellLines:cubeLines(.8),camera:{yaw:.65,pitch:.26,distance:7.8},
+    // Hidden neighbouring Cs+ positions are used only by the coordination inspector.
+    for(const x of [-1.6,1.6])for(const y of [-1.6,1.6])for(const z of [-1.6,1.6]){
+      atoms.push(makeAtom([x,y,z],"#c4b5fd",.17,"Cs⁺","Cs",{ghost:true,labelColor:"#2e1065"}));
+    }
+    return { atoms,bonds,cellLines:cubeLines(.8),ghostsOnlyInspect:true,camera:{yaw:.65,pitch:.26,distance:7.8},
       legend:[["Cs⁺","#c4b5fd"],["Cl⁻","#86efac"]], cellType:"简单立方（CsCl 型）", coord:"8", coordMode:"opposite", coordCutoff:1.45, coordShape:"立方体",
       status:"CsCl 型 · 配位数 8:8", foot:"离子键 · 熔点较高", formula:"CsCl", type:"离子晶体", name:"氯化铯 · 简单立方型离子晶体",
       particles:"Cs⁺、Cl⁻", force:"离子键", melting:"645 ℃", examples:"CsCl、CsBr",
@@ -326,10 +329,10 @@
       }
     }
     return { atoms,bonds,cellLines:cubeLines(1),ghostsOnlyInspect:true,camera:{yaw:.66,pitch:.25,distance:8.2},
-      legend:[["Ca²⁺","#60a5fa"],["F⁻","#fbbf24"],["相邻晶胞（配位）","#8ea4c0"]], cellType:"面心立方（CaF₂ 型）", coord:"8 / 4", coordMode:"opposite", coordCutoff:.95, coordShape:"立方体 / 四面体",
+      legend:[["Ca²⁺","#60a5fa"],["F⁻","#fbbf24"]], cellType:"面心立方（CaF₂ 型）", coord:"8 / 4", coordMode:"opposite", coordCutoff:.95, coordShape:"立方体 / 四面体",
       status:"萤石型 · Ca 8、F 4", foot:"离子键 · 高熔点", formula:"CaF₂", type:"离子晶体", name:"氟化钙 · 面心立方萤石型",
       particles:"Ca²⁺、F⁻", force:"离子键", melting:"1418 ℃", examples:"CaF₂、萤石",
-      note:"Ca²⁺ 在 8 个顶点 + 6 个面心（FCC），8 个 F⁻ 填入 8 个四面体空隙；Ca²⁺ 周围 8 个 F⁻，F⁻ 周围 4 个 Ca²⁺。点击「配位」后会显示相邻晶胞的灰色补全原子。",
+      note:"Ca²⁺ 在 8 个顶点 + 6 个面心（FCC），8 个 F⁻ 填入 8 个四面体空隙；Ca²⁺ 周围 8 个 F⁻，F⁻ 周围 4 个 Ca²⁺。点击「配位」后用虚线标出周围最近邻的位置。",
       descript:"CaF₂ 是面心立方萤石型离子晶体：Ca²⁺ 在顶点和面心，F⁻ 在 8 个四面体空隙；配位数 8:4，化学式比 1:2。" };
   }
 
@@ -362,13 +365,13 @@
     }
     const isZnS=kind==="zns";
     return { atoms,bonds,cellLines:cubeLines(1.1),camera:{yaw:.82,pitch:.3,distance:8.2},
-      legend:isZnS?[["S²⁻","#fbbf24"],["Zn²⁺","#60a5fa"],["相邻晶胞原子","#8ea4c0"]]:[["晶胞内 C","#cbd5e1"],["相邻晶胞 C","#8ea4c0"]],
+      legend:isZnS?[["S²⁻","#fbbf24"],["Zn²⁺","#60a5fa"]]:[["C 原子","#cbd5e1"]],
       cellType:isZnS?"立方 ZnS 型（闪锌矿）":"金刚石型（面心立方 + 四面体）", coord:"4", coordMode:isZnS?"opposite":"same", coordCutoff:1.05, coordShape:"正四面体",
       status:isZnS?"立方 ZnS 型 · 配位数 4:4":"金刚石型 · 每个 C 连 4 个 C",
       foot:isZnS?"共价键 · 熔点高":"共价键 · 熔点极高", formula:isZnS?"ZnS":"C", type:isZnS?"离子晶体（共价性明显）":"原子晶体",
       name:isZnS?"硫化锌 · 立方 ZnS 型":"金刚石 · 完整晶胞",
       particles:isZnS?"Zn²⁺、S²⁻":"C 原子", force:isZnS?"共价键（极性）":"共价键", melting:isZnS?"1700 ℃":"≈ 3550 ℃", examples:isZnS?"ZnS、闪锌矿":"金刚石、晶体硅",
-      note:isZnS?"S²⁻ 作面心立方排列，Zn²⁺ 填入一半四面体空隙；每个离子周围有 4 个异种离子。":"每个 C 只与周围 4 个 C 成键，不是 8 个；灰色小球是相邻晶胞的碳，用来补全晶胞边界上的四面体。",
+      note:isZnS?"S²⁻ 作面心立方排列，Zn²⁺ 填入一半四面体空隙；每个离子周围有 4 个异种离子。":"每个 C 只与周围 4 个 C 成键，不是 8 个；晶胞内只保留 8 个 C 原子，配位模式用虚线指向相邻晶胞的最近邻。",
       descript:isZnS?"ZnS 是立方 ZnS 型结构，配位数 4:4，属于共价性明显的离子晶体。":"金刚石是原子晶体，碳原子通过 sp³ 共价键形成空间网状结构，配位数为 4。" };
   }
 
@@ -471,11 +474,11 @@
       atoms.push(makeAtom(o2,"#fca5a5",.12,"O","O",{group:g,labelColor:"#450a0a"}));
       addBond(bonds,ci,ci+1,"rgba(252,165,165,.42)",1.2);addBond(bonds,ci,ci+2,"rgba(252,165,165,.42)",1.2);
     });
-    return { atoms,bonds,cellLines:[],camera:{yaw:.7,pitch:.26,distance:8.8},
+    return { atoms,bonds,cellLines:cubeLines(1.35),camera:{yaw:.7,pitch:.26,distance:8.8},
       legend:[["C 原子","#cbd5e1"],["O 原子","#fca5a5"]], cellType:"面心立方（分子晶体）", coord:"12", coordMode:"molecule", coordCutoff:1.5, coordShape:"面心立方最密堆积",
       status:"分子晶体 · 每个 CO₂ 周围 12 个 CO₂", foot:"分子间作用力 · 易升华", formula:"CO₂", type:"分子晶体", name:"干冰 · 分子晶体",
       particles:"CO₂ 分子", force:"分子间作用力", melting:"−78.5 ℃ 升华", examples:"干冰、碘",
-      note:"CO₂ 分子按面心立方方式排列；每个 CO₂ 周围有 12 个紧邻的 CO₂ 分子。",
+      note:"CO₂ 分子按面心立方方式排列；本视图显示中心 CO₂ 与 12 个紧邻分子，晶胞网格用于辅助观察。",
       descript:"干冰是分子晶体，分子间作用力较弱，容易升华。" };
   }
 
@@ -488,9 +491,9 @@
     for(const p of pts)atoms.push(makeAtom(p,"#fb923c",.21,"Cu","Cu",{labelColor:"#431407"}));
     return { atoms,bonds:[],cellLines:cubeLines(.8),camera:{yaw:.7,pitch:.3,distance:7.8},
       legend:[["Cu 原子","#fb923c"]], cellType:"面心立方最密堆积", coord:"12", coordMode:"same", coordCutoff:1.2, coordShape:"最密堆积",
-      status:"面心立方最密堆积 · 配位数 12", foot:"金属键 · 导电导热", formula:"Cu", type:"金属晶体", name:"铜 · 面心立方最密堆积",
+      status:"面心立方最密堆积 · 配位数 12", foot:"金属键 · 导电导热", formula:"Cu", type:"金属晶体", name:"铜 · 面心立方最密堆积（配位簇）",
       particles:"Cu 原子", force:"金属键", melting:"1085 ℃", examples:"Cu、Ag、Au",
-      note:"铜采用面心立方最密堆积，每个铜原子周围有 12 个最近邻原子。",
+      note:"铜采用面心立方最密堆积；本视图显示中心 Cu 与 12 个最近邻原子。",
       descript:"铜是金属晶体，金属阳离子与自由电子通过金属键结合，具有导电、导热和延展性。" };
   }
 
@@ -676,6 +679,7 @@
 
     const activeSet = selectedAtom!==null ? new Set([selectedAtom,...neighborIndices]) : null;
     for (const [i,j,color,width] of model.bonds) {
+      if(model.atoms[i].ghost||model.atoms[j].ghost)continue;
       const a=project(model.atoms[i].pos), b=project(model.atoms[j].pos);
       if(!a||!b)continue;
       const active=!activeSet||activeSet.has(i)&&activeSet.has(j);
@@ -695,7 +699,7 @@
 
     const atoms=model.atoms.map((a,index)=>({a,index,depth:project(a.pos)?.depth||0})).sort((x,y)=>y.depth-x.depth);
     for (const item of atoms) {
-      if(item.a.ghost && model.ghostsOnlyInspect && !inspectMode)continue;
+      if(item.a.ghost)continue;
       atom(item.a,item.index,{
         selected:item.index===selectedAtom,
         neighbor:activeSet?activeSet.has(item.index)&&item.index!==selectedAtom:false,
