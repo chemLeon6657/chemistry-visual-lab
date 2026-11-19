@@ -63,9 +63,8 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 - 可旋转 3D 结构，查看粒子排布和晶胞框。
 - Na⁺ 与 Cl⁻ 使用明显不同半径：Na⁺ 小、Cl⁻ 大。
 - 「配位」按钮 + 点击原子：NaCl 为 6:6，CsCl 为 8:8，CaF₂ 为 Ca 8 / F 4，ZnS 为 4:4，金刚石为 4。
-- 金刚石补全晶胞边界的四面体，并提供「沿 (111) 看」按钮查看三层六元环切片。
 - 石墨用于展示六方层状结构；SiO₂ 用于展示空间网状结构。
-- 支持 `?crystal=nacl|cscl|caf2|zns|sio2|diamond|graphite|diamond111|dryice|copper` 参数。
+- 支持 `?crystal=nacl|cscl|caf2|zns|sio2|diamond|graphite|dryice|copper` 参数。
 
 ### 反应机理
 
