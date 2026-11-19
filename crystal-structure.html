@@ -284,16 +284,20 @@
     }
     return { atoms,bonds,cellLines:cubeLines(.8),camera:{yaw:.65,pitch:.26,distance:7.8},
       legend:[["Cs⁺","#c4b5fd"],["Cl⁻","#86efac"]], cellType:"简单立方（CsCl 型）", coord:"8", coordMode:"opposite", coordCutoff:1.45, coordShape:"立方体",
-      status:"CsCl 型 · 配位数 8:8", foot:"离子键 · 熔点较高", formula:"CsCl", type:"离子晶体", name:"氯化铯 · 体心立方型离子晶体",
+      status:"CsCl 型 · 配位数 8:8", foot:"离子键 · 熔点较高", formula:"CsCl", type:"离子晶体", name:"氯化铯 · 简单立方型离子晶体",
       particles:"Cs⁺、Cl⁻", force:"离子键", melting:"645 ℃", examples:"CsCl、CsBr",
       note:"Cl⁻ 位于立方体顶点、Cs⁺ 位于体心；每个 Cs⁺ 周围有 8 个 Cl⁻，每个 Cl⁻ 周围有 8 个 Cs⁺。注意：这是两套简单立方互相穿插，不是同种原子的体心立方（BCC）。",
-      descript:"CsCl 是离子晶体，配位数 8:8；注意它不是面心立方，而是两套简单立方互相穿插。" };
+      descript:"CsCl 是离子晶体，配位数 8:8；它是两套简单立方互相穿插，不是同种原子的体心立方（BCC）。" };
   }
 
   function buildCaF2() {
     const atoms=[],bonds=[],keys=new Map();
     const a=2.0;
-    const caFrac=[[0,0,0],[.5,.5,0],[.5,0,.5],[0,.5,.5]];
+    // Ca2+ occupies the FCC lattice: 8 corners + 6 face centres.
+    const caFrac=[];
+    for(const x of [0,1])for(const y of [0,1])for(const z of [0,1])caFrac.push([x,y,z]);
+    caFrac.push([.5,.5,0],[.5,.5,1],[.5,0,.5],[.5,1,.5],[0,.5,.5],[1,.5,.5]);
+    // F- occupies all eight tetrahedral holes (1/4,1/4,1/4) etc.
     const fFrac=[[.25,.25,.25],[.25,.75,.75],[.75,.25,.75],[.75,.75,.25],
                  [.75,.75,.75],[.75,.25,.25],[.25,.75,.25],[.25,.25,.75]];
     const caKeys=new Set(caFrac.map(f=>f.map(v=>Math.round(v*100)).join(",")));
@@ -302,13 +306,13 @@
     function add(frac,species,ghost=false){
       const k=key(frac);if(keys.has(k))return keys.get(k);
       const pos=[(frac[0]-.5)*a,(frac[1]-.5)*a,(frac[2]-.5)*a];
-      const isCa=species==="Ca";const idx=atoms.length;
-      atoms.push(makeAtom(pos,ghost?"#8ea4c0":(isCa?"#60a5fa":"#fbbf24"),isCa?(ghost?.09:.13):(ghost?.11:.16),isCa?"Ca²⁺":"F⁻",species,{ghost,labelColor:isCa?"#082f49":"#451a03"}));
+      const isCa=species==="Ca",idx=atoms.length;
+      atoms.push(makeAtom(pos,ghost?"#8ea4c0":(isCa?"#60a5fa":"#fbbf24"),isCa?(ghost?.085:.12):(ghost?.105:.155),isCa?"Ca²⁺":"F⁻",species,{ghost,labelColor:isCa?"#082f49":"#451a03"}));
       keys.set(k,idx);return idx;
     }
     for(const f of caFrac)add(f,"Ca");
     for(const f of fFrac)add(f,"F");
-    // complete the nearest-neighbour shells with periodic ghost atoms
+    // Periodic neighbours are kept for the "配位" mode only, so the normal cell stays clean.
     for(const f of caFrac){
       for(const dx of [-.25,.25])for(const dy of [-.25,.25])for(const dz of [-.25,.25]){
         const p=[f[0]+dx,f[1]+dy,f[2]+dz];if(!fKeys.has(key(p)))add(p,"F",true);
@@ -321,11 +325,11 @@
         if(caKeys.has(key(mod))&&!caKeys.has(key(p)))add(p,"Ca",true);
       }
     }
-    return { atoms,bonds,cellLines:cubeLines(1),camera:{yaw:.66,pitch:.25,distance:8.0},
-      legend:[["Ca²⁺","#60a5fa"],["F⁻","#fbbf24"],["相邻晶胞原子","#8ea4c0"]], cellType:"面心立方（CaF₂ 型）", coord:"8 / 4", coordMode:"opposite", coordCutoff:.95, coordShape:"立方体 / 四面体",
+    return { atoms,bonds,cellLines:cubeLines(1),ghostsOnlyInspect:true,camera:{yaw:.66,pitch:.25,distance:8.2},
+      legend:[["Ca²⁺","#60a5fa"],["F⁻","#fbbf24"],["相邻晶胞（配位）","#8ea4c0"]], cellType:"面心立方（CaF₂ 型）", coord:"8 / 4", coordMode:"opposite", coordCutoff:.95, coordShape:"立方体 / 四面体",
       status:"萤石型 · Ca 8、F 4", foot:"离子键 · 高熔点", formula:"CaF₂", type:"离子晶体", name:"氟化钙 · 面心立方萤石型",
       particles:"Ca²⁺、F⁻", force:"离子键", melting:"1418 ℃", examples:"CaF₂、萤石",
-      note:"Ca²⁺ 作面心立方排列，8 个 F⁻ 填入 8 个四面体空隙；Ca²⁺ 周围 8 个 F⁻，F⁻ 周围 4 个 Ca²⁺。灰色小球为相邻晶胞的配位补全。",
+      note:"Ca²⁺ 在 8 个顶点 + 6 个面心（FCC），8 个 F⁻ 填入 8 个四面体空隙；Ca²⁺ 周围 8 个 F⁻，F⁻ 周围 4 个 Ca²⁺。点击「配位」后会显示相邻晶胞的灰色补全原子。",
       descript:"CaF₂ 是面心立方萤石型离子晶体：Ca²⁺ 在顶点和面心，F⁻ 在 8 个四面体空隙；配位数 8:4，化学式比 1:2。" };
   }
 
@@ -691,6 +695,7 @@
 
     const atoms=model.atoms.map((a,index)=>({a,index,depth:project(a.pos)?.depth||0})).sort((x,y)=>y.depth-x.depth);
     for (const item of atoms) {
+      if(item.a.ghost && model.ghostsOnlyInspect && !inspectMode)continue;
       atom(item.a,item.index,{
         selected:item.index===selectedAtom,
         neighbor:activeSet?activeSet.has(item.index)&&item.index!==selectedAtom:false,
