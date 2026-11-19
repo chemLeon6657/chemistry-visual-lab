@@ -444,13 +444,14 @@
     drawBond(c1,c2,form>.55?2:1,"rgba(103,232,249,.62)",3);
     for(const h of [[-1.4,.45],[-1.4,-.45]]) drawBond(c1,h,1,"rgba(148,163,184,.35)",2);
     drawBond(c2,[1.38,.52],1,"rgba(148,163,184,.35)",2);
+    drawBond(c2,[1.38,-.52],1,"rgba(148,163,184,.35)",2);
     drawBond(c1,br,1,`rgba(245,158,11,${.55*(1-brk*.85)})`,2.4,brk>.2?[4,5]:[]);
     drawBond(c2,hB,1,`rgba(248,250,252,${.55*(1-brk*.85)})`,2.2,brk>.2?[4,5]:[]);
     drawBond(o,hB,1,`rgba(252,165,165,${.3+form*.4})`,2.2,form<.8?[4,5]:[]);
     drawBond(o,h2oH,1,"rgba(252,165,165,.4)",2);
     drawAtom(c1[0],c1[1],"C","#cbd5e1",17);
     drawAtom(c2[0],c2[1],"C","#cbd5e1",17);
-    drawAtom(-1.4,.45,"H","#f8fafc",9);drawAtom(-1.4,-.45,"H","#f8fafc",9);drawAtom(1.38,.52,"H","#f8fafc",9);
+    drawAtom(-1.4,.45,"H","#f8fafc",9);drawAtom(-1.4,-.45,"H","#f8fafc",9);drawAtom(1.38,.52,"H","#f8fafc",9);drawAtom(1.38,-.52,"H","#f8fafc",9);
     drawAtom(hB[0],hB[1],"H","#f8fafc",9);
     drawAtom(o[0],o[1],"O","#fca5a5",13);
     drawAtom(h2oH[0],h2oH[1],"H","#f8fafc",8);
