@@ -318,15 +318,17 @@
     },
     {
       id:"kmno4-oxalate",sub:"kmno4",group:"滴定反应",
-      title:"酸性 KMnO₄ 滴定草酸",kind:"氧化还原滴定",
-      equation:"2MnO₄⁻ + 5C₂O₄²⁻ + 16H⁺ → 2Mn²⁺ + 10CO₂↑ + 8H₂O",condition:"酸性，加热至 60–80 ℃",
-      scene:"titration",caption:"滴定管 + 锥形瓶 · 紫红色褪去",
-      colorStart:"#7c3aed",colorEnd:CLEAR,gas:"CO₂",gasColor:"#cbd5e1",
-      phenomena:["紫红色逐渐褪去","产生 CO₂ 气泡","终点：最后一滴后紫色不褪"],
+      title:"用 KMnO₄ 标准液滴定草酸",kind:"氧化还原滴定 · KMnO₄ 作滴定剂",
+      equation:"2MnO₄⁻ + 5C₂O₄²⁻ + 16H⁺ → 2Mn²⁺ + 10CO₂↑ + 8H₂O",
+      condition:"酸性（稀硫酸），加热至 60–80 ℃",
+      scene:"titration",caption:"滴定管：KMnO₄ 标准液；锥形瓶：草酸 + H₂SO₄",
+      colorStart:CLEAR,colorEnd:"#f9a8d4",gas:"CO₂",gasColor:"#cbd5e1",
+      beforeLabel:"滴定前 · 无色",afterLabel:"终点 · 浅紫红色",
+      phenomena:["滴定前锥形瓶中的草酸溶液无色","滴入的 KMnO₄ 局部紫红色很快褪去","产生无色 CO₂ 气泡","终点：最后半滴使溶液呈浅紫红色，30 s 内不褪"],
       electron:{oxidant:{name:"MnO₄⁻",change:"Mn：+7 → +2",e:"得 5e⁻ × 2"},reductant:{name:"C₂O₄²⁻",change:"C：+3 → +4",e:"失 2e⁻ × 5"}},
       half:["MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O","C₂O₄²⁻ − 2e⁻ → 2CO₂"],
-      note:"草酸根中 C 为 +3 价，具有还原性；KMnO₄ 自身作指示剂，终点为浅紫红色。",
-      caution:"滴定需要加热（60–80 ℃），但温度过高会使草酸分解；开始褪色慢，生成的 Mn²⁺ 有自催化作用。"
+      note:"KMnO₄ 有强氧化性、会腐蚀橡胶，必须用酸式滴定管；标准液放在滴定管中，草酸放在锥形瓶里。KMnO₄ 自身作指示剂，不需要另加指示剂。",
+      caution:"终点是“无色 → 浅紫红色”，不是“紫红色褪去”。温度控制在 60–80 ℃，过高会使草酸分解；开始反应慢，生成的 Mn²⁺ 有自催化作用。"
     },
 
     {
@@ -481,16 +483,17 @@
       <defs><radialGradient id="titGlow"><stop stop-color="${colorA(r.colorEnd,.15)}"/><stop offset="1" stop-color="${colorA(r.colorEnd,0)}"/></radialGradient></defs>
       <circle cx="380" cy="260" r="175" fill="url(#titGlow)"/>
       <path d="M371 38h18v175h-18z" fill="rgba(8,22,38,.45)" stroke="rgba(103,232,249,.65)" stroke-width="2"/>
-      <path d="M373 58h14v142h-14z" fill="rgba(167,139,250,.22)"/>
+      <path d="M373 58h14v142h-14z" fill="rgba(124,58,237,.46)"/>
       <path d="M371 212h18v14h-18z" fill="rgba(103,232,249,.2)" stroke="rgba(103,232,249,.5)"/>
       <path d="M380 226v30" stroke="rgba(103,232,249,.55)" stroke-width="1.5"/>
       <ellipse cx="380" cy="378" rx="160" ry="10" fill="rgba(0,0,0,.3)"/>
       <path d="M300 250h160l-18 94c-2 12-12 19-24 19h-76c-12 0-22-7-24-19Z" fill="rgba(8,22,38,.38)" stroke="rgba(103,232,249,.68)" stroke-width="2.2"/>
       <path d="M308 305c35 12 110 12 144 0l-12 40c-2 9-9 14-18 14h-84c-9 0-16-5-18-14Z" class="liquid"/>
       ${r.gas?bubbles(8,330,430,300,340):""}
-      <g class="drop"><circle cx="380" cy="245" r="4.5" fill="${r.colorEnd}"/></g>
+      <g class="drop"><circle cx="380" cy="245" r="4.5" fill="#7c3aed"/></g>
       ${r.gas?`<text x="520" y="315" fill="${r.gasColor}" font-size="13" font-family="Segoe UI, sans-serif">${r.gas}↑</text>`:""}
-      <text x="407" y="58" fill="rgba(148,163,184,.75)" font-size="11" font-family="Segoe UI, sans-serif">KMnO₄</text>
+      <text x="407" y="58" fill="rgba(196,181,253,.9)" font-size="11" font-family="Segoe UI, sans-serif">KMnO₄ 标准液</text>
+      <text x="380" y="352" text-anchor="middle" fill="rgba(190,225,240,.7)" font-size="10" font-family="Segoe UI, sans-serif">草酸 + H₂SO₄</text>
     </svg>`;
   }
   function sceneTubes3(r){
@@ -605,8 +608,8 @@
     }
     const start=r.solidStart||r.colorStart||CLEAR;
     const end=r.solidEnd||r.colorEnd||CLEAR;
-    const before=r.scene==="dry"?"反应前固体":"反应前";
-    const after=r.scene==="dry"?"反应后固体":"反应后";
+    const before=r.beforeLabel||(r.scene==="dry"?"反应前固体":"反应前");
+    const after=r.afterLabel||(r.scene==="dry"?"反应后固体":"反应后");
     swatches.innerHTML=`<span class="swatch-item"><i class="swatch" style="background:${start}"></i>${before}</span><span style="color:var(--dim)">→</span><span class="swatch-item"><i class="swatch" style="background:${end}"></i>${after}</span>${r.gas?`<span class="swatch-item">气体 · ${r.gas}</span>`:""}${r.ppt?`<span class="swatch-item">沉淀 · ${r.ppt}</span>`:""}`;
   }
 
