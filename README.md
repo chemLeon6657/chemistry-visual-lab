@@ -159,6 +159,7 @@ py -m http.server 8000
 - 禁止：复制后另行部署、修改后发布、镜像、商业使用、制作衍生版本、移除版权标识。
 - 授权申请：通过 GitHub [@chemLeon6657](https://github.com/chemLeon6657) 联系。
 - 完整条款：[RIGHTS.md](RIGHTS.md) / [rights.html](rights.html)。
+- 角色素材引用：Q 版鲸鱼娘形象引用自 DSH Web 插件 `dsh-whale-widget`，角色权利归原插件作者或相应权利人所有；详见 [rights.html](rights.html) 第 6 节。
 - 简版许可：[LICENSE](LICENSE)。
 
 > 公开网页的源代码在浏览器中可见，无法从技术上绝对阻止他人另存后修改。本条款限制对官方内容的复制、修改和再发布；官方仓库的写入权限应通过 Private 仓库、分支保护和最小协作者权限控制。
