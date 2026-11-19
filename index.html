@@ -466,7 +466,7 @@
   .modules { margin-bottom: 92px; }
   .module-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 14px;
   }
   .module-card {
@@ -869,6 +869,34 @@
       transition-duration: 0.001ms !important;
     }
   }
+
+  /* ── knowledge map & mascot ─────────────────────────── */
+  .knowledge { margin-bottom: 92px; }
+  .knowledge-board { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 18px; align-items: stretch; }
+  .knowledge-canvas { position: relative; overflow: hidden; padding: 24px 26px 22px; border: 1px solid var(--line); border-radius: 24px; background: radial-gradient(900px 500px at 10% 0%, rgba(20,184,166,.09), transparent 60%), radial-gradient(800px 500px at 100% 100%, rgba(91,33,182,.11), transparent 65%), linear-gradient(155deg, rgba(11,24,39,.8), rgba(6,13,25,.7)); }
+  .knowledge-canvas::before { content:""; position:absolute; inset:0; pointer-events:none; background-image: linear-gradient(rgba(148,163,184,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,.035) 1px, transparent 1px); background-size: 34px 34px; mask-image: radial-gradient(circle at 45% 45%, black, transparent 78%); -webkit-mask-image: radial-gradient(circle at 45% 45%, black, transparent 78%); }
+  .map-kicker { position:relative; z-index:1; color: var(--dim); font-size: 9px; letter-spacing:.19em; text-transform:uppercase; }
+  .map-title { position:relative; z-index:1; margin: 4px 0 4px; font-size: 25px; line-height:1.15; letter-spacing:-.035em; }
+  .map-sub { position:relative; z-index:1; margin:0 0 20px; color:var(--muted); font-size:11px; }
+  .map-flow { position:relative; z-index:1; display:grid; gap:13px; }
+  .map-row { display:grid; grid-template-columns: 82px minmax(0,1fr); gap:10px; align-items:center; padding:9px 10px; border:1px solid rgba(148,163,184,.08); border-radius:12px; background:rgba(4,10,20,.22); }
+  .map-row-label { color:rgba(148,163,184,.75); font-size:9px; line-height:1.4; }
+  .map-chain { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .map-node { display:inline-flex; align-items:center; gap:5px; min-height:28px; padding:0 9px; border:1px solid rgba(148,163,184,.13); border-radius:7px; background:rgba(8,20,35,.55); color:#d9f2ff; font-size:9.5px; text-decoration:none; transition:.2s; white-space:nowrap; }
+  .map-node:hover { border-color:rgba(103,232,249,.4); background:rgba(103,232,249,.08); transform:translateY(-1px); box-shadow:0 6px 16px rgba(0,0,0,.2); }
+  .map-node .mdot { width:5px; height:5px; border-radius:50%; background:var(--mc,#67e8f9); box-shadow:0 0 7px var(--mc,#67e8f9); }
+  .map-arrow { color:rgba(103,232,249,.32); font-size:11px; }
+  .map-foot { position:relative; z-index:1; display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:16px; padding-top:13px; border-top:1px solid rgba(148,163,184,.08); color:var(--dim); font-size:9px; }
+  .map-foot strong { color:#bdfbf1; font-weight:550; }
+  .mascot-card { position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; padding:18px 18px 15px; border:1px solid rgba(94,234,212,.16); border-radius:24px; background: radial-gradient(500px 320px at 30% 0%, rgba(34,211,238,.1), transparent 65%), linear-gradient(155deg, rgba(9,28,44,.82), rgba(5,14,26,.75)); }
+  .mascot-badge { display:inline-flex; align-items:center; gap:6px; align-self:flex-start; height:23px; padding:0 8px; border:1px solid rgba(94,234,212,.22); border-radius:999px; background:rgba(94,234,212,.06); color:#bdfbf1; font-size:8px; letter-spacing:.06em; }
+  .mascot-fish { width:100%; max-width:230px; margin:2px auto 0; display:block; filter:drop-shadow(0 18px 32px rgba(0,0,0,.25)); }
+  .mascot-speech { position:relative; margin-top:10px; padding:10px 11px; border:1px solid rgba(148,163,184,.11); border-radius:10px; background:rgba(4,10,20,.42); color:var(--dim); font-size:9.5px; line-height:1.65; }
+  .mascot-speech::before { content:""; position:absolute; left:20px; top:-5px; width:8px; height:8px; transform:rotate(45deg); border-left:1px solid rgba(148,163,184,.11); border-top:1px solid rgba(148,163,184,.11); background:#071421; }
+  .mascot-speech strong { color:#e7fdff; font-weight:550; }
+  .mascot-name { margin-top:9px; color:rgba(148,163,184,.72); font-size:8px; letter-spacing:.12em; text-transform:uppercase; text-align:center; }
+  @media(max-width:980px){ .knowledge-board{grid-template-columns:1fr} .mascot-card{display:grid;grid-template-columns:1fr 1.1fr;gap:12px;align-items:center} .mascot-fish{max-width:170px;margin:0} .mascot-speech{margin-top:0} .mascot-name{grid-column:1/-1;margin-top:2px} }
+  @media(max-width:620px){ .knowledge-canvas{padding:18px 14px} .map-title{font-size:21px} .map-row{grid-template-columns:1fr;gap:6px} .map-node{font-size:8.8px;min-height:26px;padding:0 7px} .mascot-card{display:block} .mascot-fish{max-width:190px;margin:2px auto} .mascot-speech{margin-top:9px} }
 </style>
 </head>
 <body>
@@ -926,7 +954,7 @@
           <a class="btn btn-ghost" href="#modules">浏览模块</a>
         </div>
         <div class="hero-stats" aria-label="平台概况">
-          <div><strong>07</strong>已上线模块</div>
+          <div><strong>08</strong>已上线模块</div>
           <div><strong>5</strong>种空间构型</div>
           <div><strong>0</strong>外部依赖</div>
         </div>
@@ -949,7 +977,7 @@
     </section>
 
     <section class="stat-strip" aria-label="平台数据">
-      <div><span>当前版本</span><strong>七模块 · 结构、反应与实验</strong></div>
+      <div><span>当前版本</span><strong>八模块 · 结构、反应与有机</strong></div>
       <div><span>适配场景</span><strong>课堂演示 / 自主探索</strong></div>
       <div><span>运行方式</span><strong>浏览器直接打开</strong></div>
       <div class="stat-note"><span>维护方式</span><strong>GitHub Pages 长期托管</strong></div>
@@ -961,7 +989,7 @@
           <div class="section-kicker">可视化模块</div>
           <h2 id="modules-title">从一个页面开始</h2>
         </div>
-        <p>七个模块已经上线，覆盖轨道杂化、分子构型、晶体结构、反应机理、元素周期律、实验装置和反应观察。</p>
+        <p>八个模块已经上线，覆盖轨道杂化、分子构型、晶体结构、反应机理、元素周期律、实验装置、反应观察和有机官能团。</p>
       </div>
 
       <div class="module-grid">
@@ -1061,7 +1089,7 @@
           </div>
         </a>
 
-        <a class="module-card active" href="periodic-table.html" aria-label="打开元素周期表模块">
+        <a class="module-card" href="periodic-table.html" aria-label="打开元素周期表模块">
           <div class="module-art">
             <div class="module-art-label"><i style="background:#5eead4;box-shadow:0 0 8px #5eead4"></i>PERIODIC TABLE / 118 ELEMENTS</div>
             <svg class="art-svg" viewBox="0 0 300 180" fill="none" aria-hidden="true">
@@ -1110,7 +1138,7 @@
           </div>
         </a>
 
-        <a class="module-card active" href="experiment-apparatus.html" aria-label="打开化学实验装置模块">
+        <a class="module-card" href="experiment-apparatus.html" aria-label="打开化学实验装置模块">
           <div class="module-art">
             <div class="module-art-label"><i style="background:#67e8f9;box-shadow:0 0 8px #67e8f9"></i>APPARATUS / GAS PREPARATION</div>
             <svg class="art-svg" viewBox="0 0 300 180" fill="none" aria-hidden="true">
@@ -1138,7 +1166,7 @@
           </div>
         </a>
 
-        <a class="module-card active" href="reaction-gallery.html" aria-label="打开反应观察台模块">
+        <a class="module-card" href="reaction-gallery.html" aria-label="打开反应观察台模块">
           <div class="module-art">
             <div class="module-art-label"><i style="background:#f472b6;box-shadow:0 0 8px #f472b6"></i>REACTION GALLERY / REDOX</div>
             <svg class="art-svg" viewBox="0 0 300 180" fill="none" aria-hidden="true">
@@ -1165,9 +1193,106 @@
             <div class="open-link">打开模块 <span aria-hidden="true">↗</span></div>
           </div>
         </a>
+
+        <a class="module-card" href="organic-groups.html" aria-label="打开有机官能团与同分异构模块">
+          <div class="module-art">
+            <div class="module-art-label"><i style="background:#5eead4;box-shadow:0 0 8px #5eead4"></i>ORGANIC / FUNCTIONAL GROUPS</div>
+            <svg class="art-svg" viewBox="0 0 300 180" fill="none" aria-hidden="true">
+              <path d="M35 105h42l22-28 24 28 22-28 24 28 22-28 24 28h45" stroke="rgba(94,234,212,.42)" stroke-width="1.8"/>
+              <circle cx="35" cy="105" r="4" fill="#5eead4"/><circle cx="77" cy="105" r="4" fill="#5eead4"/><circle cx="99" cy="77" r="4" fill="#5eead4"/><circle cx="123" cy="105" r="4" fill="#5eead4"/><circle cx="145" cy="77" r="4" fill="#5eead4"/><circle cx="169" cy="105" r="4" fill="#5eead4"/><circle cx="191" cy="77" r="4" fill="#5eead4"/><circle cx="215" cy="105" r="4" fill="#5eead4"/>
+              <path d="M169 105v24" stroke="rgba(103,232,249,.48)"/><text x="162" y="146" fill="#67e8f9" font-size="12" font-family="Cascadia Code, monospace">OH</text>
+              <path d="M99 77v-20" stroke="rgba(251,191,36,.55)"/><text x="90" y="47" fill="#fbbf24" font-size="12" font-family="Cascadia Code, monospace">C=O</text>
+              <path d="M255 78h20v34h-20z" stroke="rgba(167,139,250,.62)" fill="rgba(8,22,38,.35)"/>
+              <text x="261" y="99" fill="#c4b5fd" font-size="10" font-family="Cascadia Code, monospace">—</text>
+              <path d="M230 95c5-8 15-9 21-3" stroke="rgba(244,114,182,.6)" fill="none"/>
+            </svg>
+            <div class="coming-label">GROUPS / ISOMERS / REACTIONS</div>
+          </div>
+          <div class="module-body">
+            <div class="module-top"><span class="status-pill live">已上线</span><span class="module-num">MODULE 08</span></div>
+            <h3>有机官能团与同分异构</h3>
+            <p>官能团图鉴、代表物性质、同分异构体对比；从官能团看反应，从碳骨架看异构。</p>
+            <div class="tag-row"><span class="tag">官能团</span><span class="tag">同分异构</span><span class="tag">碳骨架</span><span class="tag">有机反应</span></div>
+            <div class="open-link">打开模块 <span aria-hidden="true">↗</span></div>
+          </div>
+        </a>
+
+        <a class="module-card" href="#map" aria-label="查看知识地图">
+          <div class="module-art">
+            <div class="module-art-label"><i style="background:#5eead4;box-shadow:0 0 8px #5eead4"></i>LEARNING MAP</div>
+            <svg class="art-svg" viewBox="0 0 300 180" fill="none" aria-hidden="true">
+              <path d="M44 128c28-42 57 10 82-28s48 20 72-12 34 4 54-24" stroke="rgba(103,232,249,.3)" stroke-width="1.4" stroke-dasharray="3 6"/>
+              <circle cx="44" cy="128" r="13" fill="rgba(94,234,212,.18)" stroke="rgba(94,234,212,.6)"/>
+              <circle cx="126" cy="100" r="15" fill="rgba(103,232,249,.15)" stroke="rgba(103,232,249,.55)"/>
+              <circle cx="198" cy="88" r="14" fill="rgba(167,139,250,.18)" stroke="rgba(167,139,250,.55)"/>
+              <circle cx="252" cy="64" r="10" fill="rgba(244,114,182,.16)" stroke="rgba(244,114,182,.5)"/>
+              <path d="M52 121h66M139 93l44-4M211 80l32-12" stroke="rgba(103,232,249,.35)" stroke-width="1.2"/>
+              <text x="36" y="155" fill="rgba(148,163,184,.6)" font-size="7" font-family="Cascadia Code, monospace">POSITION</text>
+              <text x="109" y="132" fill="rgba(148,163,184,.6)" font-size="7" font-family="Cascadia Code, monospace">STRUCTURE</text>
+              <text x="181" y="116" fill="rgba(148,163,184,.6)" font-size="7" font-family="Cascadia Code, monospace">REACTION</text>
+              <text x="231" y="92" fill="rgba(148,163,184,.6)" font-size="7" font-family="Cascadia Code, monospace">LAB</text>
+            </svg>
+            <div class="coming-label">8 MODULES / ONE PATH</div>
+          </div>
+          <div class="module-body">
+            <div class="module-top"><span class="status-pill live">导览</span><span class="module-num">LEARNING PATH</span></div>
+            <h3>知识地图</h3>
+            <p>从位置到结构，从反应到实验；把八个模块串成一条可以走通的路。</p>
+            <div class="tag-row"><span class="tag">路径</span><span class="tag">连接</span><span class="tag">导览</span></div>
+            <div class="open-link">查看地图 <span aria-hidden="true">↓</span></div>
+          </div>
+        </a>
       </div>
     </section>
 
+
+    <section class="knowledge" id="map" aria-labelledby="map-title">
+      <div class="section-head">
+        <div><div class="section-kicker">知识地图</div><h2 id="map-title">从位置，<br>一路走到反应。</h2></div>
+        <p>结构决定性质，性质决定反应；八张页面不是孤岛，而是一条可以走通的路。</p>
+      </div>
+      <div class="knowledge-board">
+        <div class="knowledge-canvas">
+          <div class="map-kicker">LEARNING PATH / 8 MODULES</div>
+          <h3 class="map-title">位置 → 结构 → 性质 → 反应</h3>
+          <p class="map-sub">点击节点可以直接进入对应模块。</p>
+          <div class="map-flow">
+            <div class="map-row"><div class="map-row-label">位置与结构</div><div class="map-chain"><a class="map-node" href="periodic-table.html"><i class="mdot" style="--mc:#5eead4"></i>元素周期表</a><span class="map-arrow">→</span><a class="map-node" href="electron-cloud.html"><i class="mdot" style="--mc:#67e8f9"></i>电子云杂化</a><span class="map-arrow">→</span><a class="map-node" href="molecular-geometry.html"><i class="mdot" style="--mc:#a78bfa"></i>分子构型</a><span class="map-arrow">→</span><a class="map-node" href="crystal-structure.html"><i class="mdot" style="--mc:#fbbf24"></i>晶体结构</a></div></div>
+            <div class="map-row"><div class="map-row-label">变化与反应</div><div class="map-chain"><a class="map-node" href="reaction-gallery.html"><i class="mdot" style="--mc:#f472b6"></i>反应观察台</a><span class="map-arrow">→</span><a class="map-node" href="reaction-mechanism.html"><i class="mdot" style="--mc:#fb923c"></i>反应机理</a></div></div>
+            <div class="map-row"><div class="map-row-label">有机与实验</div><div class="map-chain"><a class="map-node" href="organic-groups.html"><i class="mdot" style="--mc:#5eead4"></i>有机官能团</a><span class="map-arrow">→</span><a class="map-node" href="experiment-apparatus.html"><i class="mdot" style="--mc:#38bdf8"></i>实验装置</a><span class="map-arrow">→</span><a class="map-node" href="bond-formation.html"><i class="mdot" style="--mc:#c084fc"></i>C–C 成键</a></div></div>
+          </div>
+          <div class="map-foot"><strong>小肥鱼建议：</strong>先看“位置与结构”，再看“反应”，最后用实验验证。</div>
+        </div>
+        <aside class="mascot-card" aria-label="小肥鱼助教">
+          <div class="mascot-badge"><span class="live-dot" style="width:5px;height:5px"></span>小肥鱼助教</div>
+          <svg class="mascot-fish" viewBox="0 0 220 170" fill="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="fishBody" x1="45" y1="35" x2="160" y2="145" gradientUnits="userSpaceOnUse"><stop stop-color="#5eead4"/><stop offset=".55" stop-color="#67e8f9"/><stop offset="1" stop-color="#a78bfa"/></linearGradient>
+              <radialGradient id="fishBelly" cx="0" cy="0" r="1" gradientTransform="translate(112 112) rotate(90) scale(40 62)" gradientUnits="userSpaceOnUse"><stop stop-color="#eaffff" stop-opacity=".65"/><stop offset="1" stop-color="#dffcff" stop-opacity="0"/></radialGradient>
+            </defs>
+            <path d="M27 87 1 58l10 29-10 29 26-21" fill="rgba(94,234,212,.28)" stroke="#5eead4" stroke-width="2"/>
+            <path d="M80 49c-12-18-26-23-39-16 8 15 17 24 31 30" fill="rgba(103,232,249,.24)" stroke="#67e8f9" stroke-width="2"/>
+            <ellipse cx="111" cy="87" rx="72" ry="51" fill="url(#fishBody)" stroke="rgba(234,255,255,.55)" stroke-width="1.6"/>
+            <ellipse cx="118" cy="104" rx="54" ry="28" fill="url(#fishBelly)"/>
+            <path d="M135 127c-15 16-31 21-48 18 12-12 25-21 42-25" fill="rgba(94,234,212,.25)" stroke="#5eead4" stroke-width="2"/>
+            <path d="M94 62c12-9 33-9 46-2" stroke="rgba(4,10,20,.7)" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="111" cy="61" r="15" fill="rgba(4,16,28,.86)" stroke="#dffcff" stroke-width="2"/>
+            <circle cx="146" cy="67" r="12" fill="rgba(4,16,28,.86)" stroke="#dffcff" stroke-width="2"/>
+            <path d="M126 61h8" stroke="#dffcff" stroke-width="2"/>
+            <circle cx="115" cy="58" r="3.2" fill="#f4ffff"/><circle cx="149" cy="64" r="2.8" fill="#f4ffff"/>
+            <circle cx="116" cy="59" r="1.2" fill="#04101c"/><circle cx="149" cy="65" r="1.1" fill="#04101c"/>
+            <path d="M137 93c4-4 10-3 13 1" stroke="#04101c" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="158" cy="103" r="6" fill="#f9a8d4" opacity=".55"/>
+            <path d="M181 43c7-7 15-8 22-3" stroke="rgba(103,232,249,.5)" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="190" cy="35" r="3" fill="rgba(103,232,249,.35)"/><circle cx="202" cy="27" r="2" fill="rgba(103,232,249,.28)"/>
+            <path d="M176 116h22v27h-22z" fill="rgba(8,20,35,.55)" stroke="#dffcff" stroke-width="1.5" transform="rotate(-15 187 129)"/>
+            <path d="M179 133h16" stroke="#f9a8d4" stroke-width="5" transform="rotate(-15 187 129)"/>
+          </svg>
+          <div class="mascot-speech"><strong>先选一个模块吧。</strong><br>不知道从哪开始，就点“元素周期表”，我带你从位置找规律。</div>
+          <div class="mascot-name">XIAO FEI YU · LAB ASSISTANT</div>
+        </aside>
+      </div>
+    </section>
     <section class="about" id="about" aria-labelledby="about-title">
       <div class="about-copy">
         <div class="section-kicker">设计原则</div>
@@ -1190,8 +1315,10 @@
       <a href="periodic-table.html">元素周期表</a>
       <a href="experiment-apparatus.html">实验装置</a>
       <a href="reaction-gallery.html">反应观察台</a>
+      <a href="organic-groups.html">有机官能团</a>
     </div>
   </footer>
 </div>
+  <script src="platform-shell.js"></script>
 </body>
 </html>

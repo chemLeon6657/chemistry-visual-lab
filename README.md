@@ -14,7 +14,7 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 
 | 页面 | 内容 | 文件 |
 | --- | --- | --- |
-| 平台首页 | 平台介绍、七个模块导航 | `index.html` |
+| 平台首页 | 平台介绍、八个模块导航、知识地图、小肥鱼助教 | `index.html` |
 | 电子云杂化实验室 | sp / sp² / sp³ 杂化过程、C–C 成键阶段、键角、空间构型 | `electron-cloud.html` |
 | 分子空间构型 | VSEPR、孤对电子、直线形/平面三角形/四面体/三角锥/V 形 | `molecular-geometry.html` |
 | C–C 成键过程 | 乙烷/乙烯/乙炔的 σ 键与 π 键形成过程 | `bond-formation.html` |
@@ -23,6 +23,7 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 | 元素周期表 | 118 种元素、性质热力图、元素详情、周期律趋势 | `periodic-table.html` |
 | 化学实验装置 | O₂、CO₂、Cl₂、NH₃ 的发生、除杂、干燥、收集、尾气与纠错 | `experiment-apparatus.html` |
 | 反应观察台 | H₂O₂、KMnO₄、K₂FeO₄ 的反应、现象与电子转移 | `reaction-gallery.html` |
+| 有机官能团与同分异构 | 官能团图鉴、代表物性质、同分异构体对比 | `organic-groups.html` |
 
 ## 已上线模块
 
@@ -92,6 +93,20 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 - 高锰酸钾酸性/中性/强碱性三介质对比。
 - 高铁酸钾的氯气氧化法、次氯酸盐氧化法、干法及酸性分解/净水。
 - 支持 `?sub=kmno4&id=kmno4-media` 参数。
+
+### 有机官能团与同分异构
+
+- 12 类常见官能团：烷烃、烯烃、炔烃、卤代烃、醇、酚、醛、酮、羧酸、酯、胺、酰胺。
+- 官能团 → 代表物 → 性质 → 检验 → 易错点。
+- 同分异构体实验室：C₂H₆O、C₄H₁₀、C₅H₁₂、C₄H₁₀O、C₄H₈O₂。
+- 点击两张异构体卡片对比，区分碳链异构、位置异构、官能团异构。
+- 支持 `?mode=isomers&set=c4h10o` 参数。
+
+### 平台助教与知识地图
+
+- `platform-shell.js` 在所有页面注入小肥鱼助教和全局模块入口。
+- 首页新增知识地图，把位置、结构、反应、实验串成一条学习路径。
+- 小肥鱼出现在提示、空状态和课堂引导中，不遮挡主要内容。
 
 ## 后续计划
 

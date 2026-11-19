@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#04070f" />
+<title>有机官能团与同分异构 · 高中化学可视化平台</title>
+<meta name="description" content="有机官能团图鉴与同分异构体实验室：官能团、代表物、性质、检验和同分异构体对比。" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#04070f;--line:rgba(148,163,184,.14);--text:#eaf3ff;--muted:#8ea4c0;--dim:#5e728c;
+    --cyan:#67e8f9;--teal:#5eead4;--violet:#a78bfa;--pink:#f472b6;--amber:#fbbf24;
+    --mono:"Cascadia Code","SFMono-Regular",Consolas,"Liberation Mono",monospace;color-scheme:dark;
+  }
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:"Segoe UI Variable","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  button{font:inherit}a{color:inherit}button,a{-webkit-tap-highlight-color:transparent}:focus-visible{outline:2px solid rgba(103,232,249,.8);outline-offset:3px}
+  .page-glow{position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(920px 650px at 5% -8%,rgba(20,184,166,.15),transparent 64%),radial-gradient(1000px 760px at 98% 2%,rgba(91,33,182,.15),transparent 68%),radial-gradient(900px 700px at 55% 108%,rgba(14,116,144,.11),transparent 66%),linear-gradient(160deg,#050a14 0%,#04070f 55%,#050811 100%)}
+  .page-glow::after{content:"";position:absolute;inset:0;opacity:.22;background-image:linear-gradient(rgba(148,163,184,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.04) 1px,transparent 1px);background-size:46px 46px;mask-image:radial-gradient(circle at 50% 38%,black,transparent 77%);-webkit-mask-image:radial-gradient(circle at 50% 38%,black,transparent 77%)}
+  .shell{width:min(1620px,100%);min-height:100vh;margin:0 auto;padding:22px 28px 14px;display:flex;flex-direction:column}
+  .site-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding:0 2px 16px;animation:rise .7s cubic-bezier(.22,.8,.3,1) both}
+  .brand{display:flex;align-items:center;gap:15px;min-width:0;color:inherit;text-decoration:none}.brand:hover{opacity:.85}
+  .brand-mark{width:52px;height:52px;flex:0 0 auto;border-radius:16px;border:1px solid rgba(103,232,249,.2);background:radial-gradient(circle at 32% 24%,rgba(103,232,249,.2),transparent 55%),linear-gradient(150deg,rgba(11,28,46,.9),rgba(5,11,22,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 34px rgba(0,0,0,.34);display:grid;place-items:center}
+  .brand-mark svg{width:40px;height:40px}
+  .kicker{display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:10px;font-weight:650;letter-spacing:.19em;text-transform:uppercase}
+  .kicker::before{content:"";width:16px;height:1px;background:linear-gradient(90deg,var(--cyan),transparent)}
+  .brand h1{margin:4px 0 2px;font-size:clamp(27px,2.8vw,38px);line-height:1.05;letter-spacing:-.04em;font-weight:760}
+  .brand h1 span{background:linear-gradient(105deg,#e7fdff,var(--cyan) 45%,#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand p{margin:0;color:var(--muted);font-size:12.5px;letter-spacing:.02em}
+  .header-meta{display:flex;flex-direction:column;align-items:flex-end;gap:7px;padding-top:4px;flex:0 0 auto}
+  .meta-pill{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 11px;border:1px solid rgba(103,232,249,.16);border-radius:999px;background:rgba(8,20,34,.62);color:#c7e9ef;font-size:10.5px;letter-spacing:.08em;white-space:nowrap}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(94,234,212,.08),0 0 12px rgba(94,234,212,.8);animation:breathe 2.6s ease-in-out infinite}
+  .meta-note{color:var(--dim);font-size:9.5px;letter-spacing:.08em}
+  .mode-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:13px;padding:6px;border:1px solid rgba(148,163,184,.12);border-radius:14px;background:rgba(7,15,28,.55);animation:rise .6s .03s cubic-bezier(.22,.8,.3,1) both}
+  .mode-tab{display:flex;align-items:center;gap:8px;height:38px;padding:0 15px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--dim);font-size:12px;cursor:pointer;transition:.2s;white-space:nowrap}
+  .mode-tab:hover{color:#e9fdff;background:rgba(103,232,249,.055)}
+  .mode-tab.active{color:#f2ffff;border-color:rgba(103,232,249,.3);background:linear-gradient(145deg,rgba(103,232,249,.14),rgba(94,234,212,.05));box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+  .mode-tab .num{font-family:var(--mono);font-size:8.5px;color:rgba(148,163,184,.65)}
+  .bar-tip{margin-left:auto;display:flex;align-items:center;gap:7px;padding-right:8px;color:var(--dim);font-size:9.5px}
+  .bar-tip .fish-mini{width:28px;height:25px;flex:0 0 auto}
+  .workspace{flex:1;min-height:0}
+  .panel{position:relative;border:1px solid var(--line);border-radius:20px;background:radial-gradient(100% 100% at 0% 0%,rgba(103,232,249,.045),transparent 48%),linear-gradient(155deg,rgba(13,24,43,.83),rgba(7,14,27,.72));box-shadow:0 22px 60px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.045);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);animation:rise .62s cubic-bezier(.22,.8,.3,1) both}
+  .functional-view{display:grid;grid-template-columns:262px minmax(0,1fr) 326px;gap:14px;align-items:stretch}
+  .group-panel{padding:13px 10px 9px;display:flex;flex-direction:column;min-height:0}.group-panel .panel-head{padding:0 3px 9px}
+  .panel-kicker{color:var(--dim);font-size:9px;font-weight:650;letter-spacing:.18em;text-transform:uppercase}
+  .panel-title{margin:3px 0 0;font-size:16px;line-height:1.25;font-weight:650}
+  .group-list{overflow-y:auto;min-height:0;padding:2px;scrollbar-width:thin;scrollbar-color:rgba(103,232,249,.18) transparent}
+  .group-list::-webkit-scrollbar{width:4px}.group-list::-webkit-scrollbar-thumb{background:rgba(103,232,249,.18);border-radius:99px}
+  .group-card{display:flex;align-items:center;gap:8px;width:100%;padding:9px 9px;margin-bottom:5px;border:1px solid rgba(148,163,184,.1);border-radius:9px;background:rgba(4,10,20,.28);color:inherit;text-align:left;cursor:pointer;transition:.18s}
+  .group-card:hover{border-color:rgba(103,232,249,.26);background:rgba(103,232,249,.045)}
+  .group-card.active{border-color:var(--g-color,rgba(103,232,249,.4));background:linear-gradient(140deg,rgba(103,232,249,.1),rgba(94,234,212,.025));box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+  .group-icon{display:grid;place-items:center;width:38px;height:32px;flex:0 0 auto;border-radius:8px;border:1px solid color-mix(in srgb,var(--g-color,#67e8f9) 30%,transparent);background:color-mix(in srgb,var(--g-color,#67e8f9) 9%,transparent);color:var(--g-color,#67e8f9);font-family:var(--mono);font-size:10px;font-weight:600}
+  .group-copy{display:block;min-width:0}.group-card strong{display:block;color:#e7f8ff;font-size:11.5px;font-weight:600;line-height:1.25}.group-copy span{display:block;margin-top:2px;color:var(--dim);font-size:8.5px}
+  .stage-panel{display:flex;flex-direction:column;min-width:0;padding:16px 17px 13px;overflow:hidden}
+  .stage-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+  .stage-title{margin:3px 0 0;font-size:22px;line-height:1.2;letter-spacing:-.03em;font-weight:670}.stage-title span{color:var(--g-color,#67e8f9)}
+  .stage-sub{margin:6px 0 0;color:var(--dim);font-size:10px}
+  .group-stage{position:relative;flex:1;min-height:300px;border:1px solid rgba(148,163,184,.1);border-radius:15px;background:radial-gradient(70% 90% at 50% 45%,rgba(12,47,68,.35),transparent 70%),linear-gradient(180deg,rgba(4,11,22,.36),rgba(4,9,18,.68));overflow:hidden;display:flex;align-items:center;justify-content:center;isolation:isolate}
+  .group-stage::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(148,163,184,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.035) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(circle at 50% 45%,black,transparent 78%);-webkit-mask-image:radial-gradient(circle at 50% 45%,black,transparent 78%);pointer-events:none}
+  .fragment{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:9px;padding:16px 20px}
+  .fragment-chain{position:absolute;inset:0;z-index:0;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:.8}
+  .fragment-chain svg{width:100%;height:100%}
+  .fragment-symbol,.fragment-general,.fragment-label,.fragment-example{position:relative;z-index:1}
+  .fragment-symbol{font-family:var(--mono);font-size:clamp(38px,5vw,68px);line-height:.95;font-weight:600;letter-spacing:-.06em;color:var(--g-color,#67e8f9);text-shadow:0 0 36px color-mix(in srgb,var(--g-color,#67e8f9) 28%,transparent)}
+  .fragment-general{font-family:var(--mono);font-size:19px;color:#efffff;letter-spacing:.04em}.fragment-general b{color:var(--g-color,#67e8f9);font-weight:600}
+  .fragment-label{margin-top:4px;padding:4px 8px;border:1px solid rgba(148,163,184,.12);border-radius:999px;background:rgba(4,10,20,.4);color:var(--dim);font-size:9px}
+  .fragment-example{color:var(--muted);font-size:11px;text-align:center}.fragment-example strong{color:#e5f9ff;font-family:var(--mono);font-size:14px;font-weight:550}
+  .stage-foot{margin-top:9px;padding-top:9px;border-top:1px solid rgba(148,163,184,.08);display:flex;align-items:center;gap:9px;flex-wrap:wrap;color:var(--dim);font-size:9px}
+  .stage-foot .key{color:#dff8ff;font-weight:550}
+  .stage-foot .sep{color:rgba(148,163,184,.3)}
+  .detail-panel{padding:16px;overflow-y:auto;min-height:0;scrollbar-width:thin;scrollbar-color:rgba(103,232,249,.16) transparent}
+  .detail-panel::-webkit-scrollbar{width:4px}.detail-panel::-webkit-scrollbar-thumb{background:rgba(103,232,249,.16);border-radius:99px}
+  .detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+  .detail-head h2{margin:0;font-size:19px;line-height:1.2;font-weight:650}.detail-head p{margin:4px 0 0;color:var(--dim);font-size:9.5px}
+  .detail-badge{display:inline-flex;align-items:center;height:23px;padding:0 8px;border:1px solid color-mix(in srgb,var(--g-color,#67e8f9) 30%,transparent);border-radius:999px;background:color-mix(in srgb,var(--g-color,#67e8f9) 8%,transparent);color:var(--g-color,#67e8f9);font-size:8.5px;white-space:nowrap}
+  .detail-rule{height:1px;margin:13px 0 10px;background:linear-gradient(90deg,color-mix(in srgb,var(--g-color,#67e8f9) 30%,transparent),rgba(148,163,184,.05),transparent)}
+  .info-label{color:var(--dim);font-size:8.5px;letter-spacing:.06em;margin-bottom:4px}
+  .info-text{margin:0 0 11px;color:#c8dfef;font-size:11px;line-height:1.65}
+  .reaction-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}.r-chip{display:inline-flex;align-items:center;height:24px;padding:0 8px;border:1px solid color-mix(in srgb,var(--g-color,#67e8f9) 22%,transparent);border-radius:6px;background:color-mix(in srgb,var(--g-color,#67e8f9) 6%,transparent);color:#dff9ff;font-size:8.8px}
+  .test-box{padding:9px 10px;border:1px solid rgba(148,163,184,.1);border-radius:8px;background:rgba(4,10,20,.3);color:var(--muted);font-size:10px;line-height:1.6;margin-bottom:10px}.test-box strong{color:var(--g-color,#67e8f9);font-weight:600}
+  .note-box{padding:9px 10px;border:1px solid rgba(148,163,184,.09);border-radius:8px;background:rgba(4,10,20,.28);color:var(--dim);font-size:9.5px;line-height:1.65}.note-box strong{color:#e7f8ff;font-weight:550}
+  .mascot-note{display:flex;gap:9px;align-items:flex-start;margin-top:13px;padding:10px 11px;border:1px solid rgba(103,232,249,.12);border-radius:10px;background:rgba(103,232,249,.035)}
+  .mascot-note .fish{width:46px;height:40px;flex:0 0 auto}.mascot-note p{margin:1px 0 0;color:var(--dim);font-size:9.5px;line-height:1.6}.mascot-note strong{color:#dffcff;font-weight:550}
+  .isomer-view{display:none}.isomer-view.active{display:block}.functional-view.hidden{display:none}
+  .isomer-panel{padding:17px 18px 16px}
+  .isomer-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .isomer-title{margin:3px 0 0;font-size:22px;font-weight:660;letter-spacing:-.03em}
+  .isomer-sub{margin:5px 0 0;color:var(--dim);font-size:10px}
+  .formula-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+  .formula-tab{display:flex;align-items:center;gap:7px;height:36px;padding:0 11px;border:1px solid rgba(148,163,184,.12);border-radius:9px;background:rgba(4,10,20,.35);color:var(--dim);font-size:10.5px;cursor:pointer;transition:.2s;white-space:nowrap}
+  .formula-tab:hover{color:#e7fdff;background:rgba(103,232,249,.05)}
+  .formula-tab.active{color:#f1ffff;border-color:rgba(103,232,249,.36);background:rgba(103,232,249,.09)}
+  .formula-tab .count{color:rgba(103,232,249,.65);font-family:var(--mono);font-size:8.5px}
+  .isomer-layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:13px;align-items:start}
+  .isomer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:7px}
+  .iso-card{position:relative;display:flex;flex-direction:column;min-height:100px;padding:9px 10px;border:1px solid rgba(148,163,184,.11);border-radius:9px;background:rgba(4,10,20,.3);color:inherit;text-align:left;cursor:pointer;transition:.18s}
+  .iso-card:hover{border-color:rgba(103,232,249,.3);background:rgba(103,232,249,.05);transform:translateY(-1px)}
+  .iso-card.selected{border-color:rgba(103,232,249,.55);background:linear-gradient(145deg,rgba(103,232,249,.1),rgba(94,234,212,.025));box-shadow:0 0 0 1px rgba(103,232,249,.08)}
+  .iso-top{display:flex;justify-content:space-between;gap:6px;align-items:baseline}.iso-name{color:#e8f9ff;font-size:11px;font-weight:600;line-height:1.3}.iso-type{color:rgba(103,232,249,.65);font-size:8px;white-space:nowrap}
+  .iso-cond{margin-top:5px;color:rgba(195,225,240,.88);font-family:var(--mono);font-size:10px;line-height:1.55;word-break:break-word}
+  .iso-card .iso-tick{position:absolute;right:7px;bottom:7px;color:#67e8f9;font-size:10px;opacity:0}.iso-card.selected .iso-tick{opacity:1}
+  .compare-panel{position:sticky;top:14px;padding:12px;border:1px solid rgba(148,163,184,.1);border-radius:12px;background:rgba(4,10,20,.26)}
+  .compare-title{color:#e7f8ff;font-size:10.5px;font-weight:600;margin-bottom:8px}.compare-empty{color:var(--dim);font-size:9px;line-height:1.6}
+  .compare-item{padding:7px 8px;border:1px solid rgba(148,163,184,.09);border-radius:7px;margin-bottom:6px;background:rgba(4,10,20,.25)}.compare-item strong{display:block;color:#e4f8ff;font-size:9.5px}.compare-item span{display:block;margin-top:2px;color:rgba(180,210,230,.78);font-family:var(--mono);font-size:8.5px;word-break:break-word}
+  .compare-summary{margin-top:7px;padding-top:7px;border-top:1px solid rgba(148,163,184,.08);color:var(--dim);font-size:8.5px;line-height:1.6}.compare-summary strong{color:#bdfbf1;font-weight:550}
+  .isomer-notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:13px}
+  .isonote{padding:9px 10px;border:1px solid rgba(148,163,184,.1);border-radius:8px;background:rgba(4,10,20,.25)}.isonote b{display:block;color:#dff8ff;font-size:9.5px;margin-bottom:2px}.isonote span{color:var(--dim);font-size:8.5px;line-height:1.55}
+  .site-footer{display:flex;justify-content:space-between;gap:22px;padding:14px 4px 0;color:rgba(94,114,140,.9);font-size:9.2px;line-height:1.55}.site-footer p{margin:0;max-width:980px}.footer-tag{flex:0 0 auto;color:rgba(103,232,249,.48);white-space:nowrap}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes breathe{0%,100%{opacity:.65;transform:scale(.9)}50%{opacity:1;transform:scale(1.12)}}
+  @media(max-width:1180px){.shell{padding-left:20px;padding-right:20px}.functional-view{grid-template-columns:235px minmax(0,1fr) 300px}.isomer-layout{grid-template-columns:1fr}.compare-panel{position:static}}
+  @media(max-width:960px){.functional-view{grid-template-columns:1fr}.group-panel{max-height:none}.group-list{overflow:visible;display:grid;grid-template-columns:1fr 1fr;gap:4px}.group-card{margin-bottom:0}.detail-panel{max-height:none}.isomer-notes{grid-template-columns:1fr}.mode-tab{font-size:10px;padding:0 10px}.bar-tip{display:none}}
+  @media(max-width:650px){.shell{padding:14px 12px 10px}.brand-mark{width:44px;height:44px}.brand h1{font-size:clamp(23px,7vw,31px)}.brand p{display:none}.header-meta{display:none}.kicker{font-size:8.5px}.mode-bar{padding:4px}.mode-tab{flex:1;padding:0 6px;font-size:9px}.stage-panel{padding:12px}.stage-title,.isomer-title{font-size:18px}.group-stage{min-height:260px}.group-list{grid-template-columns:1fr}.isomer-panel{padding:12px}.isomer-grid{grid-template-columns:1fr}.formula-tab{height:32px;font-size:9.5px}.site-footer{flex-direction:column;gap:5px}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="page-glow" aria-hidden="true"></div>
+<div class="shell">
+  <header class="site-header">
+    <a class="brand" href="./" title="返回平台首页" aria-label="返回高中化学可视化平台首页">
+      <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none"><defs><linearGradient id="markGrad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#67e8f9"/><stop offset=".55" stop-color="#5eead4"/><stop offset="1" stop-color="#a78bfa"/></linearGradient><radialGradient id="coreGrad" cx="0" cy="0" r="1" gradientTransform="translate(32 32) rotate(90) scale(6)" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".45" stop-color="#c7feff"/><stop offset="1" stop-color="#67e8f9" stop-opacity="0"/></radialGradient></defs><circle cx="32" cy="32" r="7" fill="url(#coreGrad)"/><ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(28 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".8"/><ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(-32 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".5"/><ellipse cx="32" cy="32" rx="24" ry="8" transform="rotate(90 32 32)" stroke="url(#markGrad)" stroke-width="1.1" opacity=".32"/><circle cx="32" cy="32" r="2.5" fill="#f4ffff"/></svg></div>
+      <div><div class="kicker">高中化学可视化平台 · 有机化学</div><h1>有机<span>官能团</span></h1><p>官能团决定性质，结构决定同分异构</p></div>
+    </a>
+    <div class="header-meta"><div class="meta-pill"><span class="live-dot"></span>官能团图鉴 · 同分异构</div><div class="meta-note">点击官能团 · 对比异构体</div></div>
+  </header>
+
+  <div class="mode-bar" role="group" aria-label="切换学习模式">
+    <button class="mode-tab active" type="button" data-mode="groups"><span class="num">01</span>官能团图鉴</button>
+    <button class="mode-tab" type="button" data-mode="isomers"><span class="num">02</span>同分异构体</button>
+    <div class="bar-tip"><svg class="fish-mini" viewBox="0 0 64 52" aria-hidden="true"><path d="M8 27c8-12 24-15 35-6 5 4 7 9 5 14-2 5-8 8-15 6-8-2-13-7-18-14" fill="rgba(103,232,249,.12)" stroke="#67e8f9" stroke-width="2"/><path d="M8 27 1 18l3 10-3 10 8-9" fill="rgba(94,234,212,.16)" stroke="#5eead4" stroke-width="1.7"/><circle cx="40" cy="23" r="3" fill="#eaffff"/><circle cx="41" cy="23" r="1.4" fill="#04101c"/><circle cx="46" cy="30" r="2.2" fill="#f9a8d4" opacity=".8"/></svg><span>小肥鱼：先看官能团，再看碳骨架。</span></div>
+  </div>
+
+  <main class="workspace">
+    <section class="functional-view" id="functionalView">
+      <aside class="panel group-panel">
+        <div class="panel-head"><div><div class="panel-kicker">FUNCTIONAL GROUPS</div><h2 class="panel-title">官能团清单</h2></div></div>
+        <div class="group-list" id="groupList"></div>
+      </aside>
+
+      <section class="panel stage-panel">
+        <div class="stage-head"><div><div class="panel-kicker">GROUP IN FOCUS</div><h2 class="stage-title" id="groupTitle">羟基 <span>—OH</span></h2><p class="stage-sub" id="groupSub">醇的官能团</p></div></div>
+        <div class="group-stage" id="groupStage">
+          <div class="fragment" id="fragment">
+            <div class="fragment-symbol" id="fragmentSymbol">—OH</div>
+            <div class="fragment-general" id="fragmentGeneral"><b>R—OH</b></div>
+            <div class="fragment-label" id="fragmentLabel">醇类</div>
+            <div class="fragment-example" id="fragmentExample">代表物：乙醇 <strong>CH₃CH₂OH</strong></div>
+          </div>
+        </div>
+        <div class="stage-foot"><span class="key" id="footKey">官能团决定性质</span><span class="sep">·</span><span id="footText">—OH 决定醇的取代、氧化和酯化反应</span></div>
+      </section>
+
+      <aside class="panel detail-panel">
+        <div class="detail-head"><div><h2 id="detailName">醇</h2><p id="detailSub">羟基 —OH</p></div><span class="detail-badge" id="detailBadge">含氧官能团</span></div>
+        <div class="detail-rule"></div>
+        <div class="info-label">通式 / 结构特点</div><p class="info-text" id="detailGeneral">R—OH</p>
+        <div class="info-label">主要反应</div><div class="reaction-chips" id="detailReactions"></div>
+        <div class="test-box" id="detailTest"><strong>检验：</strong>—</div>
+        <div class="note-box" id="detailNote"></div>
+        <div class="mascot-note"><svg class="fish" viewBox="0 0 64 52" aria-hidden="true"><path d="M8 27c8-12 24-15 35-6 5 4 7 9 5 14-2 5-8 8-15 6-8-2-13-7-18-14" fill="rgba(103,232,249,.12)" stroke="#67e8f9" stroke-width="2"/><path d="M8 27 1 18l3 10-3 10 8-9" fill="rgba(94,234,212,.16)" stroke="#5eead4" stroke-width="1.7"/><circle cx="40" cy="23" r="3" fill="#eaffff"/><circle cx="41" cy="23" r="1.4" fill="#04101c"/><path d="M44 33c2-2 5-1 5 1" stroke="#f9a8d4" stroke-width="1.5" fill="none"/></svg><p><strong>小肥鱼提示：</strong>有机反应先找官能团；同分异构体再数碳骨架。</p></div>
+      </aside>
+    </section>
+
+    <section class="isomer-view" id="isomerView">
+      <div class="panel isomer-panel">
+        <div class="isomer-head"><div><div class="panel-kicker">ISOMER LAB</div><h2 class="isomer-title">同分异构体实验室</h2><p class="isomer-sub">分子式相同、结构不同；点两张卡片对比。</p></div><div class="mascot-note" style="margin:0;max-width:250px"><svg class="fish" viewBox="0 0 64 52" aria-hidden="true"><path d="M8 27c8-12 24-15 35-6 5 4 7 9 5 14-2 5-8 8-15 6-8-2-13-7-18-14" fill="rgba(103,232,249,.12)" stroke="#67e8f9" stroke-width="2"/><path d="M8 27 1 18l3 10-3 10 8-9" fill="rgba(94,234,212,.16)" stroke="#5eead4" stroke-width="1.7"/><circle cx="40" cy="23" r="3" fill="#eaffff"/><circle cx="41" cy="23" r="1.4" fill="#04101c"/><path d="M44 33c2-2 5-1 5 1" stroke="#f9a8d4" stroke-width="1.5" fill="none"/></svg><p><strong>同一分子式，不一定是同一种物质。</strong></p></div></div>
+        <div class="formula-tabs" id="formulaTabs"></div>
+        <div class="isomer-layout">
+          <div><div class="isomer-grid" id="isomerGrid"></div><div class="isomer-notes"><div class="isonote"><b>碳链异构</b><span>碳骨架不同：正丁烷 / 异丁烷</span></div><div class="isonote"><b>位置异构</b><span>官能团位置不同：1-丁醇 / 2-丁醇</span></div><div class="isonote"><b>官能团异构</b><span>官能团不同：乙醇 / 二甲醚</span></div></div></div>
+          <aside class="compare-panel"><div class="compare-title">对比区 <span id="compareCount" style="color:var(--dim);font-weight:400">0/2</span></div><div id="compareItems"><div class="compare-empty">点击左侧任意两张异构体卡片，查看它们的相同点和不同点。</div></div><div class="compare-summary" id="compareSummary"></div></aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><p>科学说明：本页结构式以教学简式为主，重点呈现官能团与碳骨架差异；同分异构体数量按高中常见结构异构统计，不包含立体异构。</p><span class="footer-tag">高中化学可视化平台 · 有机官能团</span></footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const GROUPS=[
+    {id:"alkane",name:"烷烃",symbol:"C—C",general:"R—H",example:"乙烷",formula:"CH₃—CH₃",color:"#94a3b8",type:"无官能团",sub:"饱和烃",props:"饱和，主要发生取代反应和燃烧",reactions:["取代","燃烧"],test:"溴水不褪色",note:"烷烃没有明显的官能团，性质相对稳定；同分异构主要来自碳链不同。"},
+    {id:"alkene",name:"烯烃",symbol:"C=C",general:"R—CH=CH—R′",example:"乙烯",formula:"CH₂=CH₂",color:"#67e8f9",type:"碳碳双键",sub:"不饱和烃",props:"易发生加成、氧化和加聚反应",reactions:["加成","氧化","加聚"],test:"溴水褪色；酸性 KMnO₄ 褪色",note:"C=C 是烯烃的核心官能团；双键不能自由旋转。"},
+    {id:"alkyne",name:"炔烃",symbol:"C≡C",general:"R—C≡C—R′",example:"乙炔",formula:"HC≡CH",color:"#a78bfa",type:"碳碳三键",sub:"不饱和烃",props:"易发生加成和氧化反应",reactions:["加成","氧化"],test:"溴水褪色；酸性 KMnO₄ 褪色",note:"三键有两个 π 键，加成可以分步进行。"},
+    {id:"halo",name:"卤代烃",symbol:"—X",general:"R—X",example:"溴乙烷",formula:"CH₃CH₂Br",color:"#fbbf24",type:"卤素原子",sub:"烃的衍生物",props:"可发生水解（取代）和消去反应",reactions:["水解","消去"],test:"与 NaOH 水溶液共热后检验 X⁻",note:"卤代烃不是“烃”，但属于烃的衍生物；消去需要邻位碳上有氢。"},
+    {id:"alcohol",name:"醇",symbol:"—OH",general:"R—OH",example:"乙醇",formula:"CH₃CH₂OH",color:"#5eead4",type:"羟基",sub:"含氧衍生物",props:"可发生取代、氧化、酯化；与钠反应放出 H₂",reactions:["取代","氧化","酯化"],test:"与钠反应产生 H₂；可被酸性 KMnO₄ 氧化",note:"羟基连在 sp³ 碳上；醇羟基不是酚羟基。"},
+    {id:"phenol",name:"酚",symbol:"Ar—OH",general:"Ar—OH",example:"苯酚",formula:"C₆H₅OH",color:"#f472b6",type:"酚羟基",sub:"芳香族衍生物",props:"弱酸性；苯环上易发生取代；与 FeCl₃ 显紫色",reactions:["弱酸性","取代","显色"],test:"FeCl₃ 溶液显紫色；溴水产生白色沉淀",note:"酚羟基直接连在苯环上，性质与醇羟基不同。"},
+    {id:"aldehyde",name:"醛",symbol:"—CHO",general:"R—CHO",example:"乙醛",formula:"CH₃CHO",color:"#fb923c",type:"醛基",sub:"含氧衍生物",props:"可被氧化成羧酸；可发生银镜反应和斐林反应",reactions:["氧化","还原","银镜"],test:"银镜反应；斐林试剂砖红色沉淀",note:"醛基是 —CHO，不是 —COOH；甲酸也有醛基。"},
+    {id:"ketone",name:"酮",symbol:"C=O",general:"R—CO—R′",example:"丙酮",formula:"CH₃COCH₃",color:"#f87171",type:"羰基",sub:"含氧衍生物",props:"可发生还原；通常不与银氨溶液反应",reactions:["还原","加成"],test:"一般无银镜反应",note:"酮羰基两端都连碳；醛的羰基一端连氢。"},
+    {id:"acid",name:"羧酸",symbol:"—COOH",general:"R—COOH",example:"乙酸",formula:"CH₃COOH",color:"#38bdf8",type:"羧基",sub:"含氧衍生物",props:"具有酸性，可发生酯化反应",reactions:["酸性","酯化"],test:"使石蕊变红；与 Na₂CO₃ 反应放出 CO₂",note:"羧基是 —COOH；羧酸酸性一般强于碳酸。"},
+    {id:"ester",name:"酯",symbol:"—COO—",general:"R—COO—R′",example:"乙酸乙酯",formula:"CH₃COOCH₂CH₃",color:"#c084fc",type:"酯基",sub:"含氧衍生物",props:"可发生水解；低级酯常有果香味",reactions:["水解"],test:"水解生成羧酸和醇",note:"酯基中 C=O 与 —O— 相连；注意与羧酸区分。"},
+    {id:"amine",name:"胺",symbol:"—NH₂",general:"R—NH₂",example:"甲胺",formula:"CH₃NH₂",color:"#86efac",type:"氨基",sub:"含氮衍生物",props:"具有碱性；可与酸成盐",reactions:["碱性","取代"],test:"使湿润红色石蕊试纸变蓝",note:"氨基 —NH₂ 是碱性官能团；酰胺的 —CONH— 不同。"},
+    {id:"amide",name:"酰胺",symbol:"—CONH—",general:"R—CONH—R′",example:"乙酰胺",formula:"CH₃CONH₂",color:"#93c5fd",type:"酰胺基",sub:"含氮衍生物",props:"可发生水解；酰胺基不是氨基",reactions:["水解"],test:"酸性或碱性条件下水解",note:"酰胺基中羰基与氮相连，碱性明显弱于胺。"}
+  ];
+
+  const SETS=[
+    {id:"c4h10",formula:"C₄H₁₀",name:"丁烷",count:2,isomers:[
+      {name:"正丁烷",cond:"CH₃—CH₂—CH₂—CH₃",type:"碳链异构"},
+      {name:"异丁烷",cond:"CH₃—CH(CH₃)—CH₃",type:"碳链异构"}
+    ]},
+    {id:"c5h12",formula:"C₅H₁₂",name:"戊烷",count:3,isomers:[
+      {name:"正戊烷",cond:"CH₃—CH₂—CH₂—CH₂—CH₃",type:"碳链异构"},
+      {name:"异戊烷",cond:"CH₃—CH(CH₃)—CH₂—CH₃",type:"碳链异构"},
+      {name:"新戊烷",cond:"C(CH₃)₄",type:"碳链异构"}
+    ]},
+    {id:"c4h10o",formula:"C₄H₁₀O",name:"丁醇 / 醚",count:7,isomers:[
+      {name:"1-丁醇",cond:"CH₃—CH₂—CH₂—CH₂OH",type:"位置异构"},
+      {name:"2-丁醇",cond:"CH₃—CH₂—CH(OH)—CH₃",type:"位置异构"},
+      {name:"2-甲基-1-丙醇",cond:"(CH₃)₂CH—CH₂OH",type:"碳链异构"},
+      {name:"2-甲基-2-丙醇",cond:"(CH₃)₃C—OH",type:"碳链异构"},
+      {name:"1-甲氧基丙烷",cond:"CH₃—O—CH₂—CH₂—CH₃",type:"官能团异构"},
+      {name:"2-甲氧基丙烷",cond:"CH₃—O—CH(CH₃)—CH₃",type:"官能团异构"},
+      {name:"乙醚",cond:"CH₃CH₂—O—CH₂CH₃",type:"官能团异构"}
+    ]},
+    {id:"c4h8o2",formula:"C₄H₈O₂",name:"羧酸 / 酯",count:6,isomers:[
+      {name:"丁酸",cond:"CH₃CH₂CH₂—COOH",type:"官能团异构"},
+      {name:"2-甲基丙酸",cond:"(CH₃)₂CH—COOH",type:"碳链异构"},
+      {name:"乙酸乙酯",cond:"CH₃—COO—CH₂CH₃",type:"官能团异构"},
+      {name:"丙酸甲酯",cond:"CH₃CH₂—COO—CH₃",type:"官能团异构"},
+      {name:"甲酸正丙酯",cond:"H—COO—CH₂CH₂CH₃",type:"官能团异构"},
+      {name:"甲酸异丙酯",cond:"H—COO—CH(CH₃)—CH₃",type:"官能团异构"}
+    ]},
+    {id:"c2h6o",formula:"C₂H₆O",name:"乙醇 / 二甲醚",count:2,isomers:[
+      {name:"乙醇",cond:"CH₃CH₂—OH",type:"官能团异构"},
+      {name:"二甲醚",cond:"CH₃—O—CH₃",type:"官能团异构"}
+    ]}
+  ];
+
+  const groupList=document.getElementById("groupList");
+  const modeTabs=Array.from(document.querySelectorAll(".mode-tab"));
+  const functionalView=document.getElementById("functionalView");
+  const isomerView=document.getElementById("isomerView");
+  const groupTitle=document.getElementById("groupTitle");
+  const groupSub=document.getElementById("groupSub");
+  const fragmentSymbol=document.getElementById("fragmentSymbol");
+  const fragmentGeneral=document.getElementById("fragmentGeneral");
+  const fragmentLabel=document.getElementById("fragmentLabel");
+  const fragmentExample=document.getElementById("fragmentExample");
+  const detailName=document.getElementById("detailName");
+  const detailSub=document.getElementById("detailSub");
+  const detailBadge=document.getElementById("detailBadge");
+  const detailGeneral=document.getElementById("detailGeneral");
+  const detailReactions=document.getElementById("detailReactions");
+  const detailTest=document.getElementById("detailTest");
+  const detailNote=document.getElementById("detailNote");
+  const footKey=document.getElementById("footKey");
+  const footText=document.getElementById("footText");
+  const formulaTabs=document.getElementById("formulaTabs");
+  const isomerGrid=document.getElementById("isomerGrid");
+  const compareItems=document.getElementById("compareItems");
+  const compareCount=document.getElementById("compareCount");
+  const compareSummary=document.getElementById("compareSummary");
+
+  let currentGroup=GROUPS[0];
+  let currentSet=SETS[0];
+  let selected=[];
+
+  function renderGroupList(){
+    groupList.innerHTML=GROUPS.map(g=>`<button class="group-card ${g.id===currentGroup.id?"active":""}" type="button" data-group="${g.id}" style="--g-color:${g.color}"><span class="group-icon">${g.symbol}</span><span class="group-copy"><strong>${g.name}</strong><span>${g.type}</span></span></button>`).join("");
+    for(const card of groupList.querySelectorAll(".group-card"))card.addEventListener("click",()=>selectGroup(card.dataset.group));
+  }
+  function selectGroup(id){
+    currentGroup=GROUPS.find(g=>g.id===id)||GROUPS[0];
+    renderGroupList();
+    const g=currentGroup;
+    document.documentElement.style.setProperty("--g-color",g.color);
+    for(const el of [functionalView,groupTitle,detailName,detailBadge])el?.style.setProperty("--g-color",g.color);
+    groupTitle.innerHTML=`${g.name} <span>${g.symbol}</span>`;
+    groupSub.textContent=g.sub;
+    fragmentSymbol.textContent=g.symbol;
+    fragmentSymbol.style.color=g.color;
+    fragmentGeneral.innerHTML=`通式：<b>${g.general}</b>`;
+    fragmentLabel.textContent=g.type;
+    fragmentIllustration(g);
+    fragmentExample.innerHTML=`代表物：${g.example} <strong>${g.formula}</strong>`;
+    detailName.textContent=g.name;
+    detailSub.textContent=g.type;
+    detailBadge.textContent=g.type;
+    detailBadge.style.setProperty("--g-color",g.color);
+    detailGeneral.textContent=g.general;
+    detailReactions.innerHTML=g.reactions.map(r=>`<span class="r-chip">${r}</span>`).join("");
+    detailTest.innerHTML=`<strong>检验：</strong>${g.test}`;
+    detailNote.innerHTML=`<strong>理解：</strong>${g.note}`;
+    footKey.textContent="官能团决定性质";
+    footText.textContent=`${g.symbol} 决定${g.name}的主要反应：${g.reactions.join("、")}`;
+  }
+  function fragmentIllustration(g){
+    const frag=document.getElementById("fragment");
+    // Keep the large group symbol as the focus; add a faint chain behind it.
+    let bg=frag.querySelector(".fragment-chain");
+    if(!bg){bg=document.createElement("div");bg.className="fragment-chain";frag.insertBefore(bg,frag.firstChild);}
+    const n=g.id==="phenol"?6:4;
+    bg.innerHTML=`<svg viewBox="0 0 360 90" aria-hidden="true"><path d="M18 45h58l22-24 22 24 22-24 22 24 22-24 22 24h58" stroke="${g.color}" stroke-opacity=".25" stroke-width="2" fill="none"/><circle cx="300" cy="45" r="5" fill="${g.color}" opacity=".7"/><text x="18" y="30" fill="${g.color}" opacity=".55" font-size="10" font-family="Cascadia Code, monospace">R</text></svg>`;
+  }
+
+  function renderFormulaTabs(){
+    formulaTabs.innerHTML=SETS.map(s=>`<button class="formula-tab ${s.id===currentSet.id?"active":""}" type="button" data-set="${s.id}">${s.formula}<span class="count">${s.count} 种</span></button>`).join("");
+    for(const tab of formulaTabs.querySelectorAll(".formula-tab"))tab.addEventListener("click",()=>{currentSet=SETS.find(s=>s.id===tab.dataset.set);selected=[];renderFormulaTabs();renderIsomers();});
+  }
+  function renderIsomers(){
+    isomerGrid.innerHTML=currentSet.isomers.map((iso,i)=>`<button class="iso-card ${selected.includes(i)?"selected":""}" type="button" data-iso="${i}"><div class="iso-top"><span class="iso-name">${iso.name}</span><span class="iso-type">${iso.type}</span></div><div class="iso-cond">${iso.cond}</div><span class="iso-tick">✓</span></button>`).join("");
+    for(const card of isomerGrid.querySelectorAll(".iso-card"))card.addEventListener("click",()=>toggleIso(+card.dataset.iso));
+    renderCompare();
+  }
+  function toggleIso(i){
+    if(selected.includes(i))selected=selected.filter(x=>x!==i);
+    else{selected.push(i);if(selected.length>2)selected.shift();}
+    renderIsomers();
+  }
+  function renderCompare(){
+    compareCount.textContent=`${selected.length}/2`;
+    if(!selected.length){compareItems.innerHTML=`<div class="compare-empty">点击左侧任意两张异构体卡片，查看它们的相同点和不同点。</div>`;compareSummary.innerHTML="";return;}
+    compareItems.innerHTML=selected.map(i=>{const iso=currentSet.isomers[i];return `<div class="compare-item"><strong>${iso.name}</strong><span>${iso.cond}</span></div>`;}).join("");
+    if(selected.length===1){compareSummary.innerHTML=`再选一张卡片进行对比。`;return;}
+    compareSummary.innerHTML=`<strong>相同：</strong>分子式都是 ${currentSet.formula}。<br><strong>不同：</strong>结构不同，属于同分异构体。`;
+  }
+
+  for(const tab of modeTabs)tab.addEventListener("click",()=>{
+    const mode=tab.dataset.mode;
+    for(const t of modeTabs)t.classList.toggle("active",t===tab);
+    functionalView.classList.toggle("hidden",mode!=="groups");
+    isomerView.classList.toggle("active",mode==="isomers");
+    if(mode==="isomers"){renderFormulaTabs();renderIsomers();}
+  });
+
+  renderGroupList();
+  selectGroup("alcohol");
+  renderFormulaTabs();
+  renderIsomers();
+  const params=new URLSearchParams(location.search);
+  if(params.get("mode")==="isomers")document.querySelector('[data-mode="isomers"]').click();
+  if(params.get("set")){
+    const set=SETS.find(x=>x.id===params.get("set"));
+    if(set){currentSet=set;selected=[];renderFormulaTabs();renderIsomers();}
+  }
+})();
+</script>
+  <script src="platform-shell.js"></script>
+</body>
+</html>
