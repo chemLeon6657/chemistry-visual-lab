@@ -260,18 +260,44 @@
   function addBond(bonds,i,j,color,width) { bonds.push([i,j,color,width]); }
 
   function buildNaCl() {
-    const atoms=[], bonds=[];
-    for (const x of [-1,0,1]) for (const y of [-1,0,1]) for (const z of [-1,0,1]) {
-      const parity=((x+1)+(y+1)+(z+1))%2;
-      const isNa=parity===0;
-      atoms.push(makeAtom([x,y,z],isNa?"#a78bfa":"#86efac",isNa?.105:.195,isNa?"Na⁺":"Cl⁻",isNa?"Na":"Cl",{labelColor:isNa?"#2e1065":"#052e16"}));
+    const atoms=[],bonds=[],keys=new Map();
+    const a=2;
+    const clFrac=[];
+    for(const x of [0,1])for(const y of [0,1])for(const z of [0,1])clFrac.push([x,y,z]);
+    clFrac.push([.5,.5,0],[.5,.5,1],[.5,0,.5],[.5,1,.5],[0,.5,.5],[1,.5,.5]);
+    const naFrac=[[.5,.5,.5]];
+    // 12 edge centres: exactly one coordinate .5, the other two 0 or 1.
+    for(const x of [0,1])for(const y of [0,1])naFrac.push([.5,x,y]);
+    for(const x of [0,1])for(const z of [0,1])naFrac.push([x,.5,z]);
+    for(const x of [0,1])for(const y of [0,1])naFrac.push([x,y,.5]);
+    const clKeys=new Set(clFrac.map(f=>f.map(v=>Math.round(v*100)).join(",")));
+    const naKeys=new Set(naFrac.map(f=>f.map(v=>Math.round(v*100)).join(",")));
+    function key(p){return p.map(v=>Math.round(v*100)).join(",");}
+    function add(frac,species,ghost=false){
+      const k=key(frac);if(keys.has(k))return keys.get(k);
+      const pos=[(frac[0]-.5)*a,(frac[1]-.5)*a,(frac[2]-.5)*a];
+      const isNa=species==="Na",idx=atoms.length;
+      atoms.push(makeAtom(pos,ghost?"#8ea4c0":(isNa?"#a78bfa":"#86efac"),isNa?(ghost?.075:.105):(ghost?.13:.195),isNa?"Na⁺":"Cl⁻",species,{ghost,labelColor:isNa?"#2e1065":"#052e16"}));
+      keys.set(k,idx);return idx;
     }
-    return { atoms,bonds,cellLines:cubeLines(1),camera:{yaw:.65,pitch:.28,distance:7.8},
-      legend:[["Na⁺（小）","#a78bfa"],["Cl⁻（大）","#86efac"]], cellType:"面心立方（NaCl 型）", coord:"6", coordMode:"opposite", coordCutoff:1.12, coordShape:"八面体",
+    for(const f of clFrac)add(f,"Cl");
+    for(const f of naFrac)add(f,"Na");
+    // Ghost periodic neighbours, hidden in normal view, used by the inspector.
+    const translations=[-2,0,2];
+    for(const f of clFrac)for(const dx of translations)for(const dy of translations)for(const dz of translations)for(const q of naFrac){
+      const g=[q[0]+dx/2,q[1]+dy/2,q[2]+dz/2];
+      if(dist([(f[0]-.5)*a,(f[1]-.5)*a,(f[2]-.5)*a],[(g[0]-.5)*a,(g[1]-.5)*a,(g[2]-.5)*a])<1.15&&!naKeys.has(key(g)))add(g,"Na",true);
+    }
+    for(const f of naFrac)for(const dx of translations)for(const dy of translations)for(const dz of translations)for(const q of clFrac){
+      const g=[q[0]+dx/2,q[1]+dy/2,q[2]+dz/2];
+      if(dist([(f[0]-.5)*a,(f[1]-.5)*a,(f[2]-.5)*a],[(g[0]-.5)*a,(g[1]-.5)*a,(g[2]-.5)*a])<1.15&&!clKeys.has(key(g)))add(g,"Cl",true);
+    }
+    return { atoms,bonds,cellLines:cubeLines(1),camera:{yaw:.65,pitch:.28,distance:8.0},
+      legend:[["Na⁺（小）","#a78bfa"],["Cl⁻（大）","#86efac"]], cellType:"面心立方（NaCl 型）", coord:"6", coordMode:"opposite", coordCutoff:1.15, coordShape:"八面体",
       status:"NaCl 型 · 配位数 6:6", foot:"离子键 · 高熔点", formula:"NaCl", type:"离子晶体", name:"氯化钠 · 面心立方晶胞",
       particles:"Na⁺、Cl⁻", force:"离子键", melting:"801 ℃", examples:"NaCl、KCl",
-      note:"Na⁺ 半径明显小于 Cl⁻；每个 Na⁺ 周围有 6 个 Cl⁻，每个 Cl⁻ 周围有 6 个 Na⁺。",
-      descript:"NaCl 是典型的离子晶体，Na⁺ 与 Cl⁻ 交替排列，配位数为 6:6。" };
+      note:"Cl⁻ 位于 8 个顶点 + 6 个面心，形成面心立方；Na⁺ 位于 12 条棱心和体心，填满八面体空隙。每个 Na⁺、Cl⁻ 周围都有 6 个异种离子。",
+      descript:"NaCl 是典型离子晶体；Cl⁻ 作面心立方堆积，Na⁺ 填满全部八面体空隙，配位数 6:6。" };
   }
 
   function buildCsCl() {
@@ -388,6 +414,42 @@
   }
   function addV(a,b){return [a[0]+b[0],a[1]+b[1],a[2]+b[2]];}
   function mulV(a,s){return [a[0]*s,a[1]*s,a[2]*s];}
+
+  function buildZnS() {
+    const atoms=[],bonds=[],keys=new Map();
+    const a=2;
+    const sFrac=[];
+    for(const x of [0,1])for(const y of [0,1])for(const z of [0,1])sFrac.push([x,y,z]);
+    sFrac.push([.5,.5,0],[.5,.5,1],[.5,0,.5],[.5,1,.5],[0,.5,.5],[1,.5,.5]);
+    const znFrac=[[.25,.25,.25],[.75,.75,.25],[.75,.25,.75],[.25,.75,.75]];
+    const sKeys=new Set(sFrac.map(f=>f.map(v=>Math.round(v*100)).join(",")));
+    const znKeys=new Set(znFrac.map(f=>f.map(v=>Math.round(v*100)).join(",")));
+    function key(p){return p.map(v=>Math.round(v*100)).join(",");}
+    function add(frac,species,ghost=false){
+      const k=key(frac);if(keys.has(k))return keys.get(k);
+      const pos=[(frac[0]-.5)*a,(frac[1]-.5)*a,(frac[2]-.5)*a];
+      const isZn=species==="Zn",idx=atoms.length;
+      atoms.push(makeAtom(pos,ghost?"#8ea4c0":(isZn?"#60a5fa":"#fbbf24"),isZn?(ghost?.08:.13):(ghost?.12:.19),isZn?"Zn²⁺":"S²⁻",species,{ghost,labelColor:isZn?"#082f49":"#451a03"}));
+      keys.set(k,idx);return idx;
+    }
+    for(const f of sFrac)add(f,"S");
+    for(const f of znFrac)add(f,"Zn");
+    const trans=[-2,0,2];
+    for(const f of sFrac)for(const dx of trans)for(const dy of trans)for(const dz of trans)for(const q of znFrac){
+      const g=[q[0]+dx/2,q[1]+dy/2,q[2]+dz/2];
+      if(dist([(f[0]-.5)*a,(f[1]-.5)*a,(f[2]-.5)*a],[(g[0]-.5)*a,(g[1]-.5)*a,(g[2]-.5)*a])<1.0&&!znKeys.has(key(g)))add(g,"Zn",true);
+    }
+    for(const f of znFrac)for(const dx of trans)for(const dy of trans)for(const dz of trans)for(const q of sFrac){
+      const g=[q[0]+dx/2,q[1]+dy/2,q[2]+dz/2];
+      if(dist([(f[0]-.5)*a,(f[1]-.5)*a,(f[2]-.5)*a],[(g[0]-.5)*a,(g[1]-.5)*a,(g[2]-.5)*a])<1.0&&!sKeys.has(key(g)))add(g,"S",true);
+    }
+    return { atoms,bonds,cellLines:cubeLines(1),camera:{yaw:.8,pitch:.3,distance:8.2},
+      legend:[["S²⁻","#fbbf24"],["Zn²⁺","#60a5fa"]], cellType:"面心立方（ZnS 型）", coord:"4", coordMode:"opposite", coordCutoff:1.0, coordShape:"正四面体",
+      status:"立方 ZnS 型 · 配位数 4:4", foot:"共价键 · 熔点高", formula:"ZnS", type:"离子晶体（共价性明显）", name:"硫化锌 · 立方 ZnS 型",
+      particles:"Zn²⁺、S²⁻", force:"共价键（极性）", melting:"1700 ℃", examples:"ZnS、闪锌矿",
+      note:"S²⁻ 位于 8 个顶点 + 6 个面心，形成面心立方；Zn²⁺ 填入一半四面体空隙。每个离子周围有 4 个异种离子。",
+      descript:"ZnS 是立方 ZnS 型结构；S²⁻ 作面心立方堆积，Zn²⁺ 占一半四面体空隙，配位数 4:4。" };
+  }
 
   function buildSiO2() {
     const atoms=[],bonds=[];
@@ -523,7 +585,7 @@
     nacl:buildNaCl(),
     cscl:buildCsCl(),
     caf2:buildCaF2(),
-    zns:diamondLike("zns"),
+    zns:buildZnS(),
     sio2:buildSiO2(),
     diamond:diamondLike("diamond"),
     graphite:buildGraphite(),
