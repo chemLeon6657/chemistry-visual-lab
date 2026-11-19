@@ -1,5 +1,8 @@
 # 高中化学可视化平台
 
+> **Copyright © 2026 chemLeon6657. All rights reserved.**
+> 本仓库不是开源项目。未经版权所有者事先书面许可，不得复制、修改、改编、镜像、再发布或用于商业用途。完整条款见 [RIGHTS.md](RIGHTS.md) 与 [rights.html](rights.html)。
+
 面向高中化学课堂的交互式可视化项目。把抽象的轨道、构型和反应过程，变成可以拖动、旋转、观察的 3D 画面。
 
 ![电子云杂化实验室预览](preview.png)
@@ -24,6 +27,7 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 | 化学实验装置 | O₂、CO₂、Cl₂、NH₃ 的发生、除杂、干燥、收集、尾气与纠错 | `experiment-apparatus.html` |
 | 反应观察台 | H₂O₂、KMnO₄、K₂FeO₄ 的反应、现象与电子转移 | `reaction-gallery.html` |
 | 有机官能团与同分异构 | 官能团图鉴、代表物性质、同分异构体对比 | `organic-groups.html` |
+| 版权与使用条款 | 权利归属、允许/禁止行为、授权申请、官方版本说明 | `rights.html` |
 
 ## 已上线模块
 
@@ -147,6 +151,17 @@ py -m http.server 8000
 ## 科学说明
 
 杂化轨道由原子轨道线性组合而成。页面为了便于观察，将量子力学叠加过程连续化，轨道轮廓与粒子位置变化仅作教学示意，不代表电子真实运动轨迹。
+
+## 版权与使用条款
+
+- 权利归属：除另有标注外，页面代码、文字、视觉设计、3D 模型归 **chemLeon6657** 所有。
+- 允许：在线学习、非商业课堂演示官方页面、分享官方链接。
+- 禁止：复制后另行部署、修改后发布、镜像、商业使用、制作衍生版本、移除版权标识。
+- 授权申请：通过 GitHub [@chemLeon6657](https://github.com/chemLeon6657) 联系。
+- 完整条款：[RIGHTS.md](RIGHTS.md) / [rights.html](rights.html)。
+- 简版许可：[LICENSE](LICENSE)。
+
+> 公开网页的源代码在浏览器中可见，无法从技术上绝对阻止他人另存后修改。本条款限制对官方内容的复制、修改和再发布；官方仓库的写入权限应通过 Private 仓库、分支保护和最小协作者权限控制。
 
 ## 技术
 

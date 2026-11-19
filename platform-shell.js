@@ -56,6 +56,7 @@
     .pf-module.active{color:#eaffff;border-color:rgba(103,232,249,.38);background:rgba(103,232,249,.1)}
     .pf-module .n{font-family:"Cascadia Code",Consolas,monospace;font-size:7px;color:rgba(103,232,249,.55);flex:0 0 auto}
     .pf-panel-foot{margin-top:9px;padding-top:8px;border-top:1px solid rgba(148,163,184,.08);color:#5e728c;font-size:8px;text-align:right;letter-spacing:.04em}
+    .pf-panel-foot a{color:rgba(103,232,249,.55);text-decoration:none}.pf-panel-foot a:hover{color:#bdfbff;text-decoration:underline}
     @media (max-width: 640px){
       .pf-fish-button{right:12px;bottom:12px;width:50px;height:50px}
       .pf-fish-button img{width:40px;height:40px}
@@ -82,7 +83,7 @@
   panel.innerHTML = `<div class="pf-panel-head">${mascot}<div><h3>鲸鱼娘助教</h3><p>DeepSeek Q版 · 模块导航</p></div><button class="pf-close" type="button" aria-label="关闭">×</button></div>
     <div class="pf-tip"><strong>鲸鱼娘：</strong>${tip}</div>
     <div class="pf-modules">${modules.map(([href,label,n])=>`<a class="pf-module ${href===active?"active":""}" href="${href}"><span class="n">${n}</span>${label}</a>`).join("")}</div>
-    <div class="pf-panel-foot">高中化学可视化平台 · 鲸鱼娘助教</div>`;
+    <div class="pf-panel-foot"><a href="rights.html">© 2026 chemLeon6657 · 版权与使用条款</a></div>`;
 
   document.body.appendChild(button);
   document.body.appendChild(panel);
