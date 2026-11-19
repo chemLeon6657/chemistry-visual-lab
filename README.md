@@ -17,6 +17,7 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 | 平台首页 | 平台介绍、模块导航、后续模块预告 | `index.html` |
 | 电子云杂化实验室 | sp / sp² / sp³ 杂化过程、键角、空间构型、典型分子 | `electron-cloud.html` |
 | 分子空间构型 | VSEPR、孤对电子、直线形/平面三角形/四面体/三角锥/V 形 | `molecular-geometry.html` |
+| C–C 成键过程 | 乙烷/乙烯/乙炔的 σ 键与 π 键形成过程 | `bond-formation.html` |
 
 ## 已上线模块
 
@@ -27,6 +28,14 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 - 展示参与混合的 s / p 轨道，以及未参与杂化的 p 轨道。
 - 包含键角、空间构型、典型分子和自动演示。
 - 支持拖动旋转、滚轮缩放、全屏观察。
+
+### C–C 成键过程
+
+- 从两个已杂化碳原子开始，用进度条观看靠近、σ 键形成和 π 键形成。
+- 乙烷：sp³–sp³，1 个 σ 键。
+- 乙烯：sp²–sp²，1 个 σ + 1 个 π 键。
+- 乙炔：sp–sp，1 个 σ + 2 个 π 键。
+- 支持 `?mol=ethane|ethene|ethyne&t=0..1` 参数。
 
 ### 分子空间构型
 
