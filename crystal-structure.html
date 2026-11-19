@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#04070f" />
+<title>晶体结构 · 晶胞与配位数 · 高中化学可视化平台</title>
+<meta name="description" content="交互式晶体结构演示：NaCl 离子晶体、金刚石原子晶体、干冰分子晶体和铜金属晶体的晶胞、配位数与作用力。" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<style>
+  :root {
+    --bg:#04070f; --line:rgba(148,163,184,.14); --text:#eaf3ff; --muted:#8ea4c0; --dim:#5e728c;
+    --cyan:#67e8f9; --teal:#5eead4; --violet:#a78bfa; --pink:#f472b6; --amber:#fbbf24;
+    --mono:"Cascadia Code","SFMono-Regular",Consolas,"Liberation Mono",monospace;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:"Segoe UI Variable","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  button{font:inherit} a{color:inherit} button,a{-webkit-tap-highlight-color:transparent}
+  :focus-visible{outline:2px solid rgba(103,232,249,.8);outline-offset:3px}
+  .page-glow{position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(920px 650px at 5% -8%,rgba(20,184,166,.15),transparent 64%),radial-gradient(1000px 760px at 98% 2%,rgba(91,33,182,.15),transparent 68%),radial-gradient(900px 700px at 55% 108%,rgba(14,116,144,.11),transparent 66%),linear-gradient(160deg,#050a14 0%,#04070f 55%,#050811 100%)}
+  .page-glow::after{content:"";position:absolute;inset:0;opacity:.22;background-image:linear-gradient(rgba(148,163,184,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.04) 1px,transparent 1px);background-size:46px 46px;mask-image:radial-gradient(circle at 50% 38%,black,transparent 77%);-webkit-mask-image:radial-gradient(circle at 50% 38%,black,transparent 77%)}
+  .shell{width:min(1580px,100%);min-height:100vh;margin:0 auto;padding:22px 28px 14px;display:flex;flex-direction:column}
+  .site-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding:0 2px 16px;animation:rise .7s cubic-bezier(.22,.8,.3,1) both}
+  .brand{display:flex;align-items:center;gap:15px;min-width:0;color:inherit;text-decoration:none}
+  .brand:hover{opacity:.85}
+  .brand-mark{width:52px;height:52px;flex:0 0 auto;border-radius:16px;border:1px solid rgba(103,232,249,.2);background:radial-gradient(circle at 32% 24%,rgba(103,232,249,.2),transparent 55%),linear-gradient(150deg,rgba(11,28,46,.9),rgba(5,11,22,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 34px rgba(0,0,0,.34);display:grid;place-items:center}
+  .brand-mark svg{width:40px;height:40px}
+  .kicker{display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:9.5px;font-weight:650;letter-spacing:.19em;text-transform:uppercase}
+  .kicker::before{content:"";width:16px;height:1px;background:linear-gradient(90deg,var(--cyan),transparent)}
+  .brand h1{margin:4px 0 2px;font-size:clamp(26px,2.7vw,37px);line-height:1.05;letter-spacing:-.04em;font-weight:760}
+  .brand h1 span{background:linear-gradient(105deg,#e7fdff,var(--cyan) 45%,#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand p{margin:0;color:var(--muted);font-size:12px;letter-spacing:.02em}
+  .header-meta{display:flex;flex-direction:column;align-items:flex-end;gap:7px;padding-top:4px;flex:0 0 auto}
+  .meta-pill{display:inline-flex;align-items:center;gap:8px;height:29px;padding:0 11px;border:1px solid rgba(103,232,249,.16);border-radius:999px;background:rgba(8,20,34,.62);color:#c7e9ef;font-size:10px;letter-spacing:.08em;white-space:nowrap}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(94,234,212,.08),0 0 12px rgba(94,234,212,.8);animation:breathe 2.6s ease-in-out infinite}
+  .meta-note{color:var(--dim);font-size:9.5px;letter-spacing:.08em}
+  .main{flex:1;min-height:640px;display:grid;grid-template-columns:300px minmax(0,1fr);grid-template-areas:"sidebar stage";gap:16px}
+  .sidebar{grid-area:sidebar;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:13px;padding-right:3px;scrollbar-width:thin;scrollbar-color:rgba(103,232,249,.2) transparent}
+  .sidebar::-webkit-scrollbar{width:5px}.sidebar::-webkit-scrollbar-thumb{background:rgba(103,232,249,.18);border-radius:99px}
+  .card{position:relative;flex:0 0 auto;padding:17px 18px;border:1px solid var(--line);border-radius:19px;background:radial-gradient(120% 100% at 0% 0%,rgba(103,232,249,.045),transparent 48%),linear-gradient(155deg,rgba(13,24,43,.83),rgba(7,14,27,.72));box-shadow:0 22px 60px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.045);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);animation:rise .62s cubic-bezier(.22,.8,.3,1) both}
+  .sidebar .card:nth-child(1){animation-delay:.05s}.sidebar .card:nth-child(2){animation-delay:.11s}.sidebar .card:nth-child(3){animation-delay:.17s}
+  .card::before{content:"";position:absolute;inset:0 18px auto;height:1px;background:linear-gradient(90deg,transparent,rgba(103,232,249,.2),transparent)}
+  .card-kicker{color:var(--dim);font-size:9.5px;font-weight:650;letter-spacing:.18em;text-transform:uppercase}
+  .card h3{margin:3px 0 0;font-size:15px;line-height:1.3;letter-spacing:-.01em;font-weight:650}
+  .current-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .formula{font-family:var(--mono);font-size:30px;line-height:1.1;font-weight:600;letter-spacing:-.06em;color:#f2ffff;text-shadow:0 0 26px rgba(103,232,249,.18)}
+  .formula small{font-size:15px;color:var(--cyan);letter-spacing:0}
+  .type-badge{display:inline-flex;align-items:center;height:23px;padding:0 9px;border:1px solid rgba(103,232,249,.2);border-radius:999px;background:rgba(103,232,249,.07);color:#bff8ff;font-size:9.5px;white-space:nowrap}
+  .current-desc{margin:8px 0 12px;color:var(--muted);font-size:10.5px;line-height:1.65}
+  .fact-list{margin-top:3px}
+  .fact-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 0;border-bottom:1px solid rgba(148,163,184,.075);font-size:10.5px}
+  .fact-row:last-child{border-bottom:0;padding-bottom:2px}
+  .fact-row span{color:var(--dim);flex:0 0 auto}.fact-row strong{color:#d8e9ff;font-size:10.5px;font-weight:550;text-align:right;line-height:1.45}
+  .legend{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:11px;padding-top:10px;border-top:1px solid rgba(148,163,184,.075);color:var(--dim);font-size:9px}
+  .legend-item{display:inline-flex;align-items:center;gap:5px}
+  .legend-dot{width:8px;height:8px;border-radius:50%}
+  .note{margin:10px 0 0;padding-top:10px;border-top:1px solid rgba(148,163,184,.075);color:var(--dim);font-size:9.5px;line-height:1.65}
+  .note strong{color:#fbcfe8;font-weight:550}
+  .tip-card{display:flex;gap:10px;align-items:flex-start;padding:14px 16px}
+  .tip-icon{width:30px;height:30px;flex:0 0 auto;display:grid;place-items:center;border:1px solid rgba(103,232,249,.2);border-radius:9px;background:rgba(103,232,249,.07);color:var(--cyan)}
+  .tip-icon svg{width:15px;height:15px}
+  .tip-copy h4{margin:1px 0 4px;color:#e7f3ff;font-size:10.5px;font-weight:650}.tip-copy p{margin:0;color:var(--dim);font-size:9.3px;line-height:1.6}
+  .tip-copy strong{color:#bdfbf1;font-weight:550}
+  .stage-card{grid-area:stage;position:relative;display:flex;flex-direction:column;min-height:0;overflow:hidden;border:1px solid var(--line);border-radius:25px;background:radial-gradient(1100px 700px at 50% 26%,rgba(18,58,88,.34),transparent 62%),radial-gradient(900px 620px at 82% 92%,rgba(76,29,149,.14),transparent 70%),linear-gradient(155deg,#07101e 0%,#040812 58%,#060a14 100%);box-shadow:0 32px 100px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.055);animation:rise .72s cubic-bezier(.22,.8,.3,1) both}
+  .stage-card::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.42;background-image:linear-gradient(rgba(148,163,184,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.04) 1px,transparent 1px);background-size:37px 37px;mask-image:radial-gradient(circle at 50% 44%,black 0%,transparent 73%);-webkit-mask-image:radial-gradient(circle at 50% 44%,black 0%,transparent 73%)}
+  .stage-head{position:relative;z-index:6;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:18px 20px 0}
+  .stage-heading{min-width:0}
+  .module-home{display:inline-flex;align-items:center;gap:5px;margin-bottom:4px;color:rgba(142,164,192,.72);font-size:9.5px;letter-spacing:.04em;text-decoration:none;transition:color .2s ease}
+  .module-home:hover{color:var(--cyan)}
+  .eyebrow{display:flex;align-items:center;gap:9px;color:var(--dim);font-size:9.3px;font-weight:650;letter-spacing:.2em;text-transform:uppercase}
+  .eyebrow-line{display:inline-block;width:32px;height:1px;background:linear-gradient(90deg,rgba(103,232,249,.55),transparent)}
+  .stage-heading h2{margin:5px 0 0;font-size:clamp(19px,1.9vw,24px);line-height:1.2;font-weight:670;letter-spacing:-.03em}
+  .stage-heading h2 #formula{background:linear-gradient(100deg,#f4feff,#a5f3fc 58%,#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stage-status{display:flex;align-items:center;gap:7px;margin-top:6px;color:var(--muted);font-size:9.8px;letter-spacing:.03em;font-variant-numeric:tabular-nums}
+  .status-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(94,234,212,.06),0 0 12px rgba(94,234,212,.75)}
+  .status-sep{color:rgba(148,163,184,.35)}
+  .stage-controls{display:flex;align-items:center;gap:8px;padding-top:3px;flex-wrap:wrap;justify-content:flex-end}
+  .type-tabs{display:flex;gap:3px;padding:4px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(4,10,20,.6);overflow-x:auto;max-width:100%;scrollbar-width:none}
+  .type-tabs::-webkit-scrollbar{display:none}
+  .type-btn{flex:0 0 auto;height:30px;padding:0 10px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--dim);font-size:10px;white-space:nowrap;cursor:pointer;transition:.2s ease}
+  .type-btn:hover{color:#dffbff;background:rgba(103,232,249,.055)}
+  .type-btn.active{color:#f0ffff;border-color:rgba(103,232,249,.3);background:linear-gradient(145deg,rgba(103,232,249,.16),rgba(94,234,212,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 22px rgba(34,211,238,.1)}
+  .icon-btn,.cell-btn{height:34px;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(148,163,184,.13);border-radius:10px;background:rgba(4,10,20,.54);color:var(--muted);font-size:9.5px;cursor:pointer;transition:.2s ease}
+  .icon-btn{width:34px}.cell-btn{padding:0 10px;white-space:nowrap}
+  .cell-btn[aria-pressed="true"]{color:#bdfbf1;border-color:rgba(94,234,212,.3);background:rgba(94,234,212,.08)}
+  .icon-btn:hover,.cell-btn:hover{color:#effeff;border-color:rgba(103,232,249,.28);background:rgba(103,232,249,.07)}
+  .icon-btn svg,.cell-btn svg{width:14px;height:14px}
+  .stage-view{position:relative;flex:1;min-height:390px;isolation:isolate;touch-action:none;cursor:grab;overflow:hidden}
+  .stage-view.dragging{cursor:grabbing}
+  .stage-glow{position:absolute;left:50%;top:48%;width:min(62%,580px);aspect-ratio:1;transform:translate(-50%,-50%);z-index:0;pointer-events:none;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.1) 0%,rgba(59,130,246,.05) 34%,transparent 69%);filter:blur(28px)}
+  #scene{position:absolute;inset:0;z-index:1;width:100%;height:100%;display:block}
+  .stage-view::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 50% 49%,transparent 37%,rgba(3,7,14,.14) 68%,rgba(3,7,14,.52) 100%),linear-gradient(180deg,rgba(4,8,16,.18),transparent 18%,transparent 78%,rgba(4,8,16,.3))}
+  .stage-legend{position:absolute;left:14px;bottom:11px;z-index:5;display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:6px 9px;border:1px solid rgba(148,163,184,.1);border-radius:9px;background:rgba(4,10,20,.46);color:rgba(157,180,204,.7);font-size:8.5px;backdrop-filter:blur(8px);pointer-events:none}
+  .legend-item{display:inline-flex;align-items:center;gap:5px}
+  .legend-dot{width:8px;height:8px;border-radius:50%}
+  .view-hint{position:absolute;right:14px;bottom:11px;z-index:5;display:flex;align-items:center;gap:6px;height:25px;padding:0 9px;border:1px solid rgba(148,163,184,.11);border-radius:999px;background:rgba(4,10,20,.46);color:rgba(157,180,204,.7);font-size:8.5px;letter-spacing:.03em;backdrop-filter:blur(8px);pointer-events:none;user-select:none}
+  .view-hint svg{width:12px;height:12px;opacity:.8}
+  .stage-foot{position:relative;z-index:6;display:flex;align-items:center;gap:15px;flex-wrap:wrap;padding:10px 20px;border-top:1px solid rgba(148,163,184,.08);background:rgba(5,12,23,.44);color:var(--dim);font-size:9px}
+  .foot-item{display:inline-flex;align-items:baseline;gap:6px}.foot-item strong{color:#e9fbff;font-family:var(--mono);font-size:11px;font-weight:550}
+  .foot-spacer{margin-left:auto}.cell-note{display:inline-flex;align-items:center;gap:6px;color:#bdfbf1}.cell-note i{width:5px;height:5px;border-radius:50%;background:var(--teal);box-shadow:0 0 9px var(--teal)}
+  .steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0 0;animation:rise .7s .15s cubic-bezier(.22,.8,.3,1) both}
+  .step{position:relative;padding:14px 15px;border:1px solid rgba(148,163,184,.1);border-radius:14px;background:rgba(7,15,28,.54)}
+  .step-num{color:rgba(103,232,249,.48);font-family:var(--mono);font-size:9px}.step h4{margin:9px 0 4px;color:#e8f7ff;font-size:11px;font-weight:600}.step p{margin:0;color:var(--dim);font-size:9.3px;line-height:1.6}
+  .step:not(:last-child)::after{content:"→";position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:rgba(103,232,249,.3);font-size:12px}
+  .site-footer{display:flex;justify-content:space-between;gap:22px;padding:12px 4px 0;color:rgba(94,114,140,.9);font-size:9.2px;line-height:1.55}
+  .site-footer p{margin:0;max-width:920px}.footer-tag{flex:0 0 auto;color:rgba(103,232,249,.48);white-space:nowrap}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes breathe{0%,100%{opacity:.65;transform:scale(.9)}50%{opacity:1;transform:scale(1.12)}}
+  @media(max-width:1120px){.shell{padding-left:20px;padding-right:20px}.main{grid-template-columns:278px minmax(0,1fr)}.stage-head{padding-left:16px;padding-right:16px}.stage-foot{padding-left:16px;padding-right:16px}.type-btn{padding:0 8px}}
+  @media(max-width:980px){.shell{padding:18px 16px 14px}.main{grid-template-columns:1fr;grid-template-areas:"stage" "sidebar";min-height:0}.stage-card{min-height:620px}.sidebar{display:grid;grid-template-columns:1fr 1fr;overflow:visible}.sidebar .card:nth-child(1){grid-column:1/-1}.sidebar .card:nth-child(2){grid-column:1}.sidebar .card:nth-child(3){grid-column:2;align-self:start}.steps{grid-template-columns:1fr 1fr}.step:nth-child(2)::after{display:none}.site-header{padding-bottom:14px}}
+  @media(max-width:680px){.shell{padding:14px 12px 10px}.brand{gap:11px}.brand-mark{width:44px;height:44px;border-radius:13px}.brand-mark svg{width:34px;height:34px}.brand h1{font-size:clamp(23px,7vw,31px)}.brand p{display:none}.kicker{font-size:8.5px;letter-spacing:.14em}.header-meta{display:none}.stage-card{min-height:0}.stage-head{flex-direction:column;align-items:stretch;gap:11px;padding:15px 13px 0}.stage-controls{justify-content:flex-start;padding-top:0;width:100%}.type-tabs{flex:1;min-width:0}.type-btn{flex:1;padding:0 5px}.cell-btn{padding:0 8px}.icon-btn{width:33px}.stage-view{min-height:345px}.stage-foot{padding:9px 13px;gap:9px;font-size:8.5px}.foot-spacer{margin-left:0}.stage-legend{left:9px;bottom:8px;gap:7px;font-size:8px;padding:5px 7px}.view-hint{right:8px;bottom:8px;font-size:8px;height:23px}.sidebar{grid-template-columns:1fr}.sidebar .card:nth-child(2),.sidebar .card:nth-child(3){grid-column:1}.steps{grid-template-columns:1fr;margin-top:13px}.step:not(:last-child)::after{display:none}.site-footer{flex-direction:column;gap:5px}}
+  @media(max-width:420px){.stage-view{min-height:310px}.type-btn{font-size:9px}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="page-glow" aria-hidden="true"></div>
+<div class="shell">
+  <header class="site-header">
+    <a class="brand" href="./" title="返回平台首页" aria-label="返回高中化学可视化平台首页">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none"><defs><linearGradient id="markGrad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#67e8f9"/><stop offset=".55" stop-color="#5eead4"/><stop offset="1" stop-color="#a78bfa"/></linearGradient><radialGradient id="coreGrad" cx="0" cy="0" r="1" gradientTransform="translate(32 32) rotate(90) scale(6)" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".45" stop-color="#c7feff"/><stop offset="1" stop-color="#67e8f9" stop-opacity="0"/></radialGradient></defs><circle cx="32" cy="32" r="7" fill="url(#coreGrad)"/><ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(28 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".8"/><ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(-32 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".5"/><ellipse cx="32" cy="32" rx="24" ry="8" transform="rotate(90 32 32)" stroke="url(#markGrad)" stroke-width="1.1" opacity=".32"/><circle cx="32" cy="32" r="2.5" fill="#f4ffff"/></svg>
+      </div>
+      <div><div class="kicker">高中化学可视化平台 · 物质结构与性质</div><h1>晶体<span>结构</span></h1><p>从晶胞出发，看离子、原子、分子和金属晶体</p></div>
+    </a>
+    <div class="header-meta"><div class="meta-pill"><span class="live-dot"></span>交互式 3D 晶胞</div><div class="meta-note">拖动旋转 · 滚轮缩放 · 切换晶体</div></div>
+  </header>
+
+  <main class="main">
+    <section class="stage-card">
+      <div class="stage-head">
+        <div class="stage-heading">
+          <a class="module-home" href="./">← 平台首页</a>
+          <div class="eyebrow">晶体结构 · 3D 晶胞 <span class="eyebrow-line"></span></div>
+          <h2><span id="formula">NaCl</span> · <span id="typeName">离子晶体</span></h2>
+          <div class="stage-status"><span class="status-dot"></span><span id="statusText">面心立方晶胞 · 配位数 6</span></div>
+        </div>
+        <div class="stage-controls">
+          <div class="type-tabs" role="group" aria-label="选择晶体类型">
+            <button class="type-btn active" type="button" data-crystal="nacl">NaCl</button>
+            <button class="type-btn" type="button" data-crystal="diamond">金刚石</button>
+            <button class="type-btn" type="button" data-crystal="dryice">干冰</button>
+            <button class="type-btn" type="button" data-crystal="copper">铜</button>
+          </div>
+          <button class="cell-btn" id="cellToggle" type="button" aria-pressed="true" title="显示或隐藏晶胞框">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7 12 3l8 4v10l-8 4-8-4V7Z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>
+            晶胞
+          </button>
+          <button class="icon-btn" id="resetViewBtn" type="button" title="重置视角" aria-label="重置视角"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10a8 8 0 1 1 2.3 6.7"/><path d="M4 4v6h6"/></svg></button>
+          <button class="icon-btn" id="fullscreenBtn" type="button" title="全屏观察" aria-label="全屏观察"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M21 16v5h-5"/></svg></button>
+        </div>
+      </div>
+      <div class="stage-view" id="stageView" aria-label="可拖动旋转的晶体晶胞三维视图">
+        <div class="stage-glow" aria-hidden="true"></div>
+        <canvas id="scene" aria-hidden="true"></canvas>
+        <div class="stage-legend" id="stageLegend" aria-hidden="true"></div>
+        <div class="view-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="18" rx="5"/><path d="M12 6v4"/></svg>拖动旋转 · 滚轮缩放</div>
+      </div>
+      <div class="stage-foot">
+        <div class="foot-item">晶胞类型 <strong id="cellType">面心立方</strong></div>
+        <div class="foot-item">配位数 <strong id="coordination">6</strong></div>
+        <div class="foot-spacer"></div>
+        <div class="cell-note"><i></i><span id="footNote">离子键 · 高熔点</span></div>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <section class="card">
+        <div class="card-kicker">当前晶体</div>
+        <div class="current-head"><div class="formula" id="sideFormula">NaCl</div><span class="type-badge" id="typeBadge">离子晶体</span></div>
+        <p class="current-desc" id="sideName">氯化钠 · 面心立方晶胞</p>
+        <div class="fact-list">
+          <div class="fact-row"><span>构成微粒</span><strong id="factParticles">Na⁺、Cl⁻</strong></div>
+          <div class="fact-row"><span>微粒间作用力</span><strong id="factForce">离子键</strong></div>
+          <div class="fact-row"><span>配位数</span><strong id="factCoord">6</strong></div>
+          <div class="fact-row"><span>熔点</span><strong id="factMelting">801 ℃</strong></div>
+          <div class="fact-row"><span>常见实例</span><strong id="factExamples">NaCl、CsCl</strong></div>
+        </div>
+        <div class="legend" id="legend"></div>
+        <p class="note" id="sideNote">Na⁺ 与 Cl⁻ 交替排列，每个离子周围有 6 个异种离子。</p>
+      </section>
+      <section class="card">
+        <div class="card-kicker">晶胞与配位数</div>
+        <h3>先看一个重复单元</h3>
+        <div class="fact-list" style="margin-top:10px">
+          <div class="fact-row"><span>晶胞</span><strong>晶体重复的最小单元</strong></div>
+          <div class="fact-row"><span>配位数</span><strong>最近邻微粒数</strong></div>
+          <div class="fact-row"><span>本页</span><strong>晶胞框可开关</strong></div>
+        </div>
+        <p class="note">晶胞框只是辅助线，不代表粒子被限制在框内；晶体是晶胞在三维空间中重复排列形成的。</p>
+      </section>
+      <section class="card tip-card">
+        <div class="tip-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/><path d="M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/></svg></div>
+        <div class="tip-copy"><h4>晶体类型看作用力</h4><p>离子晶体靠离子键，原子晶体靠共价键，分子晶体靠分子间作用力，金属晶体靠金属键。</p></div>
+      </section>
+    </aside>
+  </main>
+
+  <section class="steps">
+    <div class="step"><span class="step-num">01</span><h4>找晶胞</h4><p>找出在三维空间中重复排列的最小单元。</p></div>
+    <div class="step"><span class="step-num">02</span><h4>数配位</h4><p>数一个微粒周围最近的异种或同种微粒数。</p></div>
+    <div class="step"><span class="step-num">03</span><h4>看作用力</h4><p>离子键、共价键、分子间作用力或金属键。</p></div>
+    <div class="step"><span class="step-num">04</span><h4>推性质</h4><p>作用力越强，通常熔点越高、硬度越大。</p></div>
+  </section>
+
+  <footer class="site-footer"><p>科学说明：晶胞与粒子排布为教学示意，实际晶体中微粒半径、晶胞参数和缺陷会有所不同。NaCl、金刚石、干冰和铜的配位数按常见晶体结构标注。</p><span class="footer-tag">高中化学可视化平台 · 晶体结构</span></footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const TAU = Math.PI * 2;
+  const FOV = 38 * Math.PI / 180;
+  const clamp = (v,a,b) => Math.min(b, Math.max(a,v));
+  const dot = (a,b) => a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+  const norm = v => { const l=Math.hypot(v[0],v[1],v[2])||1; return [v[0]/l,v[1]/l,v[2]/l]; };
+  const sub = (a,b) => [a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+  const dist = (a,b) => Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
+  function cross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
+
+  const CUBE = [[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]];
+  const CUBE_EDGES = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+
+  function cubePositions(base) {
+    const out = [];
+    for (const x of [0,1,2]) for (const y of [0,1,2]) for (const z of [0,1,2]) {
+      out.push([(x-1)*base, (y-1)*base, (z-1)*base]);
+    }
+    return out;
+  }
+
+  function buildNaCl() {
+    const atoms=[], bonds=[];
+    for (const x of [-1,0,1]) for (const y of [-1,0,1]) for (const z of [-1,0,1]) {
+      const parity = ((x+2)+(y+2)+(z+2))%2;
+      atoms.push({ pos:[x*1.05,y*1.05,z*1.05], color: parity===0?"#a78bfa":"#86efac", radius:.17, label:parity===0?"Na⁺":"Cl⁻", labelColor: parity===0?"#f5f3ff":"#052e16" });
+    }
+    for (let i=0;i<atoms.length;i++) for (let j=i+1;j<atoms.length;j++) {
+      const d=dist(atoms[i].pos,atoms[j].pos);
+      if (d < 1.12) bonds.push([i,j,"rgba(148,163,184,.12)",1]);
+    }
+    return {
+      atoms,bonds,cell:CUBE,cellScale:1.06,scale:1,radius:.17,
+      camera:{yaw:.65,pitch:.28,distance:8.6},
+      legend:[["Na⁺","#a78bfa"],["Cl⁻","#86efac"]],
+      cellType:"面心立方", coord:"6", status:"面心立方晶胞 · 配位数 6",
+      foot:"离子键 · 高熔点", formula:"NaCl", type:"离子晶体", name:"氯化钠 · 面心立方晶胞",
+      particles:"Na⁺、Cl⁻", force:"离子键", melting:"801 ℃", examples:"NaCl、CsCl",
+      note:"Na⁺ 与 Cl⁻ 交替排列，每个离子周围有 6 个异种离子。", descript:"NaCl 是典型的离子晶体，离子间通过较强的离子键结合，熔点较高。"
+    };
+  }
+
+  function buildDiamond() {
+    const raw = [[0,0,0],[0,.5,.5],[.5,0,.5],[.5,.5,0],[.25,.25,.25],[.25,.75,.75],[.75,.25,.75],[.75,.75,.25]];
+    const atoms = raw.map(p=>({pos:[(p[0]-.5)*2.15,(p[1]-.5)*2.15,(p[2]-.5)*2.15],color:"#cbd5e1",radius:.18,label:"C",labelColor:"#0f172a"}));
+    const bonds=[];
+    for (let i=0;i<atoms.length;i++) for (let j=i+1;j<atoms.length;j++) {
+      if (dist(atoms[i].pos,atoms[j].pos) < .95) bonds.push([i,j,"rgba(103,232,249,.28)",1.2]);
+    }
+    return {
+      atoms,bonds,cell:CUBE,cellScale:1.08,scale:1,radius:.18,
+      camera:{yaw:.82,pitch:.34,distance:8.4},
+      legend:[["C 原子","#cbd5e1"]], cellType:"面心立方", coord:"4", status:"面心立方晶胞 · 配位数 4",
+      foot:"共价键 · 熔点极高", formula:"C", type:"原子晶体", name:"金刚石 · 空间网状结构",
+      particles:"C 原子", force:"共价键", melting:"≈ 3550 ℃", examples:"金刚石、晶体硅",
+      note:"每个碳原子与周围 4 个碳原子形成共价键，构成空间网状结构。", descript:"金刚石是原子晶体，碳原子之间通过共价键形成三维网络，硬度大、熔点极高。"
+    };
+  }
+
+  function buildDryIce() {
+    const centers = [
+      {p:[0,0,0], d:[1,1,1]}, {p:[0,1,1], d:[1,-1,-1]}, {p:[1,0,1], d:[-1,1,-1]}, {p:[1,1,0], d:[-1,-1,1]}
+    ];
+    const atoms=[], bonds=[];
+    for (const item of centers) {
+      const c = [ (item.p[0]-.5)*2.3, (item.p[1]-.5)*2.3, (item.p[2]-.5)*2.3 ];
+      const d = norm(item.d);
+      const o1 = [c[0]+d[0]*.48,c[1]+d[1]*.48,c[2]+d[2]*.48];
+      const o2 = [c[0]-d[0]*.48,c[1]-d[1]*.48,c[2]-d[2]*.48];
+      const ci = atoms.length;
+      atoms.push({pos:c,color:"#cbd5e1",radius:.15,label:"C",labelColor:"#0f172a"});
+      atoms.push({pos:o1,color:"#fca5a5",radius:.13,label:"O",labelColor:"#450a0a"});
+      atoms.push({pos:o2,color:"#fca5a5",radius:.13,label:"O",labelColor:"#450a0a"});
+      bonds.push([ci,ci+1,"rgba(252,165,165,.4)",1.2]);
+      bonds.push([ci,ci+2,"rgba(252,165,165,.4)",1.2]);
+    }
+    return {
+      atoms,bonds,cell:CUBE,cellScale:1.16,scale:1,radius:.14,
+      camera:{yaw:.7,pitch:.26,distance:8.6},
+      legend:[["C 原子","#cbd5e1"],["O 原子","#fca5a5"]], cellType:"面心立方", coord:"12", status:"分子晶体 · 每个 CO₂ 周围 12 个",
+      foot:"分子间作用力 · 易升华", formula:"CO₂", type:"分子晶体", name:"干冰 · 分子晶体",
+      particles:"CO₂ 分子", force:"分子间作用力", melting:"−78.5 ℃ 升华", examples:"干冰、碘",
+      note:"CO₂ 分子占据面心立方位置，分子之间只存在较弱的分子间作用力。", descript:"干冰是分子晶体，CO₂ 分子按一定方式排列，分子间作用力较弱，容易升华。"
+    };
+  }
+
+  function buildCopper() {
+    const pts = [];
+    for (const x of [-1,1]) for (const y of [-1,1]) for (const z of [-1,1]) pts.push([x,y,z]);
+    for (const p of [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]]) pts.push(p);
+    const atoms = pts.map(p=>({pos:[p[0]*1.2,p[1]*1.2,p[2]*1.2],color:"#fb923c",radius:.22,label:"Cu",labelColor:"#431407"}));
+    const bonds=[];
+    for (let i=0;i<atoms.length;i++) for (let j=i+1;j<atoms.length;j++) {
+      if (dist(atoms[i].pos,atoms[j].pos) < 1.75) bonds.push([i,j,"rgba(251,146,60,.17)",1]);
+    }
+    return {
+      atoms,bonds,cell:CUBE,cellScale:1.22,scale:1,radius:.22,
+      camera:{yaw:.7,pitch:.3,distance:8.5},
+      legend:[["Cu 原子","#fb923c"]], cellType:"面心立方", coord:"12", status:"面心立方晶胞 · 配位数 12",
+      foot:"金属键 · 导电导热", formula:"Cu", type:"金属晶体", name:"铜 · 面心立方最密堆积",
+      particles:"Cu 原子", force:"金属键", melting:"1085 ℃", examples:"Cu、Ag、Au",
+      note:"铜采用面心立方最密堆积，每个铜原子周围有 12 个最近邻原子。", descript:"铜是金属晶体，金属阳离子与自由电子通过金属键结合，具有导电、导热和延展性。"
+    };
+  }
+
+  const MODELS = { nacl:buildNaCl(), diamond:buildDiamond(), dryice:buildDryIce(), copper:buildCopper() };
+  const params = new URLSearchParams(location.search);
+  const initial = MODELS[params.get("crystal")] ? params.get("crystal") : "nacl";
+  let current = initial;
+  let model = MODELS[current];
+  let showCell = params.get("cell") !== "0";
+
+  const stageCard = document.querySelector(".stage-card");
+  const stageView = document.getElementById("stageView");
+  const canvas = document.getElementById("scene");
+  const ctx = canvas.getContext("2d");
+  const formulaEl = document.getElementById("formula");
+  const typeName = document.getElementById("typeName");
+  const statusText = document.getElementById("statusText");
+  const cellType = document.getElementById("cellType");
+  const coordination = document.getElementById("coordination");
+  const footNote = document.getElementById("footNote");
+  const sideFormula = document.getElementById("sideFormula");
+  const typeBadge = document.getElementById("typeBadge");
+  const sideName = document.getElementById("sideName");
+  const factParticles = document.getElementById("factParticles");
+  const factForce = document.getElementById("factForce");
+  const factCoord = document.getElementById("factCoord");
+  const factMelting = document.getElementById("factMelting");
+  const factExamples = document.getElementById("factExamples");
+  const sideNote = document.getElementById("sideNote");
+  const legend = document.getElementById("legend");
+  const stageLegend = document.getElementById("stageLegend");
+  const cellToggle = document.getElementById("cellToggle");
+  const resetViewBtn = document.getElementById("resetViewBtn");
+  const fullscreenBtn = document.getElementById("fullscreenBtn");
+  const typeButtons = Array.from(document.querySelectorAll(".type-btn"));
+
+  let vw=1,vh=1,dpr=1,cssW=1,cssH=1;
+  let yaw=model.camera.yaw,pitch=model.camera.pitch,distance=model.camera.distance;
+  let yawTarget=yaw,pitchTarget=pitch,distanceTarget=distance;
+  let dragging=false,lastX=0,lastY=0,lastFrame=performance.now();
+  let viewMat=null,projMat=null;
+
+  function syncUI() {
+    formulaEl.textContent = model.formula;
+    typeName.textContent = model.type;
+    statusText.textContent = model.status;
+    cellType.textContent = model.cellType;
+    coordination.textContent = model.coord;
+    footNote.textContent = model.foot;
+    sideFormula.textContent = model.formula;
+    typeBadge.textContent = model.type;
+    sideName.textContent = model.name;
+    factParticles.textContent = model.particles;
+    factForce.textContent = model.force;
+    factCoord.textContent = model.coord;
+    factMelting.textContent = model.melting;
+    factExamples.textContent = model.examples;
+    sideNote.textContent = model.note;
+    legend.innerHTML = model.legend.map(([label,color]) => `<span class="legend-item"><i class="legend-dot" style="background:${color};box-shadow:0 0 9px ${color}88"></i>${label}</span>`).join("");
+    stageLegend.innerHTML = legend.innerHTML + '<span class="legend-item"><i class="legend-dot" style="background:transparent;border:1px solid rgba(103,232,249,.4)"></i>晶胞框</span>';
+    cellToggle.setAttribute("aria-pressed", showCell ? "true" : "false");
+    for (const btn of typeButtons) {
+      const on=btn.dataset.crystal===current;
+      btn.classList.toggle("active",on);
+      btn.setAttribute("aria-pressed",on?"true":"false");
+    }
+  }
+
+  function setModel(key) {
+    if (!MODELS[key] || key===current) return;
+    current=key; model=MODELS[key];
+    yawTarget=model.camera.yaw; pitchTarget=model.camera.pitch; distanceTarget=model.camera.distance;
+    syncUI();
+    stageCard.classList.remove("is-switching");
+    void stageCard.offsetWidth;
+    stageCard.classList.add("is-switching");
+    setTimeout(()=>stageCard.classList.remove("is-switching"),450);
+  }
+
+  function lookAt(eye, center, up) {
+    const z=norm(sub(eye,center)); const x=norm(cross(up,z)); const y=cross(z,x);
+    return new Float32Array([x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-dot(x,eye),-dot(y,eye),-dot(z,eye),1]);
+  }
+  function perspective(fovy,aspect,near,far){const f=1/Math.tan(fovy/2),nf=1/(near-far);return new Float32Array([f/aspect,0,0,0,0,f,0,0,0,0,(far+near)*nf,-1,0,0,2*far*near*nf,0]);}
+  function transform4(m,p){return [m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],m[1]*p[0]+m[5]*p[1]+m[9]*p[2]+m[13],m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14],m[3]*p[0]+m[7]*p[1]+m[11]*p[2]+m[15]];}
+  function project(p){
+    if(!viewMat||!projMat)return null;
+    const v=transform4(viewMat,p),c=transform4(projMat,v);
+    if(c[3]<=.0001)return null;
+    const depth=-v[2],focal=(cssH*.5)/Math.tan(FOV/2);
+    return {x:(c[0]/c[3]*.5+.5)*cssW,y:(-c[1]/c[3]*.5+.5)*cssH,depth,scale:focal/Math.max(.1,depth)};
+  }
+  function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+  function lighten(hex,f){const n=parseInt(hex.slice(1),16);return `rgb(${Math.round(((n>>16)&255)+(255-((n>>16)&255))*f)},${Math.round(((n>>8)&255)+(255-((n>>8)&255))*f)},${Math.round((n&255)+(255-(n&255))*f)})`;}
+  function darken(hex,f){const n=parseInt(hex.slice(1),16);return `rgb(${Math.round(((n>>16)&255)*(1-f))},${Math.round(((n>>8)&255)*(1-f))},${Math.round((n&255)*(1-f))})`;}
+  function atom(a) {
+    const p=project(a.pos); if(!p)return;
+    const r=Math.max(7,a.radius*p.scale*.95);
+    ctx.save(); ctx.globalCompositeOperation="lighter";
+    const halo=ctx.createRadialGradient(p.x,p.y,r*.2,p.x,p.y,r*2.2);
+    halo.addColorStop(0,hexA(a.color,.2)); halo.addColorStop(1,hexA(a.color,0));
+    ctx.fillStyle=halo; ctx.beginPath(); ctx.arc(p.x,p.y,r*2.2,0,TAU); ctx.fill(); ctx.restore();
+    const g=ctx.createRadialGradient(p.x-r*.3,p.y-r*.35,r*.1,p.x,p.y,r);
+    g.addColorStop(0,lighten(a.color,.55)); g.addColorStop(.45,a.color); g.addColorStop(1,darken(a.color,.45));
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,r,0,TAU); ctx.fill();
+    ctx.strokeStyle="rgba(255,255,255,.26)"; ctx.lineWidth=1; ctx.stroke();
+    if (a.label && r > 10) {
+      ctx.fillStyle=a.labelColor||"#08111e";
+      ctx.font=`600 ${Math.max(8,r*.72)}px "Segoe UI","Microsoft YaHei",sans-serif`;
+      ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(a.label,p.x,p.y+.5);
+    }
+  }
+
+  function render() {
+    const aspect=vw/Math.max(1,vh),fit=Math.max(1,1.08/Math.max(.25,aspect));
+    const d=distance*fit;
+    const eye=[d*Math.cos(pitch)*Math.sin(yaw),d*Math.sin(pitch),d*Math.cos(pitch)*Math.cos(yaw)];
+    viewMat=lookAt(eye,[0,0,0],[0,1,0]); projMat=perspective(FOV,aspect,.1,100);
+    ctx.clearRect(0,0,vw,vh);
+
+    if (showCell) {
+      const s=model.cellScale || 1;
+      for (const [i,j] of CUBE_EDGES) {
+        const a=project(CUBE[i].map(v=>v*s)), b=project(CUBE[j].map(v=>v*s));
+        if(!a||!b)continue;
+        ctx.save(); ctx.strokeStyle="rgba(103,232,249,.28)"; ctx.lineWidth=1.1; ctx.setLineDash([5,5]);
+        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.restore();
+      }
+    }
+
+    for (const [i,j,color,width] of model.bonds) {
+      const a=project(model.atoms[i].pos), b=project(model.atoms[j].pos);
+      if(!a||!b)continue;
+      ctx.strokeStyle=color; ctx.lineWidth=width; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    }
+
+    const atoms=model.atoms.map((a,index)=>({a,index,depth:project(a.pos)?.depth||0})).sort((x,y)=>y.depth-x.depth);
+    for (const item of atoms) atom(item.a);
+  }
+
+  function resize(){
+    const rect=stageView.getBoundingClientRect();
+    vw=Math.max(1,Math.floor(rect.width)); vh=Math.max(1,Math.floor(rect.height));
+    dpr=Math.min(devicePixelRatio||1,2);
+    canvas.width=Math.round(vw*dpr); canvas.height=Math.round(vh*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0); cssW=vw; cssH=vh;
+  }
+
+  function frame(now){
+    const dt=Math.min(.05,(now-lastFrame)/1000); lastFrame=now;
+    if(!dragging){ yaw+=(yawTarget-yaw)*Math.min(1,dt*5); pitch+=(pitchTarget-pitch)*Math.min(1,dt*5); }
+    distance+=(distanceTarget-distance)*Math.min(1,dt*8);
+    render(); requestAnimationFrame(frame);
+  }
+
+  for(const btn of typeButtons) btn.addEventListener("click",()=>setModel(btn.dataset.crystal));
+  cellToggle.addEventListener("click",()=>{ showCell=!showCell; syncUI(); });
+  resetViewBtn.addEventListener("click",()=>{ yawTarget=model.camera.yaw; pitchTarget=model.camera.pitch; distanceTarget=model.camera.distance; });
+  fullscreenBtn.addEventListener("click",async()=>{ try{ if(!document.fullscreenElement) await stageCard.requestFullscreen(); else await document.exitFullscreen(); }catch(e){} });
+  document.addEventListener("fullscreenchange",()=>{ fullscreenBtn.title=document.fullscreenElement?"退出全屏":"全屏观察"; setTimeout(resize,60); });
+  stageView.addEventListener("pointerdown",e=>{ if(e.button!==undefined&&e.button!==0)return; dragging=true;lastX=e.clientX;lastY=e.clientY;stageView.classList.add("dragging");stageView.setPointerCapture?.(e.pointerId);e.preventDefault(); });
+  stageView.addEventListener("pointermove",e=>{ if(!dragging)return; const dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;yaw-=dx*.006;pitch=clamp(pitch+dy*.006,-1.3,1.3);yawTarget=yaw;pitchTarget=pitch; });
+  function endDrag(e){ if(!dragging)return;dragging=false;stageView.classList.remove("dragging");try{stageView.releasePointerCapture?.(e.pointerId);}catch(err){} }
+  stageView.addEventListener("pointerup",endDrag);stageView.addEventListener("pointercancel",endDrag);stageView.addEventListener("pointerleave",e=>{if(e.buttons===0)endDrag(e);});
+  stageView.addEventListener("wheel",e=>{e.preventDefault();distanceTarget=clamp(distanceTarget*Math.exp(e.deltaY*.0012),6.2,14);},{passive:false});
+  stageView.addEventListener("dblclick",()=>{yawTarget=model.camera.yaw;pitchTarget=model.camera.pitch;distanceTarget=model.camera.distance;});
+  if("ResizeObserver" in window)new ResizeObserver(resize).observe(stageView);
+  window.addEventListener("resize",resize);
+
+  resize(); syncUI();
+  requestAnimationFrame(now=>{lastFrame=now;frame(now);});
+})();
+</script>
+</body>
+</html>

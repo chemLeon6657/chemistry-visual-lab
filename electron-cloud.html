@@ -270,6 +270,11 @@
     border-color: rgba(94, 234, 212, 0.24);
     background: rgba(94, 234, 212, 0.08);
   }
+  .record-badge[data-state="bonding"] {
+    color: #ddd6fe;
+    border-color: rgba(167, 139, 250, 0.3);
+    background: rgba(167, 139, 250, 0.09);
+  }
 
   .phase-line {
     display: flex;
@@ -295,6 +300,10 @@
   .phase-line[data-state="done"] .phase-dot {
     background: var(--teal);
     box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.08), 0 0 14px rgba(94, 234, 212, 0.8);
+  }
+  .phase-line[data-state="bonding"] .phase-dot {
+    background: var(--violet);
+    box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.08), 0 0 14px rgba(167, 139, 250, 0.8);
   }
   .phase-line .pct {
     margin-left: auto;
@@ -570,6 +579,10 @@
     background: var(--amber);
     box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.06), 0 0 12px rgba(251, 191, 36, 0.8);
   }
+  .stage-status[data-state="bonding"] .status-dot {
+    background: var(--violet);
+    box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.06), 0 0 12px rgba(167, 139, 250, 0.8);
+  }
   .stage-status[data-state="done"] .status-dot {
     background: var(--teal);
     box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.07), 0 0 12px rgba(94, 234, 212, 0.8);
@@ -711,8 +724,51 @@
     height: 100%;
     display: block;
   }
+  #glcanvas, #overlay { transition: opacity .38s ease; }
   #glcanvas { z-index: 1; }
   #overlay { z-index: 3; pointer-events: none; }
+  #bondcanvas {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .38s ease;
+  }
+  .stage-view.bond-phase #glcanvas,
+  .stage-view.bond-phase #overlay { opacity: 0; }
+  .stage-view.bond-phase #bondcanvas { opacity: 1; }
+  .stage-view.bond-phase .view-hint { opacity: 0; }
+  .phase-track {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 1px 0 7px;
+    color: var(--dim);
+    font-size: 8.5px;
+    letter-spacing: .04em;
+  }
+  .phase-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 20px;
+    padding: 0 7px;
+    border: 1px solid rgba(148,163,184,.12);
+    border-radius: 999px;
+    background: rgba(148,163,184,.04);
+    transition: .2s ease;
+  }
+  .phase-chip i { width: 4px; height: 4px; border-radius: 50%; background: rgba(148,163,184,.4); }
+  .phase-chip.active { color: #bdfbf1; border-color: rgba(94,234,212,.25); background: rgba(94,234,212,.07); }
+  .phase-chip.active i { background: var(--teal); box-shadow: 0 0 7px var(--teal); }
+  .phase-chip.done { color: #dff8ff; }
+  .phase-chip.bond.active { color: #ddd6fe; border-color: rgba(167,139,250,.3); background: rgba(167,139,250,.08); }
+  .phase-chip.bond.active i { background: var(--violet); box-shadow: 0 0 7px var(--violet); }
+  .phase-arrow { color: rgba(103,232,249,.28); }
+  .range-labels .mid { color: rgba(148,163,184,.62); }
   .stage-view::after {
     content: "";
     position: absolute;
@@ -1109,7 +1165,7 @@
         <div class="stage-heading">
           <a class="module-home" href="./">← 平台首页</a>
           <div class="eyebrow">电子云视图 <span class="eyebrow-line"></span></div>
-          <h2><span id="typeName">sp³</span> 杂化</h2>
+          <h2><span id="typeName">sp³</span> <span id="headingTail">杂化 → C₂H₆</span></h2>
           <div class="stage-status" id="stageStatus" data-state="idle">
             <span class="status-dot"></span>
             <span id="stagePhase">未杂化</span>
@@ -1118,7 +1174,7 @@
           </div>
           <a class="bond-feature" href="bond-formation.html">
             <span class="bond-icon">C–C</span>
-            观察两个碳原子如何成键
+            单独查看完整成键过程
             <span class="bond-arrow" aria-hidden="true">→</span>
           </a>
         </div>
@@ -1146,6 +1202,7 @@
         <div class="stage-glow" aria-hidden="true"></div>
         <canvas id="glcanvas" aria-hidden="true"></canvas>
         <canvas id="overlay" aria-hidden="true"></canvas>
+        <canvas id="bondcanvas" aria-hidden="true"></canvas>
         <div class="view-hint" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
             <rect x="7" y="2.5" width="10" height="18" rx="5"/>
@@ -1160,8 +1217,13 @@
 
       <div class="progress-dock">
         <div class="progress-top">
-          <div class="progress-label">杂化程度 <strong id="progressPercent">0%</strong></div>
+          <div class="progress-label">过程进度 <strong id="progressPercent">0%</strong></div>
           <div class="progress-message" id="progressMessage">s 与 p 轨道彼此独立</div>
+        </div>
+        <div class="phase-track" aria-hidden="true">
+          <span class="phase-chip" id="phaseHybrid"><i></i>杂化</span>
+          <span class="phase-arrow">→</span>
+          <span class="phase-chip bond" id="phaseBond"><i></i>成键</span>
         </div>
         <div class="slider-row">
           <button class="play-btn" id="playBtn" type="button" aria-pressed="false" aria-label="自动演示杂化过程">
@@ -1170,7 +1232,7 @@
           </button>
           <div class="range-wrap">
             <input id="progressRange" type="range" min="0" max="100" step="1" value="0" aria-label="杂化程度，从 0% 未杂化到 100% 杂化完成" aria-valuetext="0%，未杂化" />
-            <div class="range-labels"><span>未杂化</span><span>杂化完成</span></div>
+            <div class="range-labels"><span>原子轨道</span><span class="mid">杂化完成</span><span>成键完成</span></div>
           </div>
         </div>
       </div>
@@ -1181,7 +1243,7 @@
         <div class="card-head">
           <div>
             <div class="card-kicker">观察记录</div>
-            <h3>杂化进行时</h3>
+            <h3 id="recordTitle">杂化进行时</h3>
           </div>
           <span class="record-badge" id="recordBadge" data-state="idle">未开始</span>
         </div>
@@ -1200,6 +1262,7 @@
           <div class="fact-row"><span>杂化后轨道</span><strong id="orbitalCount">4 个等价轨道</strong></div>
           <div class="fact-row"><span>参与混合</span><strong id="mixValue">1 × 2s + 3 × 2p</strong></div>
           <div class="fact-row"><span>成键方向</span><strong id="directionValue">正四面体四个顶点</strong></div>
+          <div class="fact-row"><span>成键演示</span><strong id="bondValue">乙烷 · C–C σ 键</strong></div>
         </div>
         <div class="examples">
           <span>典型分子</span>
@@ -1253,7 +1316,7 @@
   const TAU = Math.PI * 2;
   const TOTAL_PARTICLES = 16000;
   const FOV = 38 * Math.PI / 180;
-  const PLAY_MS = 6200;
+  const PLAY_MS = 10800;
 
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -1306,6 +1369,10 @@
       progressStart: "s 与 p_z 轨道彼此独立",
       progressMid: "s 与 p_z 沿直线重组成两个方向",
       progressEnd: "形成 2 个等价 sp 杂化轨道",
+      bondMolecule: "乙炔", bondFormula: "C₂H₂", bondType: "C≡C σ + 2π", bondLength: "120 pm",
+      bondText: "两个 sp 碳原子形成 C–C σ 键，两组 p 轨道再侧面重叠形成 2 个 π 键。",
+      bondProgress: "两个 sp 碳原子靠近，σ 键正在形成",
+      bondEndText: "C₂H₂ 的 C≡C 键形成完成：1 个 σ + 2 个 π。",
       legendNote: "两个 sp 杂化轨道能量相同、方向相反。粉色、琥珀色 p 轨道未参与杂化，可继续形成 π 键。"
     },
     sp2: {
@@ -1332,6 +1399,10 @@
       progressStart: "s、p 轨道彼此独立",
       progressMid: "电子云在平面内重组成三个方向",
       progressEnd: "形成 3 个等价 sp² 杂化轨道",
+      bondMolecule: "乙烯", bondFormula: "C₂H₄", bondType: "C=C σ + π", bondLength: "134 pm",
+      bondText: "两个 sp² 碳原子形成 C–C σ 键，未杂化 p 轨道再侧面重叠形成 1 个 π 键。",
+      bondProgress: "两个 sp² 碳原子靠近，p 轨道准备形成 π 键",
+      bondEndText: "C₂H₄ 的 C=C 键形成完成：1 个 σ + 1 个 π。",
       legendNote: "紫色 p_z 未参与杂化，垂直于三个 sp² 轨道所在的平面。颜色仅用于区分轨道。"
     },
     sp3: {
@@ -1359,6 +1430,10 @@
       progressStart: "s 与 p 轨道彼此独立",
       progressMid: "电子云向四个方向重新聚集",
       progressEnd: "形成 4 个等价 sp³ 杂化轨道",
+      bondMolecule: "乙烷", bondFormula: "C₂H₆", bondType: "C–C σ 键", bondLength: "154 pm",
+      bondText: "两个 sp³ 碳原子靠近，各自的 sp³ 杂化轨道头碰头重叠，形成 1 个 C–C σ 键。",
+      bondProgress: "两个 sp³ 碳原子靠近，σ 键正在形成",
+      bondEndText: "C₂H₆ 的 C–C 单键形成完成，可绕键轴旋转。",
       legendNote: "四个 sp³ 轨道能量相同，指向正四面体的四个顶点。颜色仅用于区分轨道。"
     }
   };
@@ -1726,8 +1801,10 @@
   const stageView = document.getElementById("stageView");
   const glCanvas = document.getElementById("glcanvas");
   const overlay = document.getElementById("overlay");
+  const bondCanvas = document.getElementById("bondcanvas");
   const stageFallback = document.getElementById("stageFallback");
   const typeName = document.getElementById("typeName");
+  const headingTail = document.getElementById("headingTail");
   const stageStatus = document.getElementById("stageStatus");
   const stagePhase = document.getElementById("stagePhase");
   const stagePercent = document.getElementById("stagePercent");
@@ -1739,6 +1816,7 @@
   const resetViewBtn = document.getElementById("resetViewBtn");
   const fullscreenBtn = document.getElementById("fullscreenBtn");
   const recordBadge = document.getElementById("recordBadge");
+  const recordTitle = document.getElementById("recordTitle");
   const phaseLine = document.getElementById("phaseLine");
   const phaseText = document.getElementById("phaseText");
   const sidePercent = document.getElementById("sidePercent");
@@ -1748,6 +1826,9 @@
   const orbitalCount = document.getElementById("orbitalCount");
   const mixValue = document.getElementById("mixValue");
   const directionValue = document.getElementById("directionValue");
+  const bondValue = document.getElementById("bondValue");
+  const phaseHybrid = document.getElementById("phaseHybrid");
+  const phaseBond = document.getElementById("phaseBond");
   const examplesEl = document.getElementById("examples");
   const leftoverLegend = document.getElementById("leftoverLegend");
   const leftoverSwatch = document.getElementById("leftoverSwatch");
@@ -1766,6 +1847,8 @@
   if (paramType === "sp²") currentType = "sp2";
   if (paramType === "sp³") currentType = "sp3";
   let progress = clamp(Number.isFinite(paramT) ? paramT : 0, 0, 1);
+  let hybridProgress = 0;
+  let bondProgress = 0;
   let playing = false;
   let playStart = 0;
   let playFrom = 0;
@@ -2142,6 +2225,8 @@
     glCanvas.height = Math.round(viewportH * dpr);
     overlay.width = Math.round(viewportW * dpr);
     overlay.height = Math.round(viewportH * dpr);
+    bondCanvas.width = Math.round(viewportW * dpr);
+    bondCanvas.height = Math.round(viewportH * dpr);
 
     if (glState.ready) {
       const gl = glState.gl;
@@ -2149,12 +2234,16 @@
     }
     const ctx = overlay.getContext("2d");
     if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const bctx = bondCanvas.getContext("2d");
+    if (bctx) bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   // ── UI sync ─────────────────────────────────────────────────────────────
   function syncTypeUI() {
     const type = TYPES[currentType];
     typeName.textContent = type.display;
+    headingTail.textContent = "杂化 → " + type.bondFormula;
+    bondValue.textContent = type.bondMolecule + " · " + type.bondType;
     angleValue.textContent = type.angle;
     shapeValue.textContent = type.shape;
     orbitalCount.textContent = type.count;
@@ -2191,13 +2280,16 @@
 
   function phaseFor(p) {
     if (p < 0.02) return "idle";
-    if (p > 0.98) return "done";
-    return "mixing";
+    if (p < 0.56) return "mixing";
+    if (p > 0.985) return "done";
+    return "bonding";
   }
 
   function updateUI(force = false) {
     const pct = Math.round(progress * 100);
     const state = phaseFor(progress);
+    const type = TYPES[currentType];
+    const phaseLabel = state === "idle" ? "未杂化" : state === "mixing" ? "杂化中" : state === "bonding" ? "成键中" : "成键完成";
 
     if (force || pct !== lastUiPercent) {
       lastUiPercent = pct;
@@ -2206,22 +2298,27 @@
       sidePercent.textContent = pct + "%";
       progressRange.value = String(pct);
       progressRange.style.setProperty("--p", pct + "%");
-      progressRange.setAttribute("aria-valuetext", pct + "%，" + (state === "idle" ? "未杂化" : state === "done" ? "杂化完成" : "杂化中"));
+      progressRange.setAttribute("aria-valuetext", pct + "%，" + phaseLabel);
     }
 
     if (force || state !== lastUiPhase) {
       lastUiPhase = state;
-      const type = TYPES[currentType];
-      const phaseLabel = state === "idle" ? "未杂化" : state === "done" ? "杂化完成" : "杂化中";
       stageStatus.dataset.state = state;
       stagePhase.textContent = phaseLabel;
       phaseLine.dataset.state = state;
       phaseText.textContent = phaseLabel;
       recordBadge.dataset.state = state;
-      recordBadge.textContent = state === "idle" ? "未开始" : state === "done" ? "已完成" : "进行中";
-      phaseDesc.textContent = state === "idle" ? type.startText : state === "done" ? type.endText : type.midText;
-      progressMessage.textContent = state === "idle" ? type.progressStart : state === "done" ? type.progressEnd : type.progressMid;
+      recordBadge.textContent = state === "idle" ? "未开始" : state === "done" ? "已完成" : state === "bonding" ? "成键中" : "进行中";
+      recordTitle.textContent = state === "bonding" ? "杂化完成，正在成键" : state === "done" ? "杂化与成键完成" : "杂化进行时";
+      phaseDesc.textContent = state === "idle" ? type.startText : state === "mixing" ? type.midText : state === "bonding" ? type.bondText : type.bondEndText;
+      progressMessage.textContent = state === "idle" ? type.progressStart : state === "mixing" ? type.progressMid : state === "bonding" ? type.bondProgress : type.progressEnd + "；" + type.bondEndText;
+      headingTail.textContent = state === "bonding" || state === "done" ? "杂化完成 → " + type.bondFormula : "杂化 → " + type.bondFormula;
     }
+
+    phaseHybrid.classList.toggle("active", state === "mixing");
+    phaseHybrid.classList.toggle("done", state === "bonding" || state === "done");
+    phaseBond.classList.toggle("active", state === "bonding");
+    phaseBond.classList.toggle("done", state === "done");
   }
 
   function setType(typeKey) {
@@ -2331,7 +2428,7 @@
 
   function drawTargetGeometry(ctx) {
     const type = TYPES[currentType];
-    const t = smoothstep(0.08, 0.95, progress);
+    const t = smoothstep(0.08, 0.95, hybridProgress);
     if (t <= 0.001) return;
     const axisPoints = type.axes.map((a) => {
       const n = norm3(a);
@@ -2378,8 +2475,8 @@
 
   function drawAngle(ctx) {
     const type = TYPES[currentType];
-    if (progress < 0.24) return;
-    const alpha = smoothstep(0.24, 0.7, progress);
+    if (hybridProgress < 0.24) return;
+    const alpha = smoothstep(0.24, 0.7, hybridProgress);
     const a = norm3(type.axes[0]);
     const b = norm3(type.axes[1]);
 
@@ -2426,9 +2523,9 @@
   }
 
   function drawCloudLabels(ctx) {
-    if (progress < 0.58) return;
+    if (hybridProgress < 0.58) return;
     const type = TYPES[currentType];
-    const alpha = smoothstep(0.58, 0.9, progress);
+    const alpha = smoothstep(0.58, 0.9, hybridProgress);
     const axis = norm3(type.axes[0]);
     const p = projectPoint([axis[0] * 3.12, axis[1] * 3.12, axis[2] * 3.12]);
     ctx.save();
@@ -2512,6 +2609,204 @@
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, glState.meshIndexBuffer);
   }
 
+
+  // ── integrated C–C bond phase (phase 2) ────────────────────────────────
+  const bondCtx = bondCanvas.getContext("2d");
+
+  function bondLobe(x, y, angle, len, wid, color, alpha) {
+    if (alpha <= 0.01) return;
+    bondCtx.save();
+    bondCtx.translate(x, y);
+    bondCtx.rotate(angle);
+    const g = bondCtx.createRadialGradient(len * .48, 0, 0, len * .48, 0, len * .58);
+    g.addColorStop(0, color.replace("A", String(alpha * .52)));
+    g.addColorStop(.62, color.replace("A", String(alpha * .16)));
+    g.addColorStop(1, color.replace("A", "0"));
+    bondCtx.fillStyle = g;
+    bondCtx.beginPath();
+    bondCtx.ellipse(len * .48, 0, len * .52, wid, 0, 0, TAU);
+    bondCtx.fill();
+    bondCtx.restore();
+  }
+
+  function bondAtom(x, y, r, label, sub) {
+    bondCtx.save();
+    bondCtx.globalCompositeOperation = "lighter";
+    const halo = bondCtx.createRadialGradient(x, y, r * .1, x, y, r * 2.2);
+    halo.addColorStop(0, "rgba(103,232,249,.18)");
+    halo.addColorStop(1, "rgba(103,232,249,0)");
+    bondCtx.fillStyle = halo;
+    bondCtx.beginPath(); bondCtx.arc(x, y, r * 2.2, 0, TAU); bondCtx.fill();
+    bondCtx.restore();
+    const g = bondCtx.createRadialGradient(x - r * .3, y - r * .36, r * .12, x, y, r);
+    g.addColorStop(0, "#f4ffff");
+    g.addColorStop(.35, "#cbd5e1");
+    g.addColorStop(1, "#64748b");
+    bondCtx.fillStyle = g;
+    bondCtx.beginPath(); bondCtx.arc(x, y, r, 0, TAU); bondCtx.fill();
+    bondCtx.strokeStyle = "rgba(255,255,255,.38)";
+    bondCtx.lineWidth = 1;
+    bondCtx.stroke();
+    bondCtx.fillStyle = "#07101e";
+    bondCtx.font = `700 ${Math.max(9, r * .72)}px "Segoe UI","Microsoft YaHei",sans-serif`;
+    bondCtx.textAlign = "center";
+    bondCtx.textBaseline = "middle";
+    bondCtx.fillText(label, x, y + .5);
+    if (sub) {
+      bondCtx.fillStyle = "rgba(165,243,252,.76)";
+      bondCtx.font = `600 ${Math.max(8, r * .38)}px "Cascadia Code","Segoe UI",monospace`;
+      bondCtx.fillText(sub, x, y - r * 1.55);
+    }
+  }
+
+  function bondText(text, x, y, color, size = 10) {
+    bondCtx.save();
+    bondCtx.font = `600 ${size}px "Segoe UI","Microsoft YaHei",sans-serif`;
+    const w = bondCtx.measureText(text).width + 14;
+    bondCtx.fillStyle = "rgba(4,10,20,.72)";
+    roundedRect(bondCtx, x - w / 2, y - 11, w, 22, 7);
+    bondCtx.fill();
+    bondCtx.strokeStyle = "rgba(148,163,184,.16)";
+    bondCtx.stroke();
+    bondCtx.fillStyle = color;
+    bondCtx.textAlign = "center";
+    bondCtx.textBaseline = "middle";
+    bondCtx.fillText(text, x, y + .5);
+    bondCtx.restore();
+  }
+
+  function drawBondPhase() {
+    if (!bondCtx) return;
+    bondCtx.clearRect(0, 0, viewportW, viewportH);
+    if (progress < 0.54) return;
+
+    const type = TYPES[currentType];
+    const t = bondProgress;
+    const w = viewportW, h = viewportH;
+    const cx = w * .5, cy = h * .47;
+    const u = Math.min(w / 10.5, h / 5.7);
+    const gap = lerp(6.2, 3.3, smoothstep(0, .78, t));
+    const lx = cx - gap * u * .5;
+    const rx = cx + gap * u * .5;
+    const r = Math.max(13, .37 * u);
+    const sigma = smoothstep(.3, .7, t);
+    const pi = smoothstep(.18, .78, t);
+    const hybridAlpha = .88;
+
+    // π clouds behind the atoms.
+    if (type.leftovers.length > 0) {
+      const pCol = type.leftovers.length > 1 ? "rgba(129,140,248," : "rgba(167,139,250,";
+      const pCol2 = "rgba(56,189,248,";
+      bondCtx.save();
+      bondCtx.globalCompositeOperation = "lighter";
+      for (const sign of [-1, 1]) {
+        const py = cy + sign * 1.06 * u;
+        const g = bondCtx.createRadialGradient(cx, py, 0, cx, py, gap * u * .42);
+        g.addColorStop(0, pCol + (0.24 * pi) + ")");
+        g.addColorStop(1, pCol + "0)");
+        bondCtx.fillStyle = g;
+        bondCtx.beginPath();
+        bondCtx.ellipse(cx, py, gap * u * .42, .42 * u, 0, 0, TAU);
+        bondCtx.fill();
+      }
+      if (type.leftovers.length > 1) {
+        for (const sign of [-1, 1]) {
+          const px = cx + sign * .72 * u;
+          const g = bondCtx.createRadialGradient(px, cy, 0, px, cy, 1.0 * u);
+          g.addColorStop(0, pCol2 + (0.18 * pi) + ")");
+          g.addColorStop(1, pCol2 + "0)");
+          bondCtx.fillStyle = g;
+          bondCtx.beginPath();
+          bondCtx.ellipse(px, cy, .68 * u, 1.05 * u, 0, 0, TAU);
+          bondCtx.fill();
+        }
+      }
+      bondCtx.restore();
+    }
+
+    // Remaining outward hybrid lobes.
+    const outward = type.n === 4 ? [150, 180, 210] : type.n === 3 ? [155, 205] : [180];
+    for (const base of outward) {
+      bondLobe(lx - r * .2, cy, base * Math.PI / 180, .92 * u, .24 * u, "rgba(94,234,212,A)", .38);
+      bondLobe(rx + r * .2, cy, (180 - base) * Math.PI / 180, .92 * u, .24 * u, "rgba(94,234,212,A)", .38);
+    }
+    // Inward hybrid lobes make the σ bond.
+    bondLobe(lx + r * .38, cy, 0, 1.38 * u, .36 * u, "rgba(94,234,212,A)", hybridAlpha);
+    bondLobe(rx - r * .38, cy, Math.PI, 1.38 * u, .36 * u, "rgba(94,234,212,A)", hybridAlpha);
+
+    // C–C bond line / σ cloud.
+    bondCtx.save();
+    bondCtx.strokeStyle = `rgba(103,232,249,${.18 + sigma * .62})`;
+    bondCtx.lineWidth = 2;
+    bondCtx.beginPath(); bondCtx.moveTo(lx + r * .2, cy); bondCtx.lineTo(rx - r * .2, cy); bondCtx.stroke();
+    if (sigma > .01) {
+      const g = bondCtx.createRadialGradient(cx, cy, 0, cx, cy, 1.5 * u);
+      g.addColorStop(0, `rgba(94,234,212,${.28 * sigma})`);
+      g.addColorStop(.6, `rgba(103,232,249,${.12 * sigma})`);
+      g.addColorStop(1, "rgba(103,232,249,0)");
+      bondCtx.fillStyle = g;
+      bondCtx.beginPath(); bondCtx.ellipse(cx, cy, 1.7 * u, .46 * u, 0, 0, TAU); bondCtx.fill();
+    }
+    bondCtx.restore();
+
+    // p orbitals (drawn as vertical / side lobes).
+    if (type.leftovers.length > 0) {
+      for (const x of [lx, rx]) {
+        for (const sign of [-1, 1]) {
+          bondLobe(x, cy + sign * .1 * u, sign > 0 ? Math.PI / 2 : -Math.PI / 2, 1.05 * u, .3 * u, "rgba(167,139,250,A)", .44 * pi);
+        }
+      }
+      if (type.leftovers.length > 1) {
+        for (const x of [lx, rx]) {
+          for (const sign of [-1, 1]) {
+            bondLobe(x + sign * .08 * u, cy, sign > 0 ? 0 : Math.PI, .95 * u, .25 * u, "rgba(56,189,248,A)", .38 * pi);
+          }
+        }
+      }
+    }
+
+    // C–H bonds and hydrogens, so the molecule is recognizable as ethane/ethene/ethyne.
+    const hAngles = type.n === 4 ? [150, 180, 210] : type.n === 3 ? [150, 210] : [180];
+    const hydrogens = [];
+    for (const a of hAngles) {
+      const rad = a * Math.PI / 180;
+      hydrogens.push({ x: lx + Math.cos(rad) * 1.18 * u, y: cy + Math.sin(rad) * 1.18 * u, bondX: lx, bondY: cy });
+      const radR = (180 - a) * Math.PI / 180;
+      hydrogens.push({ x: rx + Math.cos(radR) * 1.18 * u, y: cy + Math.sin(radR) * 1.18 * u, bondX: rx, bondY: cy });
+    }
+    bondCtx.save();
+    bondCtx.strokeStyle = "rgba(203,213,225,.34)";
+    bondCtx.lineWidth = 1.5;
+    for (const h of hydrogens) {
+      bondCtx.beginPath(); bondCtx.moveTo(h.bondX, h.bondY); bondCtx.lineTo(h.x, h.y); bondCtx.stroke();
+    }
+    bondCtx.restore();
+
+    bondAtom(lx, cy, r, "C", type.display);
+    bondAtom(rx, cy, r, "C", type.display);
+    for (const h of hydrogens) {
+      bondCtx.save();
+      bondCtx.fillStyle = "rgba(226,239,255,.9)";
+      bondCtx.beginPath(); bondCtx.arc(h.x, h.y, Math.max(4, .155 * u), 0, TAU); bondCtx.fill();
+      bondCtx.strokeStyle = "rgba(255,255,255,.35)"; bondCtx.lineWidth = .8; bondCtx.stroke();
+      bondCtx.fillStyle = "rgba(7,16,30,.82)";
+      bondCtx.font = `600 ${Math.max(6, .12 * u)}px "Segoe UI",sans-serif`;
+      bondCtx.textAlign = "center"; bondCtx.textBaseline = "middle";
+      bondCtx.fillText("H", h.x, h.y + .3);
+      bondCtx.restore();
+    }
+
+    if (sigma > .35) bondText("σ · 2e⁻", cx, cy - 1.55 * u, "rgba(165,243,252,.96)", 9);
+    if (type.leftovers.length > 0 && pi > .45) {
+      bondText(type.leftovers.length > 1 ? "π₁ · 2e⁻" : "π · 2e⁻", cx, cy - 2.2 * u, "rgba(196,181,253,.96)", 9);
+    }
+    if (type.leftovers.length > 1 && pi > .55) {
+      bondText("π₂ · 2e⁻", cx + 1.25 * u, cy + 1.45 * u, "rgba(125,211,252,.96)", 9);
+    }
+    if (t < .24) bondText("两个已杂化碳原子靠近", cx, cy + 2.6 * u, "rgba(148,163,184,.8)", 8.5);
+    else if (t > .92) bondText(type.bondMolecule + " · " + type.bondType, cx, cy + 2.6 * u, "rgba(94,234,212,.95)", 9);
+  }
+
   function render() {
     if (!glState.ready) {
       drawOverlay();
@@ -2537,7 +2832,7 @@
       gl.useProgram(glState.meshProgram);
       gl.uniformMatrix4fv(glState.meshUniforms.u_view, false, viewMat);
       gl.uniformMatrix4fv(glState.meshUniforms.u_proj, false, projMat);
-      gl.uniform1f(glState.meshUniforms.u_t, progress);
+      gl.uniform1f(glState.meshUniforms.u_t, hybridProgress);
       gl.uniform1f(glState.meshUniforms.u_meshOpacity, 1.85);
       bindMeshAttributes(gl);
       gl.drawElements(gl.TRIANGLES, glState.meshIndexCount, gl.UNSIGNED_SHORT, 0);
@@ -2546,7 +2841,7 @@
     gl.useProgram(glState.program);
     gl.uniformMatrix4fv(glState.uniforms.u_view, false, viewMat);
     gl.uniformMatrix4fv(glState.uniforms.u_proj, false, projMat);
-    gl.uniform1f(glState.uniforms.u_t, progress);
+    gl.uniform1f(glState.uniforms.u_t, hybridProgress);
     gl.uniform1f(glState.uniforms.u_dpr, dpr);
     gl.uniform1f(glState.uniforms.u_focal, focal);
     bindPointAttributes(gl);
@@ -2575,8 +2870,12 @@
     }
     distance += (distanceTarget - distance) * Math.min(1, dt * 8.5);
 
+    hybridProgress = clamp(progress / 0.6, 0, 1);
+    bondProgress = clamp((progress - 0.55) / 0.45, 0, 1);
+    stageView.classList.toggle("bond-phase", progress > 0.555);
     updateUI();
     render();
+    drawBondPhase();
     requestAnimationFrame(frame);
   }
 
