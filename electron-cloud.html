@@ -739,7 +739,20 @@
   }
   .stage-view.bond-phase #glcanvas,
   .stage-view.bond-phase #overlay { opacity: 0; }
-  .stage-view.bond-phase #bondcanvas { opacity: 1; }
+  .stage-view.bond-phase #bondcanvas { opacity: 0; }
+  .bond-frame {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+    background: transparent;
+    transition: opacity .38s ease;
+  }
+  .stage-view.bond-phase .bond-frame { opacity: 1; pointer-events: auto; }
   .stage-view.bond-phase .view-hint { opacity: 0; }
   .phase-track {
     display: flex;
@@ -1203,6 +1216,7 @@
         <canvas id="glcanvas" aria-hidden="true"></canvas>
         <canvas id="overlay" aria-hidden="true"></canvas>
         <canvas id="bondcanvas" aria-hidden="true"></canvas>
+        <iframe id="bondFrame" class="bond-frame" title="可旋转的 C–C 成键三维视图" src="about:blank"></iframe>
         <div class="view-hint" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
             <rect x="7" y="2.5" width="10" height="18" rx="5"/>
@@ -1802,6 +1816,7 @@
   const glCanvas = document.getElementById("glcanvas");
   const overlay = document.getElementById("overlay");
   const bondCanvas = document.getElementById("bondcanvas");
+  const bondFrame = document.getElementById("bondFrame");
   const stageFallback = document.getElementById("stageFallback");
   const typeName = document.getElementById("typeName");
   const headingTail = document.getElementById("headingTail");
@@ -1848,7 +1863,32 @@
   if (paramType === "sp³") currentType = "sp3";
   let progress = clamp(Number.isFinite(paramT) ? paramT : 0, 0, 1);
   let hybridProgress = 0;
-  let bondProgress = 0;
+  let bondProgress = clamp((progress - 0.55) / 0.45, 0, 1);
+  const BOND_MOL = { sp3: "ethane", sp2: "ethene", sp: "ethyne" };
+  let lastBondSent = -1;
+  function ensureBondFrame(force = false) {
+    const mol = BOND_MOL[currentType];
+    if (!force && bondFrame.dataset.mol === mol && bondFrame.dataset.loaded === "1") return;
+    if (bondFrame.dataset.mol === mol && bondFrame.dataset.loading === "1") return;
+    bondFrame.dataset.mol = mol;
+    bondFrame.dataset.loading = "1";
+    bondFrame.dataset.loaded = "";
+    bondFrame.src = `bond-formation.html?embed=1&mol=${mol}&t=${bondProgress.toFixed(3)}`;
+  }
+  function unloadBondFrame() {
+    if (!bondFrame.dataset.mol) return;
+    bondFrame.dataset.mol = "";
+    bondFrame.dataset.loading = "";
+    bondFrame.dataset.loaded = "";
+    bondFrame.src = "about:blank";
+  }
+  function sendBondProgress(force = false) {
+    if (!force && Math.abs(bondProgress - lastBondSent) < .004) return;
+    lastBondSent = bondProgress;
+    try {
+      bondFrame.contentWindow?.postMessage({ type: "bond-progress", value: bondProgress }, "*");
+    } catch (err) {}
+  }
   let playing = false;
   let playStart = 0;
   let playFrom = 0;
@@ -2326,6 +2366,7 @@
     currentType = typeKey;
     uploadScene(getScene(typeKey));
     syncTypeUI();
+    if (progress > 0.555) ensureBondFrame();
     const v = VIEWS[typeKey];
     yawTarget = v.yaw;
     pitchTarget = v.pitch;
@@ -2872,10 +2913,16 @@
 
     hybridProgress = clamp(progress / 0.6, 0, 1);
     bondProgress = clamp((progress - 0.55) / 0.45, 0, 1);
-    stageView.classList.toggle("bond-phase", progress > 0.555);
+    if (progress > 0.555) {
+      if (bondFrame.dataset.loaded !== "1") ensureBondFrame();
+    } else if (bondFrame.dataset.mol) {
+      unloadBondFrame();
+    }
+    const bondVisible = progress > 0.555 && bondFrame.dataset.loaded === "1";
+    stageView.classList.toggle("bond-phase", bondVisible);
     updateUI();
-    render();
-    drawBondPhase();
+    if (!bondVisible) render();
+    if (bondVisible) sendBondProgress();
     requestAnimationFrame(frame);
   }
 
@@ -2987,6 +3034,12 @@
     resizeObserver.observe(stageView);
   }
   window.addEventListener("resize", resize);
+  bondFrame.addEventListener("load", () => {
+    if (bondFrame.dataset.loading !== "1") return;
+    bondFrame.dataset.loading = "";
+    bondFrame.dataset.loaded = "1";
+    sendBondProgress(true);
+  });
 
   // ── boot ────────────────────────────────────────────────────────────────
   const glOk = initGL();

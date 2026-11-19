@@ -418,6 +418,22 @@
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
   }
+
+  /* Embedded mode: show only the rotatable 3D bond scene. */
+  body.embed { background: transparent !important; overflow: hidden; }
+  body.embed .page-glow,
+  body.embed .site-header,
+  body.embed .sidebar,
+  body.embed .steps,
+  body.embed .site-footer,
+  body.embed .stage-head,
+  body.embed .stage-foot,
+  body.embed .progress-dock { display: none !important; }
+  body.embed .shell { width: 100% !important; max-width: none !important; min-height: 100vh !important; padding: 0 !important; background: transparent !important; }
+  body.embed .main { display: block !important; min-height: 100vh !important; background: transparent !important; }
+  body.embed .stage-card { min-height: 100vh !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
+  body.embed .stage-card::before { display: none !important; }
+  body.embed .stage-view { min-height: 100vh !important; background: transparent !important; }
 </style>
 </head>
 <body>
@@ -639,6 +655,7 @@
   };
 
   const params = new URLSearchParams(window.location.search);
+  if (params.get("embed") === "1") document.body.classList.add("embed");
   const initial = MOLECULES[params.get("mol")] ? params.get("mol") : "ethane";
   let current = initial;
   let model = MOLECULES[current];
@@ -1181,6 +1198,15 @@
   });
   if ("ResizeObserver" in window) new ResizeObserver(resize).observe(stageView);
   window.addEventListener("resize", resize);
+  window.addEventListener("message", (event) => {
+    const data = event.data;
+    if (!data || data.type !== "bond-progress") return;
+    const value = Number(data.value);
+    if (!Number.isFinite(value)) return;
+    progress = clamp(value, 0, 1);
+    stopPlaying();
+    syncUI();
+  });
 
   resize();
   for (const btn of molButtons) btn.setAttribute("aria-pressed", btn.classList.contains("active") ? "true" : "false");
