@@ -934,16 +934,20 @@
   function drawPiCloud(axis, strength, color) {
     if (strength <= .01) return;
     const a = norm(axis);
+    const leftP = project([-1, 0, 0]);
+    const rightP = project([1, 0, 0]);
+    if (!leftP || !rightP) return;
+    // The π cloud is elongated along the C–C bond axis, not along the p orbital.
+    const bondAngle = Math.atan2(rightP.y - leftP.y, rightP.x - leftP.x);
     const p1 = project([0, a[1] * 1.25, a[2] * 1.25]);
     const p2 = project([0, -a[1] * 1.25, -a[2] * 1.25]);
     for (const p of [p1, p2]) {
       if (!p) continue;
-      const rx = Math.max(24, p.scale * 1.55);
-      const ry = Math.max(10, p.scale * .4);
+      const rx = Math.max(24, p.scale * 1.5);
+      const ry = Math.max(10, p.scale * .38);
       ctx.save();
       ctx.translate(p.x, p.y);
-      const angle = Math.atan2(project([0, 0, 1]).y - project([0, 0, 0]).y, project([0, 0, 1]).x - project([0, 0, 0]).x);
-      ctx.rotate(angle);
+      ctx.rotate(bondAngle);
       const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
       g.addColorStop(0, hexA(color, .26 * strength));
       g.addColorStop(.6, hexA(color, .12 * strength));
@@ -951,12 +955,14 @@
       ctx.fillStyle = g;
       ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, TAU); ctx.fill();
       ctx.restore();
-      const ex = p.x + rx * .15, ey = p.y;
+
+      // Two electrons sit along the bond direction inside the π cloud.
+      const ux = Math.cos(bondAngle), uy = Math.sin(bondAngle);
       ctx.save();
       ctx.fillStyle = "rgba(255,255,255,.75)";
       ctx.shadowColor = hexA(color, .9); ctx.shadowBlur = 9;
-      ctx.beginPath(); ctx.arc(ex - 5, ey, 2.3, 0, TAU); ctx.fill();
-      ctx.beginPath(); ctx.arc(ex + 5, ey, 2.3, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x - ux * 5, p.y - uy * 5, 2.3, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x + ux * 5, p.y + uy * 5, 2.3, 0, TAU); ctx.fill();
       ctx.restore();
     }
   }
