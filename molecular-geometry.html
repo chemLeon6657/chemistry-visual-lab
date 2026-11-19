@@ -656,6 +656,15 @@
   .must-pitfalls span{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border:1px solid rgba(251,191,36,.13);border-radius:6px;background:rgba(251,191,36,.035);color:rgba(217,201,154,.9);font-size:8.5px}
   .must-pitfalls b{color:#fde68a;font-weight:550}
 
+  .example-bar{position:relative;z-index:6;display:flex;align-items:center;gap:5px;overflow-x:auto;padding:8px 20px 0;scrollbar-width:none}
+  .example-bar::-webkit-scrollbar{display:none}
+  .example-label{flex:0 0 auto;color:rgba(94,114,140,.82);font-size:8.5px;letter-spacing:.08em;margin-right:2px}
+  .example-chip{display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;height:27px;padding:0 9px;border:1px solid rgba(148,163,184,.12);border-radius:7px;background:rgba(4,10,20,.36);color:#c8e4f5;font-size:9px;white-space:nowrap}
+  .example-chip b{color:#e8fbff;font-weight:550;font-family:var(--mono);font-size:9px}
+  .example-chip small{color:rgba(103,232,249,.58);font-size:8px}
+  .example-chip.ext{border-color:rgba(251,191,36,.16);background:rgba(251,191,36,.035)}.example-chip.ext small{color:rgba(251,191,36,.72)}
+  @media(max-width:680px){.example-bar{padding:7px 13px 0}.example-chip{height:23px;font-size:7.5px}.example-chip b{font-size:8px}}
+
   @media (max-width: 1120px) {
     .shell { padding-left: 20px; padding-right: 20px; }
     .main { grid-template-columns: 278px minmax(0, 1fr); }
@@ -787,6 +796,20 @@
         </div>
       </div>
 
+
+      <div class="example-bar" aria-label="常见分子和离子示例">
+        <span class="example-label">常见例子</span>
+        <span class="example-chip"><b>CO₂ / N₂O / CS₂ / HCN</b><small>直线形</small></span>
+        <span class="example-chip"><b>BF₃ / CO₃²⁻ / NO₃⁻ / SO₃</b><small>平面三角形</small></span>
+        <span class="example-chip"><b>SO₂ / O₃</b><small>V 形</small></span>
+        <span class="example-chip"><b>CH₄ / CCl₄ / NH₄⁺ / SO₄²⁻</b><small>正四面体</small></span>
+        <span class="example-chip"><b>NH₃ / H₃O⁺ / PCl₃</b><small>三角锥</small></span>
+        <span class="example-chip"><b>H₂O / H₂S</b><small>V 形</small></span>
+        <span class="example-chip"><b>CHCl₃</b><small>四面体 · 极性</small></span>
+        <span class="example-chip ext"><b>PCl₅</b><small>三角双锥</small></span>
+        <span class="example-chip ext"><b>SF₆</b><small>八面体</small></span>
+        <span class="example-chip ext"><b>XeF₄</b><small>平面正方形</small></span>
+      </div>
       <div class="stage-view" id="stageView" aria-label="可拖动旋转的分子构型三维视图">
         <div class="stage-glow" aria-hidden="true"></div>
         <canvas id="scene" aria-hidden="true"></canvas>
@@ -897,6 +920,8 @@
         <div class="must-card"><h4><i></i>极性：看对称性</h4><p>极性键不一定得到极性分子；<strong>对称抵消</strong>时分子非极性。CO₂、BF₃、CH₄、CCl₄、PCl₅、SF₆ 非极性；H₂O、NH₃、SO₂、CHCl₃ 极性。</p></div>
         <div class="must-card"><h4><i></i>杂化速记</h4><p><strong>sp</strong> 直线 180°；<strong>sp²</strong> 平面三角 120°；<strong>sp³</strong> 四面体 109.5°。有孤对时，电子域构型不变，分子构型变。</p></div>
         <div class="must-card"><h4><i></i>构型怎么测</h4><p><strong>红外光谱</strong>看化学键/官能团；<strong>质谱</strong>测相对分子质量；<strong>X 射线衍射</strong>测定晶体中分子的空间结构。</p></div>
+        <div class="must-card"><h4><i></i>平面正方形（拓展）</h4><p><strong>XeF₄</strong>：4 个成键电子对 + 2 对孤对，电子域八面体，分子为平面正方形；sp³d²，键角 90°，非极性。</p></div>
+
 
       </div>
     </div>
