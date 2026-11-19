@@ -19,7 +19,7 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 | --- | --- | --- |
 | 平台首页 | 平台介绍、八个模块导航、知识地图、鲸鱼娘助教 | `index.html` |
 | 电子云杂化实验室 | sp / sp² / sp³ 杂化过程、C–C 成键阶段、键角、空间构型 | `electron-cloud.html` |
-| 分子空间构型 | VSEPR、孤对电子、直线形/平面三角形/四面体/三角锥/V 形 | `molecular-geometry.html` |
+| 分子空间构型 | VSEPR、孤对电子、杂化、极性、键角比较与必背构型表 | `molecular-geometry.html` |
 | C–C 成键过程 | 乙烷/乙烯/乙炔的 σ 键与 π 键形成过程 | `bond-formation.html` |
 | 晶体结构 | NaCl、CsCl、CaF₂、ZnS、SiO₂、金刚石、石墨、干冰、铜的晶胞、配位数与作用力 | `crystal-structure.html` |
 | 反应机理 | 取代、加成、消去反应与能量曲线 | `reaction-mechanism.html` |

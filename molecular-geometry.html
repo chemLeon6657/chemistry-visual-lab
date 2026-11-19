@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#04070f" />
 <title>分子空间构型 · VSEPR 与孤对电子 · 高中化学可视化平台</title>
-<meta name="description" content="交互式 VSEPR 分子空间构型演示：直线形、平面三角形、正四面体、三角锥和 V 形，观察孤对电子如何压缩键角。" />
+<meta name="description" content="交互式 VSEPR 分子空间构型演示：直线形、平面三角形、正四面体、三角锥、V 形、三角双锥和八面体，观察孤对电子如何压缩键角。" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
 <style>
   :root {
@@ -633,6 +633,29 @@
   @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes breathe { 0%,100% { opacity: .65; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.12); } }
 
+  /* ── must-know reference ─────────────────────────────── */
+  .mustknow{margin-top:20px;padding:17px 18px 15px;border:1px solid rgba(148,163,184,.14);border-radius:20px;background:radial-gradient(800px 400px at 8% 0%,rgba(20,184,166,.07),transparent 65%),linear-gradient(155deg,rgba(12,24,42,.82),rgba(6,13,25,.72));box-shadow:0 22px 60px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.04)}
+  .must-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+  .must-kicker{color:rgba(103,232,249,.65);font-size:8px;letter-spacing:.18em;text-transform:uppercase;font-weight:650}
+  .must-title{margin:5px 0 0;font-size:20px;line-height:1.2;letter-spacing:-.03em}.must-title span{color:var(--cyan)}
+  .must-sub{margin:5px 0 0;color:var(--dim);font-size:10px;line-height:1.6;max-width:760px}
+  .must-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.85fr);gap:12px;margin-top:14px;align-items:start}
+  .must-table-wrap{overflow-x:auto;border:1px solid rgba(148,163,184,.1);border-radius:11px;background:rgba(4,10,20,.28);scrollbar-width:thin}
+  .must-table{width:100%;min-width:720px;border-collapse:collapse;font-size:9.5px}
+  .must-table th{padding:8px 9px;text-align:left;color:rgba(103,232,249,.65);font-weight:550;font-size:8px;letter-spacing:.05em;border-bottom:1px solid rgba(148,163,184,.12);white-space:nowrap;background:rgba(5,14,27,.45)}
+  .must-table td{padding:7px 9px;border-bottom:1px solid rgba(148,163,184,.07);color:#c6dcef;line-height:1.45;vertical-align:top}
+  .must-table tr:last-child td{border-bottom:0}.must-table td:first-child{color:#eefaff;font-weight:550;white-space:nowrap}
+  .must-table .mono{font-family:var(--mono);color:#bdfbff;font-size:9px}.must-table .ext{color:rgba(251,191,36,.78);font-size:8px}
+  .must-cards{display:grid;gap:7px}
+  .must-card{padding:10px 11px;border:1px solid rgba(148,163,184,.1);border-radius:9px;background:rgba(4,10,20,.28)}
+  .must-card h4{display:flex;align-items:center;gap:6px;margin:0 0 4px;color:#eafaff;font-size:10.5px;font-weight:600}
+  .must-card h4 i{width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 7px var(--cyan);flex:0 0 auto}
+  .must-card p{margin:0;color:#9db5ca;font-size:9px;line-height:1.65}.must-card strong{color:#c9f8ff;font-weight:550}
+  .must-card .formula-line{font-family:var(--mono);color:#dffcff;font-size:8.5px;line-height:1.7}
+  .must-pitfalls{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px;padding-top:10px;border-top:1px solid rgba(148,163,184,.08)}
+  .must-pitfalls span{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border:1px solid rgba(251,191,36,.13);border-radius:6px;background:rgba(251,191,36,.035);color:rgba(217,201,154,.9);font-size:8.5px}
+  .must-pitfalls b{color:#fde68a;font-weight:550}
+
   @media (max-width: 1120px) {
     .shell { padding-left: 20px; padding-right: 20px; }
     .main { grid-template-columns: 278px minmax(0, 1fr); }
@@ -748,6 +771,8 @@
             <button class="geom-btn active" type="button" data-model="tetra">四面体</button>
             <button class="geom-btn" type="button" data-model="pyramidal">三角锥</button>
             <button class="geom-btn" type="button" data-model="bent">V 形</button>
+            <button class="geom-btn" type="button" data-model="bipyramidal">三角双锥</button>
+            <button class="geom-btn" type="button" data-model="octahedral">八面体</button>
           </div>
           <button class="lone-btn" id="loneToggle" type="button" aria-pressed="true" title="显示或隐藏孤对电子">
             <span class="pair-dot" aria-hidden="true"></span>
@@ -796,6 +821,8 @@
           <div class="fact-row"><span>孤对电子数</span><strong id="factLone">0</strong></div>
           <div class="fact-row"><span>电子域构型</span><strong id="factElectronGeom">四面体</strong></div>
           <div class="fact-row"><span>分子构型</span><strong id="factMolecularGeom">正四面体形</strong></div>
+          <div class="fact-row"><span>中心原子杂化</span><strong id="factHybrid">sp³</strong></div>
+          <div class="fact-row"><span>分子极性</span><strong id="factPolarity">非极性分子</strong></div>
           <div class="fact-row"><span>典型分子</span><strong id="factExample">CH₄、CCl₄</strong></div>
         </div>
         <div class="equation">
@@ -817,6 +844,8 @@
           <div class="fact-row"><span>2 个电子域</span><strong>直线形</strong></div>
           <div class="fact-row"><span>3 个电子域</span><strong>平面三角形</strong></div>
           <div class="fact-row"><span>4 个电子域</span><strong>四面体</strong></div>
+          <div class="fact-row"><span>5 个电子域</span><strong>三角双锥 <em>拓展</em></strong></div>
+          <div class="fact-row"><span>6 个电子域</span><strong>八面体 <em>拓展</em></strong></div>
         </div>
         <p class="note">孤对电子也占一个电子域，但看不见原子。去掉孤对后，才是分子构型。</p>
       </section>
@@ -835,11 +864,44 @@
 
   <section class="steps" aria-label="VSEPR 判断流程">
     <div class="step"><span class="step-num">01</span><h4>数电子对</h4><p>价层电子对数 = σ键电子对 + 中心原子孤对电子数。</p></div>
-    <div class="step"><span class="step-num">02</span><h4>定电子域</h4><p>2 对→直线，3 对→平面三角，4 对→四面体。</p></div>
+    <div class="step"><span class="step-num">02</span><h4>定电子域</h4><p>2 对→直线，3 对→平面三角，4 对→四面体；5 对→三角双锥，6 对→八面体。</p></div>
     <div class="step"><span class="step-num">03</span><h4>看孤对</h4><p>孤对占一个方向，但成键原子不放在那个方向。</p></div>
     <div class="step"><span class="step-num">04</span><h4>得分子构型</h4><p>去掉孤对，只看原子骨架：三角锥、V 形由此而来。</p></div>
   </section>
 
+
+  <section class="mustknow" aria-labelledby="mustknow-title">
+    <div class="must-head">
+      <div><div class="must-kicker">BEIJING / SELECTIVE COMPULSORY 2 · HIGH-FREQUENCY</div><h2 class="must-title" id="mustknow-title">分子构型：<span>必须知道的清单</span></h2><p class="must-sub">按人教版选择性必修 2 与北京等级考常见要求整理：先数电子域，再看孤对，最后判断构型、杂化和极性。PCl₅、SF₆ 也可在顶部切换到 3D 模型。</p></div>
+      <span class="must-card" style="padding:6px 9px;font-size:8px;color:rgba(103,232,249,.72)">VSEPR ≠ 分子构型</span>
+    </div>
+    <div class="must-grid">
+      <div class="must-table-wrap">
+        <table class="must-table">
+          <thead><tr><th>微粒</th><th>价层电子对</th><th>电子域构型</th><th>分子构型</th><th>杂化</th><th>键角</th><th>极性</th></tr></thead>
+          <tbody>
+            <tr><td>BeCl₂ / CO₂</td><td>2（2σ + 0 孤对）</td><td>直线形</td><td>直线形</td><td class="mono">sp</td><td>180°</td><td>非极性</td></tr>
+            <tr><td>BF₃ / SO₃ / CO₃²⁻ / NO₃⁻</td><td>3（3σ + 0）</td><td>平面三角形</td><td>平面三角形</td><td class="mono">sp²</td><td>120°</td><td>非极性</td></tr>
+            <tr><td>SO₂ / O₃</td><td>3（2σ + 1）</td><td>平面三角形</td><td>V 形</td><td class="mono">sp²</td><td>≈120° / 117°</td><td>极性</td></tr>
+            <tr><td>CH₄ / CCl₄ / NH₄⁺ / SO₄²⁻</td><td>4（4σ + 0）</td><td>四面体</td><td>正四面体形</td><td class="mono">sp³</td><td>109°28′</td><td>非极性</td></tr>
+            <tr><td>NH₃ / H₃O⁺</td><td>4（3σ + 1）</td><td>四面体</td><td>三角锥形</td><td class="mono">sp³</td><td>107° / ≈113°</td><td>极性</td></tr>
+            <tr><td>H₂O / H₂S</td><td>4（2σ + 2）</td><td>四面体</td><td>V 形</td><td class="mono">sp³</td><td>104.5° / 92°</td><td>极性</td></tr>
+            <tr><td>PCl₅ <span class="ext">拓展 · 可切换</span></td><td>5（5σ + 0）</td><td>三角双锥</td><td>三角双锥</td><td class="mono">sp³d</td><td>90° / 120°</td><td>非极性</td></tr>
+            <tr><td>SF₆ <span class="ext">拓展 · 可切换</span></td><td>6（6σ + 0）</td><td>八面体</td><td>八面体</td><td class="mono">sp³d²</td><td>90° / 180°</td><td>非极性</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="must-cards">
+        <div class="must-card"><h4><i></i>键角大小：先看孤对</h4><p>CH₄ <strong>109.5°</strong> &gt; NH₃ <strong>107°</strong> &gt; H₂O <strong>104.5°</strong>。孤对电子斥力：孤对—孤对 &gt; 孤对—成键 &gt; 成键—成键。</p><div class="formula-line">H₂O &gt; H₂S；NH₃ &gt; PH₃；NF₃ &lt; NH₃（拓展）</div></div>
+        <div class="must-card"><h4><i></i>等电子体：结构相似</h4><p>原子数相同、价电子总数相同，空间结构往往相似。</p><div class="formula-line">CO₂ / N₂O；CO₃²⁻ / NO₃⁻ / SO₃；SO₂ / O₃；CH₄ / NH₄⁺；BF₃ / CO₃²⁻</div></div>
+        <div class="must-card"><h4><i></i>极性：看对称性</h4><p>极性键不一定得到极性分子；<strong>对称抵消</strong>时分子非极性。CO₂、BF₃、CH₄、CCl₄、PCl₅、SF₆ 非极性；H₂O、NH₃、SO₂、CHCl₃ 极性。</p></div>
+        <div class="must-card"><h4><i></i>杂化速记</h4><p><strong>sp</strong> 直线 180°；<strong>sp²</strong> 平面三角 120°；<strong>sp³</strong> 四面体 109.5°。有孤对时，电子域构型不变，分子构型变。</p></div>
+        <div class="must-card"><h4><i></i>构型怎么测</h4><p><strong>红外光谱</strong>看化学键/官能团；<strong>质谱</strong>测相对分子质量；<strong>X 射线衍射</strong>测定晶体中分子的空间结构。</p></div>
+
+      </div>
+    </div>
+    <div class="must-pitfalls"><span><b>易错 1</b> VSEPR 模型 ≠ 分子构型</span><span><b>易错 2</b> 孤对占方向，但不是原子</span><span><b>易错 3</b> sp³ 不一定是正四面体</span><span><b>易错 4</b> CO₂ 有极性键，但分子非极性</span><span><b>易错 5</b> NH₃ 的 VSEPR 是四面体，分子是三角锥</span></div>
+  </section>
   <footer class="site-footer">
     <p>科学说明：VSEPR 用价层电子对相互排斥来解释分子形状；NH₃、H₂O 的实际键角因孤对电子斥力而略小于理想四面体角。模型为教学示意，键长与轨道形状经过简化。</p>
     <span class="footer-tag">高中化学可视化平台 · 分子空间构型</span>
@@ -888,6 +950,7 @@
       center: "Be", ligand: "Cl", centerColor: "#fbbf24", ligandColor: "#86efac",
       dirs: [[1, 0, 0], [-1, 0, 0]], loneDirs: [], lone: 0,
       electronGeometry: "直线形", molecularGeometry: "直线形",
+      hybrid: "sp", polarity: "非极性分子",
       angle: "180°", ideal: "180°", example: "BeCl₂、CO₂",
       view: { yaw: .12, pitch: .12, distance: 7.2 },
       desc: "两个成键电子对相距最远，中心原子与两个配位原子在同一直线上。",
@@ -899,6 +962,7 @@
       dirs: [[1, 0, 0], [-.5, 0, Math.sqrt(3) / 2], [-.5, 0, -Math.sqrt(3) / 2]],
       loneDirs: [], lone: 0,
       electronGeometry: "平面三角形", molecularGeometry: "平面三角形",
+      hybrid: "sp²", polarity: "非极性分子",
       angle: "120°", ideal: "120°", example: "BF₃、SO₃",
       view: { yaw: 0, pitch: .62, distance: 7.4 },
       desc: "三个电子域在同一平面内尽量分开，形成 120° 的平面三角形。",
@@ -909,6 +973,7 @@
       center: "C", ligand: "H", centerColor: "#cbd5e1", ligandColor: "#f8fafc",
       dirs: TETRA, loneDirs: [], lone: 0,
       electronGeometry: "四面体", molecularGeometry: "正四面体形",
+      hybrid: "sp³", polarity: "非极性分子",
       angle: "109°28′", ideal: "109°28′", example: "CH₄、CCl₄",
       view: { yaw: 1.42, pitch: .2, distance: 7.5 },
       desc: "四个成键电子对指向正四面体的四个顶点，彼此夹角为 109°28′。",
@@ -919,6 +984,7 @@
       center: "N", ligand: "H", centerColor: "#93c5fd", ligandColor: "#f8fafc",
       dirs: NH3_BONDS, loneDirs: [[0, 1, 0]], lone: 1,
       electronGeometry: "四面体", molecularGeometry: "三角锥形",
+      hybrid: "sp³", polarity: "极性分子",
       angle: "107°", ideal: "109°28′", example: "NH₃、PCl₃",
       view: { yaw: 1.57, pitch: .2, distance: 7.4 },
       desc: "三个 N—H 键加一对孤对电子构成四个电子域；孤对占据四面体的一个顶点。",
@@ -929,14 +995,37 @@
       center: "O", ligand: "H", centerColor: "#fca5a5", ligandColor: "#f8fafc",
       dirs: H2O_BONDS, loneDirs: [[0, .6, .8], [0, .6, -.8]], lone: 2,
       electronGeometry: "四面体", molecularGeometry: "V 形",
+      hybrid: "sp³", polarity: "极性分子",
       angle: "104.5°", ideal: "109°28′", example: "H₂O、H₂S",
       view: { yaw: .58, pitch: .3, distance: 7.4 },
       desc: "两个 O—H 键加两对孤对电子构成四个电子域；孤对占据两个四面体顶点。",
       note: "两对孤对电子的斥力更强，把 H—O—H 键角压缩到约 104.5°，形成 V 形。"
+    },
+    bipyramidal: {
+      key: "bipyramidal", name: "三角双锥形", formula: "PCl₅", molecule: "五氯化磷", axe: "AX₅",
+      center: "P", ligand: "Cl", centerColor: "#fbbf24", ligandColor: "#86efac",
+      dirs: [[0,1,0],[0,-1,0],[1,0,0],[-.5,0,Math.sqrt(3)/2],[-.5,0,-Math.sqrt(3)/2]], loneDirs: [], lone: 0,
+      electronGeometry: "三角双锥", molecularGeometry: "三角双锥形",
+      hybrid: "sp³d", polarity: "非极性分子",
+      angle: "90° / 120°", ideal: "90° / 120°", example: "PCl₅",
+      view: { yaw: 1.1, pitch: .22, distance: 8.2 },
+      desc: "五个电子域指向三角双锥的五个顶点：两个轴向、三个赤道方向。",
+      note: "PCl₅ 是三角双锥形；轴向与赤道方向键角为 90°，三个赤道方向之间为 120°。属于拓展内容。"
+    },
+    octahedral: {
+      key: "octahedral", name: "八面体形", formula: "SF₆", molecule: "六氟化硫", axe: "AX₆",
+      center: "S", ligand: "F", centerColor: "#fbbf24", ligandColor: "#a5f3fc",
+      dirs: [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]], loneDirs: [], lone: 0,
+      electronGeometry: "八面体", molecularGeometry: "八面体形",
+      hybrid: "sp³d²", polarity: "非极性分子",
+      angle: "90° / 180°", ideal: "90° / 180°", example: "SF₆",
+      view: { yaw: .78, pitch: .3, distance: 8.4 },
+      desc: "六个电子域沿三个坐标轴的正负方向伸展，形成八面体。",
+      note: "SF₆ 是八面体形；相邻键角 90°，相对方向 180°。属于拓展内容。"
     }
   };
 
-  const MODEL_ORDER = ["linear", "planar", "tetra", "pyramidal", "bent"];
+  const MODEL_ORDER = ["linear", "planar", "tetra", "pyramidal", "bent", "bipyramidal", "octahedral"];
   const initialFromQuery = new URLSearchParams(window.location.search).get("model");
   let current = MODELS[initialFromQuery] ? initialFromQuery : "tetra";
   let model = MODELS[current];
@@ -961,6 +1050,8 @@
   const factLone = document.getElementById("factLone");
   const factElectronGeom = document.getElementById("factElectronGeom");
   const factMolecularGeom = document.getElementById("factMolecularGeom");
+  const factHybrid = document.getElementById("factHybrid");
+  const factPolarity = document.getElementById("factPolarity");
   const factExample = document.getElementById("factExample");
   const eqTotal = document.getElementById("eqTotal");
   const eqBonds = document.getElementById("eqBonds");
@@ -1005,6 +1096,8 @@
     factLone.textContent = String(lone);
     factElectronGeom.textContent = model.electronGeometry;
     factMolecularGeom.textContent = model.molecularGeometry;
+    factHybrid.textContent = model.hybrid;
+    factPolarity.textContent = model.polarity;
     factExample.textContent = model.example;
     eqTotal.textContent = String(model.dirs.length + lone);
     eqBonds.textContent = String(model.dirs.length);
@@ -1236,7 +1329,7 @@
     ctx.restore();
   }
 
-  function drawPill(text, x, y, color) {
+  function drawPill(text, x, y, color, border = "rgba(148,163,184,.16)") {
     ctx.font = '600 10.5px "Segoe UI", "Microsoft YaHei", sans-serif';
     const padX = 7;
     const w = ctx.measureText(text).width + padX * 2;
@@ -1247,7 +1340,7 @@
     ctx.fillStyle = "rgba(4,10,20,.78)";
     roundRect(left, top, w, h, 6);
     ctx.fill();
-    ctx.strokeStyle = "rgba(148,163,184,.16)";
+    ctx.strokeStyle = border;
     ctx.lineWidth = 1;
     ctx.stroke();
     ctx.fillStyle = color;
@@ -1287,6 +1380,30 @@
     return `rgb(${r},${g},${b})`;
   }
 
+  function drawHybridBadge() {
+    const p = project([0, 0, 0]);
+    if (!p) return;
+    const r = Math.max(14, .38 * p.scale * .9);
+    const label = model.hybrid;
+    ctx.save();
+    ctx.font = '700 9px "Segoe UI", "Microsoft YaHei", sans-serif';
+    const w = Math.max(30, ctx.measureText(label).width + 12);
+    const h = 15;
+    const bx = clamp(p.x - w / 2, 6, ctxCssW - w - 6);
+    const by = clamp(p.y + r * .38, 18, ctxCssH - h - 8);
+    ctx.fillStyle = "rgba(4,12,24,.88)";
+    roundRect(bx, by, w, h, 5);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(103,232,249,.55)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.fillStyle = "rgba(190,252,255,.98)";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(label, bx + w / 2, by + h / 2 + .5);
+    ctx.restore();
+  }
+
   function render() {
     const aspect = vw / Math.max(1, vh);
     const fit = Math.max(1, 1.08 / Math.max(.25, aspect));
@@ -1323,6 +1440,7 @@
     atoms.sort((a, b) => (project(b.pos)?.depth || 0) - (project(a.pos)?.depth || 0));
     for (const atom of atoms) drawAtom(atom.pos, atom.label, atom.color, atom.radius, atom.strong);
     drawAngle();
+    drawHybridBadge();
   }
 
   function resize() {
