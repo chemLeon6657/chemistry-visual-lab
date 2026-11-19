@@ -363,58 +363,29 @@
       descript:"CaF₂ 是面心立方萤石型离子晶体：Ca²⁺ 在顶点和面心，F⁻ 在 8 个四面体空隙；配位数 8:4，化学式比 1:2。" };
   }
 
-  function diamondLike(kind) {
-    const raw=[[0,0,0],[0,.5,.5],[.5,0,.5],[.5,.5,0],[.25,.25,.25],[.25,.75,.75],[.75,.25,.75],[.75,.75,.25]];
-    const NV=[[.25,.25,.25],[.25,-.25,-.25],[-.25,.25,-.25],[-.25,-.25,.25]];
-    const scale=2.2, keys=new Map(), atoms=[], bonds=[];
-    function key(p){return p.map(v=>Math.round(v*100)).join(",");}
-    function speciesFor(baseIndex){ return kind==="zns" ? (baseIndex<4?"S":"Zn") : "C"; }
-    const colors={C:"#cbd5e1",S:"#fbbf24",Zn:"#60a5fa"};
-    const radii={C:.18,S:.20,Zn:.12};
-    function add(frac,species,ghost=false){
-      const k=key(frac); if(keys.has(k))return keys.get(k);
-      const pos=[(frac[0]-.5)*scale,(frac[1]-.5)*scale,(frac[2]-.5)*scale];
-      const idx=atoms.length;
-      atoms.push(makeAtom(pos,ghost?"#8ea4c0":colors[species],ghost?(kind==="diamond"?.105:.15):radii[species],species,species,{ghost,labelColor:species==="Zn"?"#082f49":species==="S"?"#451a03":"#0f172a"}));
-      keys.set(k,idx); return idx;
+  function buildDiamond() {
+    const atoms=[],bonds=[];
+    const a=2;
+    const fcc=[];
+    for(const x of [0,1])for(const y of [0,1])for(const z of [0,1])fcc.push([x,y,z]);
+    fcc.push([.5,.5,0],[.5,.5,1],[.5,0,.5],[.5,1,.5],[0,.5,.5],[1,.5,.5]);
+    const tetra=[[.25,.25,.25],[.75,.75,.25],[.75,.25,.75],[.25,.75,.75]];
+    function add(frac){const pos=[(frac[0]-.5)*a,(frac[1]-.5)*a,(frac[2]-.5)*a];atoms.push(makeAtom(pos,"#cbd5e1",.17,"C","C",{labelColor:"#0f172a"}));return atoms.length-1;}
+    const fccIdx=fcc.map(add),tetraIdx=tetra.map(add);
+    // Every interior tetrahedral C connects to four FCC C: keep the clean cell, no ghost atoms.
+    for(const ti of tetraIdx){
+      const ppos=atoms[ti].pos;
+      const near=[];fccIdx.forEach((fi,index)=>{const d=dist(ppos,atoms[fi].pos);if(d<1.0)near.push({fi,d});});
+      near.sort((x,y)=>x.d-y.d);
+      for(const n of near.slice(0,4))if(!bonds.some(b=>[b[0],b[1]].includes(ti)&&[b[0],b[1]].includes(n.fi)))addBond(bonds,ti,n.fi,"rgba(103,232,249,.38)",1.35);
     }
-    const base=[];
-    raw.forEach((p,i)=>base.push(add(p,speciesFor(i))));
-    const neighbourKeys=new Set();
-    for(let b=0;b<8;b++){
-      const p=raw[b];
-      for(const nv of NV){
-        const frac=[p[0]+nv[0],p[1]+nv[1],p[2]+nv[2]];
-        const other=add(frac,speciesFor(b),!keys.has(key(frac)));
-        const bk=[Math.min(base[b],other),Math.max(base[b],other)].join("-");
-        if(!neighbourKeys.has(bk)){neighbourKeys.add(bk);addBond(bonds,base[b],other,"rgba(148,163,184,.42)",1.25);}
-      }
-    }
-    const isZnS=kind==="zns";
-    return { atoms,bonds,cellLines:cubeLines(1.1),showGhostAlways:!isZnS,camera:{yaw:.82,pitch:.3,distance:8.2},
-      legend:isZnS?[["S²⁻","#fbbf24"],["Zn²⁺","#60a5fa"]]:[["晶胞内 C","#cbd5e1"],["补全网络的相邻 C","#8ea4c0"]],
-      cellType:isZnS?"立方 ZnS 型（闪锌矿）":"金刚石型（面心立方 + 四面体）", coord:"4", coordMax:4, coordMode:isZnS?"opposite":"same", coordCutoff:1.05, coordShape:"正四面体",
-      status:isZnS?"立方 ZnS 型 · 配位数 4:4":"金刚石型 · 每个 C 连 4 个 C",
-      foot:isZnS?"共价键 · 熔点高":"共价键 · 熔点极高", formula:isZnS?"ZnS":"C", type:isZnS?"离子晶体（共价性明显）":"原子晶体",
-      name:isZnS?"硫化锌 · 立方 ZnS 型":"金刚石 · 完整晶胞",
-      particles:isZnS?"Zn²⁺、S²⁻":"C 原子", force:isZnS?"共价键（极性）":"共价键", melting:isZnS?"1700 ℃":"≈ 3550 ℃", examples:isZnS?"ZnS、闪锌矿":"金刚石、晶体硅",
-      note:isZnS?"S²⁻ 作面心立方排列，Zn²⁺ 填入一半四面体空隙；每个离子周围有 4 个异种离子。":"金刚石是完整空间网络，晶胞内 8 个 C 全部画出；灰色小球是相邻晶胞的 C，用来补全晶胞边界的四面体。每个 C 只与 4 个 C 成键。",
-      descript:isZnS?"ZnS 是立方 ZnS 型结构，配位数 4:4，属于共价性明显的离子晶体。":"金刚石是原子晶体，碳原子通过 sp³ 共价键形成空间网状结构，配位数为 4。" };
+    return { atoms,bonds,cellLines:cubeLines(1),camera:{yaw:.82,pitch:.3,distance:8.8},
+      legend:[["C 原子","#cbd5e1"]], cellType:"金刚石型（面心立方 + 四面体）", coord:"4", coordMax:4, coordMode:"same", coordCutoff:.95, coordShape:"正四面体",
+      status:"金刚石型 · 每个 C 连 4 个 C", foot:"共价键 · 熔点极高", formula:"C", type:"原子晶体", name:"金刚石 · 与 ZnS 同骨架的纯碳晶胞",
+      particles:"C 原子", force:"共价键", melting:"≈ 3550 ℃", examples:"金刚石、晶体硅",
+      note:"金刚石与立方 ZnS 的晶胞骨架相同：面心立方位置 + 4 个四面体位置；区别是金刚石所有位置都是 C，ZnS 是 S²⁻ 与 Zn²⁺ 交替。每个 C 只与 4 个 C 成键。",
+      descript:"金刚石是纯碳的原子晶体；把 ZnS 中的 S/Zn 都换成 C，就得到相同的晶胞骨架，但金刚石没有两种元素。每个 C 的配位数为 4。" };
   }
-
-
-  function tetraAround(u){
-    u=norm(u);const ref=Math.abs(u[2])<.9?[0,0,1]:[1,0,0];
-    const v=norm(cross(u,ref)),w=cross(u,v),out=[u];
-    for(let k=0;k<3;k++){
-      const a=2*Math.PI*k/3;
-      const d=addV(mulV(u,-1/3),mulV(addV(mulV(v,Math.cos(a)),mulV(w,Math.sin(a))),Math.sqrt(8/9)));
-      out.push(norm(d));
-    }
-    return out;
-  }
-  function addV(a,b){return [a[0]+b[0],a[1]+b[1],a[2]+b[2]];}
-  function mulV(a,s){return [a[0]*s,a[1]*s,a[2]*s];}
 
   function buildZnS() {
     const atoms=[],bonds=[],keys=new Map();
@@ -450,6 +421,19 @@
       particles:"Zn²⁺、S²⁻", force:"共价键（极性）", melting:"1700 ℃", examples:"ZnS、闪锌矿",
       note:"S²⁻ 位于 8 个顶点 + 6 个面心，形成面心立方；Zn²⁺ 填入一半四面体空隙。每个离子周围有 4 个异种离子。",
       descript:"ZnS 是立方 ZnS（闪锌矿）型结构：S²⁻ 形成面心立方子晶格，Zn²⁺ 占一半四面体空隙；整体不是单质 FCC 点阵，配位数 4:4。" };
+  }
+
+  function addV(a,b){return [a[0]+b[0],a[1]+b[1],a[2]+b[2]];}
+  function mulV(a,s){return [a[0]*s,a[1]*s,a[2]*s];}
+  function tetraAround(u){
+    u=norm(u);const ref=Math.abs(u[2])<.9?[0,0,1]:[1,0,0];
+    const v=norm(cross(u,ref)),w=cross(u,v),out=[u];
+    for(let k=0;k<3;k++){
+      const a=2*Math.PI*k/3;
+      const d=addV(mulV(u,-1/3),mulV(addV(mulV(v,Math.cos(a)),mulV(w,Math.sin(a))),Math.sqrt(8/9)));
+      out.push(norm(d));
+    }
+    return out;
   }
 
   function buildSiO2() {
@@ -588,7 +572,7 @@
     caf2:buildCaF2(),
     zns:buildZnS(),
     sio2:buildSiO2(),
-    diamond:diamondLike("diamond"),
+    diamond:buildDiamond(),
     graphite:buildGraphite(),
     dryice:buildDryIce(),
     copper:buildCopper()
