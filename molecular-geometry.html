@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#04070f" />
+<title>分子空间构型 · VSEPR 与孤对电子 · 高中化学可视化平台</title>
+<meta name="description" content="交互式 VSEPR 分子空间构型演示：直线形、平面三角形、正四面体、三角锥和 V 形，观察孤对电子如何压缩键角。" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<style>
+  :root {
+    --bg: #04070f;
+    --panel: rgba(10, 18, 33, 0.74);
+    --line: rgba(148, 163, 184, 0.14);
+    --line-strong: rgba(148, 163, 184, 0.24);
+    --text: #eaf3ff;
+    --muted: #8ea4c0;
+    --dim: #5e728c;
+    --cyan: #67e8f9;
+    --teal: #5eead4;
+    --violet: #a78bfa;
+    --pink: #f472b6;
+    --amber: #fbbf24;
+    --mono: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI Variable", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  button { font: inherit; }
+  a { color: inherit; }
+  button, a { -webkit-tap-highlight-color: transparent; }
+  :focus-visible { outline: 2px solid rgba(103, 232, 249, 0.8); outline-offset: 3px; }
+
+  .page-glow {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      radial-gradient(920px 650px at 5% -8%, rgba(20, 184, 166, 0.15), transparent 64%),
+      radial-gradient(1000px 760px at 98% 2%, rgba(91, 33, 182, 0.15), transparent 68%),
+      radial-gradient(900px 700px at 55% 108%, rgba(14, 116, 144, 0.11), transparent 66%),
+      linear-gradient(160deg, #050a14 0%, #04070f 55%, #050811 100%);
+  }
+  .page-glow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.22;
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(circle at 50% 38%, black, transparent 77%);
+    -webkit-mask-image: radial-gradient(circle at 50% 38%, black, transparent 77%);
+  }
+
+  .shell {
+    width: min(1580px, 100%);
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 22px 28px 14px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── header ───────────────────────────────────────────── */
+  .site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 0 2px 16px;
+    animation: rise .7s cubic-bezier(.22,.8,.3,1) both;
+  }
+  .brand { display: flex; align-items: center; gap: 15px; min-width: 0; color: inherit; text-decoration: none; }
+  .brand:hover { opacity: .85; }
+  .brand-mark {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 auto;
+    border-radius: 16px;
+    border: 1px solid rgba(103, 232, 249, 0.2);
+    background:
+      radial-gradient(circle at 32% 24%, rgba(103, 232, 249, 0.2), transparent 55%),
+      linear-gradient(150deg, rgba(11, 28, 46, 0.9), rgba(5, 11, 22, 0.95));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 34px rgba(0, 0, 0, 0.34);
+    display: grid;
+    place-items: center;
+  }
+  .brand-mark svg { width: 40px; height: 40px; }
+  .kicker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--cyan);
+    font-size: 9.5px;
+    font-weight: 650;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+  }
+  .kicker::before {
+    content: "";
+    width: 16px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--cyan), transparent);
+  }
+  .brand h1 {
+    margin: 4px 0 2px;
+    font-size: clamp(26px, 2.7vw, 37px);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    font-weight: 760;
+  }
+  .brand h1 span {
+    background: linear-gradient(105deg, #e7fdff, var(--cyan) 45%, #c4b5fd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .brand p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
+  .header-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; padding-top: 4px; flex: 0 0 auto; }
+  .meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 29px;
+    padding: 0 11px;
+    border: 1px solid rgba(103, 232, 249, 0.16);
+    border-radius: 999px;
+    background: rgba(8, 20, 34, 0.62);
+    color: #c7e9ef;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.08), 0 0 12px rgba(94, 234, 212, 0.8);
+    animation: breathe 2.6s ease-in-out infinite;
+  }
+  .meta-note { color: var(--dim); font-size: 9.5px; letter-spacing: 0.08em; }
+
+  /* ── layout ───────────────────────────────────────────── */
+  .main {
+    flex: 1;
+    min-height: 620px;
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    grid-template-areas: "sidebar stage";
+    gap: 16px;
+  }
+  .sidebar {
+    grid-area: sidebar;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    padding-right: 3px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(103, 232, 249, 0.2) transparent;
+  }
+  .sidebar::-webkit-scrollbar { width: 5px; }
+  .sidebar::-webkit-scrollbar-thumb { background: rgba(103, 232, 249, 0.18); border-radius: 99px; }
+
+  .card {
+    position: relative;
+    flex: 0 0 auto;
+    border: 1px solid var(--line);
+    border-radius: 19px;
+    padding: 17px 18px;
+    background:
+      radial-gradient(120% 100% at 0% 0%, rgba(103, 232, 249, 0.045), transparent 48%),
+      linear-gradient(155deg, rgba(13, 24, 43, 0.83), rgba(7, 14, 27, 0.72));
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.045);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    animation: rise .62s cubic-bezier(.22,.8,.3,1) both;
+  }
+  .sidebar .card:nth-child(1) { animation-delay: .05s; }
+  .sidebar .card:nth-child(2) { animation-delay: .11s; }
+  .sidebar .card:nth-child(3) { animation-delay: .17s; }
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0 18px auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.2), transparent);
+  }
+  .card-kicker {
+    color: var(--dim);
+    font-size: 9.5px;
+    font-weight: 650;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .card h3 { margin: 3px 0 0; font-size: 15px; line-height: 1.3; letter-spacing: -0.01em; font-weight: 650; }
+
+  .current-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .formula {
+    font-family: var(--mono);
+    font-size: 30px;
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.06em;
+    color: #f2ffff;
+    text-shadow: 0 0 26px rgba(103, 232, 249, 0.18);
+  }
+  .formula small { font-size: 15px; color: var(--cyan); letter-spacing: 0; }
+  .geometry-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 23px;
+    padding: 0 9px;
+    border: 1px solid rgba(103, 232, 249, 0.2);
+    border-radius: 999px;
+    background: rgba(103, 232, 249, 0.07);
+    color: #bff8ff;
+    font-size: 9.5px;
+    white-space: nowrap;
+  }
+  .axe-badge { color: var(--violet); font-family: var(--mono); font-size: 10px; letter-spacing: 0; }
+  .current-desc { margin: 8px 0 12px; color: var(--muted); font-size: 10.5px; line-height: 1.65; }
+
+  .fact-list { margin-top: 3px; }
+  .fact-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.075);
+    font-size: 10.5px;
+  }
+  .fact-row:last-child { border-bottom: 0; padding-bottom: 2px; }
+  .fact-row span { color: var(--dim); flex: 0 0 auto; }
+  .fact-row strong { color: #d8e9ff; font-size: 10.5px; font-weight: 550; text-align: right; line-height: 1.45; }
+  .fact-row strong em { font-style: normal; color: var(--cyan); font-family: var(--mono); }
+
+  .equation {
+    margin-top: 12px;
+    padding: 12px 13px;
+    border: 1px solid rgba(103, 232, 249, 0.13);
+    border-radius: 13px;
+    background: linear-gradient(160deg, rgba(3, 10, 20, 0.5), rgba(2, 7, 16, 0.3));
+  }
+  .equation-label { color: var(--dim); font-size: 9px; letter-spacing: 0.08em; }
+  .equation-line {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+    color: #dff8ff;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .equation-line .op { color: var(--dim); font-size: 10px; }
+  .equation-line strong { color: var(--cyan); font-size: 17px; font-weight: 600; }
+  .equation-line em { color: var(--pink); font-style: normal; }
+  .note {
+    margin: 10px 0 0;
+    padding-top: 10px;
+    border-top: 1px solid rgba(148, 163, 184, 0.075);
+    color: var(--dim);
+    font-size: 9.5px;
+    line-height: 1.65;
+  }
+  .note strong { color: #fbcfe8; font-weight: 550; }
+
+  .tip-card { display: flex; gap: 10px; align-items: flex-start; padding: 14px 16px; }
+  .tip-icon {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(244, 114, 182, 0.2);
+    border-radius: 9px;
+    background: rgba(244, 114, 182, 0.07);
+    color: var(--pink);
+  }
+  .tip-icon svg { width: 15px; height: 15px; }
+  .tip-copy h4 { margin: 1px 0 4px; color: #e7f3ff; font-size: 10.5px; font-weight: 650; }
+  .tip-copy p { margin: 0; color: var(--dim); font-size: 9.3px; line-height: 1.6; }
+  .tip-copy strong { color: #fbcfe8; font-weight: 550; }
+
+  /* ── stage ────────────────────────────────────────────── */
+  .stage-card {
+    grid-area: stage;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 25px;
+    background:
+      radial-gradient(1100px 700px at 50% 26%, rgba(18, 58, 88, 0.34), transparent 62%),
+      radial-gradient(900px 620px at 82% 92%, rgba(76, 29, 149, 0.14), transparent 70%),
+      linear-gradient(155deg, #07101e 0%, #040812 58%, #060a14 100%);
+    box-shadow: 0 32px 100px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.055);
+    animation: rise .72s cubic-bezier(.22,.8,.3,1) both;
+  }
+  .stage-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.42;
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+    background-size: 37px 37px;
+    mask-image: radial-gradient(circle at 50% 44%, black 0%, transparent 73%);
+    -webkit-mask-image: radial-gradient(circle at 50% 44%, black 0%, transparent 73%);
+  }
+  .stage-head {
+    position: relative;
+    z-index: 6;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 20px 0;
+  }
+  .stage-heading { min-width: 0; }
+  .module-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 4px;
+    color: rgba(142, 164, 192, 0.72);
+    font-size: 9.5px;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: color .2s ease;
+  }
+  .module-home:hover { color: var(--cyan); }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--dim);
+    font-size: 9.3px;
+    font-weight: 650;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .eyebrow-line {
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(103, 232, 249, 0.55), transparent);
+  }
+  .stage-heading h2 {
+    margin: 5px 0 0;
+    font-size: clamp(19px, 1.9vw, 24px);
+    line-height: 1.2;
+    font-weight: 670;
+    letter-spacing: -0.03em;
+  }
+  .stage-heading h2 #formula {
+    background: linear-gradient(100deg, #f4feff, #a5f3fc 58%, #c4b5fd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .stage-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 9.8px;
+    letter-spacing: 0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.06), 0 0 12px rgba(94, 234, 212, 0.75);
+  }
+  .stage-status[data-lone="true"] .status-dot {
+    background: var(--pink);
+    box-shadow: 0 0 0 4px rgba(244, 114, 182, 0.06), 0 0 12px rgba(244, 114, 182, 0.8);
+  }
+  .status-sep { color: rgba(148, 163, 184, 0.35); }
+
+  .stage-controls { display: flex; align-items: center; gap: 8px; padding-top: 3px; flex-wrap: wrap; justify-content: flex-end; }
+  .geom-tabs {
+    display: flex;
+    gap: 3px;
+    padding: 4px;
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    border-radius: 12px;
+    background: rgba(4, 10, 20, 0.6);
+    overflow-x: auto;
+    max-width: 100%;
+    scrollbar-width: none;
+  }
+  .geom-tabs::-webkit-scrollbar { display: none; }
+  .geom-btn {
+    flex: 0 0 auto;
+    height: 30px;
+    padding: 0 9px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--dim);
+    font-size: 10px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: .2s ease;
+  }
+  .geom-btn:hover { color: #dffbff; background: rgba(103, 232, 249, 0.055); }
+  .geom-btn.active {
+    color: #f0ffff;
+    border-color: rgba(103, 232, 249, 0.3);
+    background: linear-gradient(145deg, rgba(103, 232, 249, 0.16), rgba(94, 234, 212, 0.06));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 22px rgba(34, 211, 238, 0.1);
+  }
+  .icon-btn, .lone-btn {
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid rgba(148, 163, 184, 0.13);
+    border-radius: 10px;
+    background: rgba(4, 10, 20, 0.54);
+    color: var(--muted);
+    font-size: 9.5px;
+    cursor: pointer;
+    transition: .2s ease;
+  }
+  .icon-btn { width: 34px; }
+  .lone-btn { padding: 0 10px; white-space: nowrap; }
+  .lone-btn[aria-pressed="true"] {
+    color: #fbcfe8;
+    border-color: rgba(244, 114, 182, 0.26);
+    background: rgba(244, 114, 182, 0.08);
+  }
+  .lone-btn:disabled { opacity: .38; cursor: default; }
+  .icon-btn:hover, .lone-btn:hover:not(:disabled) { color: #effeff; border-color: rgba(103, 232, 249, 0.28); background: rgba(103, 232, 249, 0.07); }
+  .icon-btn svg, .lone-btn svg { width: 14px; height: 14px; }
+  .lone-btn .pair-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fff, var(--pink) 55%, transparent 72%);
+    box-shadow: 0 0 8px rgba(244, 114, 182, 0.5);
+  }
+
+  .stage-view {
+    position: relative;
+    flex: 1;
+    min-height: 390px;
+    isolation: isolate;
+    touch-action: none;
+    cursor: grab;
+    overflow: hidden;
+  }
+  .stage-view.dragging { cursor: grabbing; }
+  .stage-glow {
+    position: absolute;
+    left: 50%;
+    top: 48%;
+    width: min(58%, 540px);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, rgba(59, 130, 246, 0.05) 34%, transparent 69%);
+    filter: blur(28px);
+  }
+  #scene { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; display: block; }
+  .stage-view::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 50% 49%, transparent 37%, rgba(3, 7, 14, 0.14) 68%, rgba(3, 7, 14, 0.52) 100%),
+      linear-gradient(180deg, rgba(4, 8, 16, 0.18), transparent 18%, transparent 78%, rgba(4, 8, 16, 0.3));
+  }
+  .view-hint {
+    position: absolute;
+    right: 14px;
+    bottom: 11px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 25px;
+    padding: 0 9px;
+    border: 1px solid rgba(148, 163, 184, 0.11);
+    border-radius: 999px;
+    background: rgba(4, 10, 20, 0.46);
+    color: rgba(157, 180, 204, 0.7);
+    font-size: 8.5px;
+    letter-spacing: 0.03em;
+    backdrop-filter: blur(8px);
+    pointer-events: none;
+    user-select: none;
+  }
+  .view-hint svg { width: 12px; height: 12px; opacity: .8; }
+  .stage-legend {
+    position: absolute;
+    left: 14px;
+    bottom: 11px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 11px;
+    padding: 6px 9px;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 9px;
+    background: rgba(4, 10, 20, 0.46);
+    color: rgba(157, 180, 204, 0.7);
+    font-size: 8.5px;
+    backdrop-filter: blur(8px);
+    pointer-events: none;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 5px; }
+  .legend-line { width: 14px; height: 2px; border-radius: 2px; background: var(--cyan); box-shadow: 0 0 5px var(--cyan); }
+  .legend-cloud { width: 9px; height: 9px; border-radius: 50%; background: radial-gradient(circle, #fff, var(--pink) 45%, transparent 72%); box-shadow: 0 0 7px rgba(244, 114, 182, .55); }
+  .legend-atom { width: 8px; height: 8px; border-radius: 50%; background: #dbeafe; box-shadow: 0 0 7px rgba(219, 234, 254, .5); }
+
+  .stage-foot {
+    position: relative;
+    z-index: 6;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 11px 20px 14px;
+    border-top: 1px solid rgba(148, 163, 184, 0.08);
+    background: rgba(5, 12, 23, 0.44);
+  }
+  .angle-pill { display: flex; align-items: baseline; gap: 7px; color: var(--dim); font-size: 9.5px; }
+  .angle-pill strong { color: #f0ffff; font-family: var(--mono); font-size: 18px; font-weight: 600; letter-spacing: -0.04em; }
+  .ideal-angle { color: var(--dim); font-size: 9px; }
+  .ideal-angle span { color: var(--muted); font-family: var(--mono); }
+  .lone-note {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #fbcfe8;
+    font-size: 9px;
+    text-align: right;
+  }
+  .lone-note i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--pink);
+    box-shadow: 0 0 8px var(--pink);
+  }
+
+  /* ── steps ───────────────────────────────────────────── */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin: 18px 0 0;
+    animation: rise .7s .15s cubic-bezier(.22,.8,.3,1) both;
+  }
+  .step {
+    position: relative;
+    padding: 14px 15px;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 14px;
+    background: rgba(7, 15, 28, 0.54);
+  }
+  .step-num {
+    color: rgba(103, 232, 249, 0.48);
+    font-family: var(--mono);
+    font-size: 9px;
+  }
+  .step h4 { margin: 9px 0 4px; color: #e8f7ff; font-size: 11px; font-weight: 600; }
+  .step p { margin: 0; color: var(--dim); font-size: 9.3px; line-height: 1.6; }
+  .step:not(:last-child)::after {
+    content: "→";
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(103, 232, 249, 0.3);
+    font-size: 12px;
+  }
+
+  .site-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 22px;
+    padding: 12px 4px 0;
+    color: rgba(94, 114, 140, 0.9);
+    font-size: 9.2px;
+    line-height: 1.55;
+  }
+  .site-footer p { margin: 0; max-width: 920px; }
+  .footer-tag { flex: 0 0 auto; color: rgba(103, 232, 249, 0.48); white-space: nowrap; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes breathe { 0%,100% { opacity: .65; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.12); } }
+
+  @media (max-width: 1120px) {
+    .shell { padding-left: 20px; padding-right: 20px; }
+    .main { grid-template-columns: 278px minmax(0, 1fr); }
+    .stage-head { padding-left: 16px; padding-right: 16px; }
+    .stage-foot { padding-left: 16px; padding-right: 16px; }
+    .geom-btn { padding: 0 7px; font-size: 9.5px; }
+  }
+  @media (max-width: 980px) {
+    .shell { padding: 18px 16px 14px; }
+    .main { grid-template-columns: 1fr; grid-template-areas: "stage" "sidebar"; min-height: 0; }
+    .stage-card { min-height: 620px; }
+    .sidebar { display: grid; grid-template-columns: 1fr 1fr; overflow: visible; }
+    .sidebar .card:nth-child(1) { grid-column: 1 / -1; }
+    .sidebar .card:nth-child(2) { grid-column: 1; }
+    .sidebar .card:nth-child(3) { grid-column: 2; align-self: start; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .step:nth-child(2)::after { display: none; }
+    .site-header { padding-bottom: 14px; }
+  }
+  @media (max-width: 680px) {
+    .shell { padding: 14px 12px 10px; }
+    .brand { gap: 11px; }
+    .brand-mark { width: 44px; height: 44px; border-radius: 13px; }
+    .brand-mark svg { width: 34px; height: 34px; }
+    .brand h1 { font-size: clamp(23px, 7vw, 31px); }
+    .brand p { display: none; }
+    .kicker { font-size: 8.5px; letter-spacing: .14em; }
+    .header-meta { display: none; }
+    .stage-card { min-height: 0; }
+    .stage-head { flex-direction: column; align-items: stretch; gap: 11px; padding: 15px 13px 0; }
+    .stage-controls { justify-content: flex-start; padding-top: 0; width: 100%; }
+    .geom-tabs { flex: 1; min-width: 0; }
+    .geom-btn { flex: 1; padding: 0 5px; }
+    .lone-btn { padding: 0 8px; }
+    .icon-btn { width: 33px; }
+    .stage-view { min-height: 365px; }
+    .stage-foot { padding: 9px 13px 12px; gap: 9px; }
+    .lone-note { margin-left: 0; width: 100%; justify-content: flex-start; }
+    .stage-legend { left: 9px; bottom: 8px; gap: 7px; font-size: 8px; padding: 5px 7px; }
+    .view-hint { right: 8px; bottom: 8px; font-size: 8px; height: 23px; }
+    .sidebar { grid-template-columns: 1fr; }
+    .sidebar .card:nth-child(2), .sidebar .card:nth-child(3) { grid-column: 1; }
+    .steps { grid-template-columns: 1fr; margin-top: 13px; }
+    .step:not(:last-child)::after { display: none; }
+    .site-footer { flex-direction: column; gap: 5px; }
+  }
+  @media (max-width: 420px) {
+    .stage-view { min-height: 330px; }
+    .geom-btn { font-size: 9px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page-glow" aria-hidden="true"></div>
+
+<div class="shell">
+  <header class="site-header">
+    <a class="brand" href="./" title="返回平台首页" aria-label="返回高中化学可视化平台首页">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none">
+          <defs>
+            <linearGradient id="markGrad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#67e8f9"/><stop offset=".55" stop-color="#5eead4"/><stop offset="1" stop-color="#a78bfa"/>
+            </linearGradient>
+            <radialGradient id="coreGrad" cx="0" cy="0" r="1" gradientTransform="translate(32 32) rotate(90) scale(6)" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#ffffff"/><stop offset=".45" stop-color="#c7feff"/><stop offset="1" stop-color="#67e8f9" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="32" cy="32" r="7" fill="url(#coreGrad)"/>
+          <ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(28 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".8"/>
+          <ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(-32 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".5"/>
+          <ellipse cx="32" cy="32" rx="24" ry="8" transform="rotate(90 32 32)" stroke="url(#markGrad)" stroke-width="1.1" opacity=".32"/>
+          <circle cx="32" cy="32" r="2.5" fill="#f4ffff"/>
+        </svg>
+      </div>
+      <div>
+        <div class="kicker">高中化学可视化平台 · 物质结构与性质</div>
+        <h1>分子<span>空间构型</span></h1>
+        <p>从价层电子对到分子形状：VSEPR 与孤对电子判断</p>
+      </div>
+    </a>
+    <div class="header-meta">
+      <div class="meta-pill"><span class="live-dot"></span>交互式 3D 构型</div>
+      <div class="meta-note">拖动旋转 · 滚轮缩放 · 切换构型</div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="stage-card" id="stageCard" aria-label="分子空间构型三维视图">
+      <div class="stage-head">
+        <div class="stage-heading">
+          <a class="module-home" href="./">← 平台首页</a>
+          <div class="eyebrow">VSEPR · 3D 构型视图 <span class="eyebrow-line"></span></div>
+          <h2><span id="formula">CH₄</span> · <span id="geomName">正四面体</span></h2>
+          <div class="stage-status" id="stageStatus" data-lone="false">
+            <span class="status-dot"></span>
+            <span id="domainText">4 个电子域</span>
+            <span class="status-sep">·</span>
+            <span id="loneHeaderText">0 对孤对电子</span>
+          </div>
+        </div>
+        <div class="stage-controls">
+          <div class="geom-tabs" role="group" aria-label="选择分子构型">
+            <button class="geom-btn" type="button" data-model="linear">直线形</button>
+            <button class="geom-btn" type="button" data-model="planar">平面三角形</button>
+            <button class="geom-btn active" type="button" data-model="tetra">四面体</button>
+            <button class="geom-btn" type="button" data-model="pyramidal">三角锥</button>
+            <button class="geom-btn" type="button" data-model="bent">V 形</button>
+          </div>
+          <button class="lone-btn" id="loneToggle" type="button" aria-pressed="true" title="显示或隐藏孤对电子">
+            <span class="pair-dot" aria-hidden="true"></span>
+            <span id="loneToggleText">孤对电子</span>
+          </button>
+          <button class="icon-btn" id="resetViewBtn" type="button" title="重置视角" aria-label="重置视角">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10a8 8 0 1 1 2.3 6.7"/><path d="M4 4v6h6"/></svg>
+          </button>
+          <button class="icon-btn" id="fullscreenBtn" type="button" title="全屏观察" aria-label="全屏观察">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M21 16v5h-5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="stage-view" id="stageView" aria-label="可拖动旋转的分子构型三维视图">
+        <div class="stage-glow" aria-hidden="true"></div>
+        <canvas id="scene" aria-hidden="true"></canvas>
+        <div class="stage-legend" aria-hidden="true">
+          <span class="legend-item"><i class="legend-line"></i>成键电子对</span>
+          <span class="legend-item"><i class="legend-cloud"></i>孤对电子</span>
+          <span class="legend-item"><i class="legend-atom"></i>原子</span>
+        </div>
+        <div class="view-hint" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="18" rx="5"/><path d="M12 6v4"/></svg>
+          拖动旋转 · 滚轮缩放
+        </div>
+      </div>
+
+      <div class="stage-foot">
+        <div class="angle-pill">键角 <strong id="angleValue">109°28′</strong></div>
+        <div class="ideal-angle">电子域理想角 <span id="idealAngle">109°28′</span></div>
+        <div class="lone-note" id="loneNote"><i></i>所有电子域都是成键电子对</div>
+      </div>
+    </section>
+
+    <aside class="sidebar" aria-label="分子构型信息">
+      <section class="card">
+        <div class="card-kicker">当前分子</div>
+        <div class="current-head">
+          <div class="formula" id="sideFormula">CH₄</div>
+          <span class="geometry-badge axe-badge" id="axeBadge">AX₄</span>
+        </div>
+        <p class="current-desc" id="sideName">甲烷 · 正四面体形</p>
+        <div class="fact-list">
+          <div class="fact-row"><span>价层电子对数</span><strong id="factDomains">4</strong></div>
+          <div class="fact-row"><span>孤对电子数</span><strong id="factLone">0</strong></div>
+          <div class="fact-row"><span>电子域构型</span><strong id="factElectronGeom">四面体</strong></div>
+          <div class="fact-row"><span>分子构型</span><strong id="factMolecularGeom">正四面体形</strong></div>
+          <div class="fact-row"><span>典型分子</span><strong id="factExample">CH₄、CCl₄</strong></div>
+        </div>
+        <div class="equation">
+          <div class="equation-label">价层电子对数 = σ键电子对 + 孤对电子</div>
+          <div class="equation-line">
+            <strong id="eqTotal">4</strong><span class="op">=</span>
+            <span id="eqBonds">4</span><span class="op">σ键</span>
+            <span class="op">+</span>
+            <em id="eqLone">0</em><span class="op">孤对</span>
+          </div>
+        </div>
+        <p class="note" id="sideNote">没有孤对电子，电子域构型与分子构型一致。</p>
+      </section>
+
+      <section class="card">
+        <div class="card-kicker">判断顺序</div>
+        <h3>先电子域，后分子形状</h3>
+        <div class="fact-list" style="margin-top:10px">
+          <div class="fact-row"><span>2 个电子域</span><strong>直线形</strong></div>
+          <div class="fact-row"><span>3 个电子域</span><strong>平面三角形</strong></div>
+          <div class="fact-row"><span>4 个电子域</span><strong>四面体</strong></div>
+        </div>
+        <p class="note">孤对电子也占一个电子域，但看不见原子。去掉孤对后，才是分子构型。</p>
+      </section>
+
+      <section class="card tip-card">
+        <div class="tip-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/><path d="M11 12h2"/></svg>
+        </div>
+        <div class="tip-copy">
+          <h4>孤对电子斥力更大</h4>
+          <p><strong>孤对—孤对 &gt; 孤对—成键 &gt; 成键—成键。</strong>所以 NH₃ 的键角约 107°，H₂O 约 104.5°，略小于 109°28′。</p>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <section class="steps" aria-label="VSEPR 判断流程">
+    <div class="step"><span class="step-num">01</span><h4>数电子对</h4><p>价层电子对数 = σ键电子对 + 中心原子孤对电子数。</p></div>
+    <div class="step"><span class="step-num">02</span><h4>定电子域</h4><p>2 对→直线，3 对→平面三角，4 对→四面体。</p></div>
+    <div class="step"><span class="step-num">03</span><h4>看孤对</h4><p>孤对占一个方向，但成键原子不放在那个方向。</p></div>
+    <div class="step"><span class="step-num">04</span><h4>得分子构型</h4><p>去掉孤对，只看原子骨架：三角锥、V 形由此而来。</p></div>
+  </section>
+
+  <footer class="site-footer">
+    <p>科学说明：VSEPR 用价层电子对相互排斥来解释分子形状；NH₃、H₂O 的实际键角因孤对电子斥力而略小于理想四面体角。模型为教学示意，键长与轨道形状经过简化。</p>
+    <span class="footer-tag">高中化学可视化平台 · 分子空间构型</span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const TAU = Math.PI * 2;
+  const FOV = 38 * Math.PI / 180;
+  const BOND = 2.15;
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const len = (v) => Math.hypot(v[0], v[1], v[2]);
+  const norm = (v) => { const l = len(v) || 1; return [v[0] / l, v[1] / l, v[2] / l]; };
+  const degh = (x) => x * Math.PI / 180;
+
+  function cross(a, b) {
+    return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  }
+
+  const TETRA = [
+    [1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]
+  ].map(norm);
+
+  // NH3: three equivalent bonds at 107° with the lone pair on +y.
+  const nh3Cos = 0.372;
+  const nh3Sin = Math.sqrt(1 - nh3Cos * nh3Cos);
+  const NH3_BONDS = [0, 120, 240].map((phi) => {
+    const a = degh(phi);
+    return [nh3Sin * Math.cos(a), -nh3Cos, nh3Sin * Math.sin(a)];
+  });
+
+  // H2O: two O-H bonds at 104.5°, two lone-pair lobes above/back.
+  const halfHOH = degh(104.5 / 2);
+  const H2O_BONDS = [
+    [Math.sin(halfHOH), -Math.cos(halfHOH), 0],
+    [-Math.sin(halfHOH), -Math.cos(halfHOH), 0]
+  ];
+
+  const MODELS = {
+    linear: {
+      key: "linear", name: "直线形", formula: "BeCl₂", molecule: "氯化铍", axe: "AX₂",
+      center: "Be", ligand: "Cl", centerColor: "#fbbf24", ligandColor: "#86efac",
+      dirs: [[1, 0, 0], [-1, 0, 0]], loneDirs: [], lone: 0,
+      electronGeometry: "直线形", molecularGeometry: "直线形",
+      angle: "180°", ideal: "180°", example: "BeCl₂、CO₂",
+      view: { yaw: .12, pitch: .12, distance: 7.2 },
+      desc: "两个成键电子对相距最远，中心原子与两个配位原子在同一直线上。",
+      note: "没有孤对电子，电子域构型与分子构型一致。"
+    },
+    planar: {
+      key: "planar", name: "平面三角形", formula: "BF₃", molecule: "三氟化硼", axe: "AX₃",
+      center: "B", ligand: "F", centerColor: "#fbbf24", ligandColor: "#a5f3fc",
+      dirs: [[1, 0, 0], [-.5, 0, Math.sqrt(3) / 2], [-.5, 0, -Math.sqrt(3) / 2]],
+      loneDirs: [], lone: 0,
+      electronGeometry: "平面三角形", molecularGeometry: "平面三角形",
+      angle: "120°", ideal: "120°", example: "BF₃、SO₃",
+      view: { yaw: 0, pitch: .62, distance: 7.4 },
+      desc: "三个电子域在同一平面内尽量分开，形成 120° 的平面三角形。",
+      note: "没有孤对电子，三个 B—F 键完全等价。"
+    },
+    tetra: {
+      key: "tetra", name: "正四面体形", formula: "CH₄", molecule: "甲烷", axe: "AX₄",
+      center: "C", ligand: "H", centerColor: "#cbd5e1", ligandColor: "#f8fafc",
+      dirs: TETRA, loneDirs: [], lone: 0,
+      electronGeometry: "四面体", molecularGeometry: "正四面体形",
+      angle: "109°28′", ideal: "109°28′", example: "CH₄、CCl₄",
+      view: { yaw: 1.42, pitch: .2, distance: 7.5 },
+      desc: "四个成键电子对指向正四面体的四个顶点，彼此夹角为 109°28′。",
+      note: "没有孤对电子，四个 C—H 键完全等价，分子构型就是正四面体。"
+    },
+    pyramidal: {
+      key: "pyramidal", name: "三角锥形", formula: "NH₃", molecule: "氨", axe: "AX₃E",
+      center: "N", ligand: "H", centerColor: "#93c5fd", ligandColor: "#f8fafc",
+      dirs: NH3_BONDS, loneDirs: [[0, 1, 0]], lone: 1,
+      electronGeometry: "四面体", molecularGeometry: "三角锥形",
+      angle: "107°", ideal: "109°28′", example: "NH₃、PCl₃",
+      view: { yaw: 1.57, pitch: .2, distance: 7.4 },
+      desc: "三个 N—H 键加一对孤对电子构成四个电子域；孤对占据四面体的一个顶点。",
+      note: "孤对电子斥力更大，把三个 N—H 键压缩到约 107°；分子骨架是三角锥。"
+    },
+    bent: {
+      key: "bent", name: "V 形", formula: "H₂O", molecule: "水", axe: "AX₂E₂",
+      center: "O", ligand: "H", centerColor: "#fca5a5", ligandColor: "#f8fafc",
+      dirs: H2O_BONDS, loneDirs: [[0, .6, .8], [0, .6, -.8]], lone: 2,
+      electronGeometry: "四面体", molecularGeometry: "V 形",
+      angle: "104.5°", ideal: "109°28′", example: "H₂O、H₂S",
+      view: { yaw: .58, pitch: .3, distance: 7.4 },
+      desc: "两个 O—H 键加两对孤对电子构成四个电子域；孤对占据两个四面体顶点。",
+      note: "两对孤对电子的斥力更强，把 H—O—H 键角压缩到约 104.5°，形成 V 形。"
+    }
+  };
+
+  const MODEL_ORDER = ["linear", "planar", "tetra", "pyramidal", "bent"];
+  const initialFromQuery = new URLSearchParams(window.location.search).get("model");
+  let current = MODELS[initialFromQuery] ? initialFromQuery : "tetra";
+  let model = MODELS[current];
+  let showLone = true;
+
+  const stageCard = document.getElementById("stageCard");
+  const stageView = document.getElementById("stageView");
+  const canvas = document.getElementById("scene");
+  const ctx = canvas.getContext("2d");
+  const formulaEl = document.getElementById("formula");
+  const geomNameEl = document.getElementById("geomName");
+  const stageStatus = document.getElementById("stageStatus");
+  const domainText = document.getElementById("domainText");
+  const loneHeaderText = document.getElementById("loneHeaderText");
+  const angleValue = document.getElementById("angleValue");
+  const idealAngle = document.getElementById("idealAngle");
+  const loneNote = document.getElementById("loneNote");
+  const sideFormula = document.getElementById("sideFormula");
+  const axeBadge = document.getElementById("axeBadge");
+  const sideName = document.getElementById("sideName");
+  const factDomains = document.getElementById("factDomains");
+  const factLone = document.getElementById("factLone");
+  const factElectronGeom = document.getElementById("factElectronGeom");
+  const factMolecularGeom = document.getElementById("factMolecularGeom");
+  const factExample = document.getElementById("factExample");
+  const eqTotal = document.getElementById("eqTotal");
+  const eqBonds = document.getElementById("eqBonds");
+  const eqLone = document.getElementById("eqLone");
+  const sideNote = document.getElementById("sideNote");
+  const loneToggle = document.getElementById("loneToggle");
+  const loneToggleText = document.getElementById("loneToggleText");
+  const resetViewBtn = document.getElementById("resetViewBtn");
+  const fullscreenBtn = document.getElementById("fullscreenBtn");
+  const geomButtons = Array.from(document.querySelectorAll(".geom-btn"));
+
+  let vw = 1, vh = 1, dpr = 1;
+  let yaw = model.view.yaw;
+  let pitch = model.view.pitch;
+  let yawTarget = yaw;
+  let pitchTarget = pitch;
+  let distance = model.view.distance;
+  let distanceTarget = distance;
+  let dragging = false;
+  let lastX = 0, lastY = 0;
+  let lastFrame = performance.now();
+  let viewMat = null;
+  let projMat = null;
+  let ctxCssW = 1, ctxCssH = 1;
+
+  function syncUI() {
+    const lone = model.lone;
+    formulaEl.textContent = model.formula;
+    geomNameEl.textContent = model.name;
+    sideFormula.textContent = model.formula;
+    axeBadge.textContent = model.axe;
+    sideName.textContent = `${model.molecule} · ${model.molecularGeometry}`;
+    stageStatus.dataset.lone = lone > 0 ? "true" : "false";
+    domainText.textContent = `${model.dirs.length + lone} 个电子域`;
+    loneHeaderText.textContent = `${lone} 对孤对电子`;
+    angleValue.textContent = model.angle;
+    idealAngle.textContent = model.ideal;
+    loneNote.innerHTML = lone > 0
+      ? `<i></i>孤对电子占据方向，键角被压缩`
+      : `<i></i>所有电子域都是成键电子对`;
+    factDomains.textContent = String(model.dirs.length + lone);
+    factLone.textContent = String(lone);
+    factElectronGeom.textContent = model.electronGeometry;
+    factMolecularGeom.textContent = model.molecularGeometry;
+    factExample.textContent = model.example;
+    eqTotal.textContent = String(model.dirs.length + lone);
+    eqBonds.textContent = String(model.dirs.length);
+    eqLone.textContent = String(lone);
+    sideNote.textContent = model.note;
+    loneToggle.disabled = lone === 0;
+    loneToggle.setAttribute("aria-pressed", showLone && lone > 0 ? "true" : "false");
+    loneToggleText.textContent = lone === 0 ? "无孤对" : (showLone ? "孤对电子" : "已隐藏孤对");
+    for (const btn of geomButtons) {
+      const on = btn.dataset.model === current;
+      btn.classList.toggle("active", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+  }
+
+  function setModel(key) {
+    if (!MODELS[key] || key === current) return;
+    current = key;
+    model = MODELS[key];
+    showLone = model.lone > 0;
+    yawTarget = model.view.yaw;
+    pitchTarget = model.view.pitch;
+    distanceTarget = model.view.distance;
+    syncUI();
+    stageCard.classList.remove("is-switching");
+    void stageCard.offsetWidth;
+    stageCard.classList.add("is-switching");
+    window.setTimeout(() => stageCard.classList.remove("is-switching"), 500);
+  }
+
+  // ── camera ─────────────────────────────────────────────────────────────
+  function lookAt(eye, center, up) {
+    const z = norm([eye[0] - center[0], eye[1] - center[1], eye[2] - center[2]]);
+    const x = norm(cross(up, z));
+    const y = cross(z, x);
+    return new Float32Array([
+      x[0], y[0], z[0], 0,
+      x[1], y[1], z[1], 0,
+      x[2], y[2], z[2], 0,
+      -dot(x, eye), -dot(y, eye), -dot(z, eye), 1
+    ]);
+  }
+
+  function perspective(fovy, aspect, near, far) {
+    const f = 1 / Math.tan(fovy / 2);
+    const nf = 1 / (near - far);
+    return new Float32Array([
+      f / aspect, 0, 0, 0,
+      0, f, 0, 0,
+      0, 0, (far + near) * nf, -1,
+      0, 0, 2 * far * near * nf, 0
+    ]);
+  }
+
+  function transform4(m, p) {
+    return [
+      m[0] * p[0] + m[4] * p[1] + m[8] * p[2] + m[12],
+      m[1] * p[0] + m[5] * p[1] + m[9] * p[2] + m[13],
+      m[2] * p[0] + m[6] * p[1] + m[10] * p[2] + m[14],
+      m[3] * p[0] + m[7] * p[1] + m[11] * p[2] + m[15]
+    ];
+  }
+
+  function project(p) {
+    if (!viewMat || !projMat) return null;
+    const v = transform4(viewMat, p);
+    const c = transform4(projMat, v);
+    if (c[3] <= .0001) return null;
+    const depth = -v[2];
+    const focal = (ctxCssH * .5) / Math.tan(FOV / 2);
+    return {
+      x: (c[0] / c[3] * .5 + .5) * ctxCssW,
+      y: (-c[1] / c[3] * .5 + .5) * ctxCssH,
+      depth,
+      scale: focal / Math.max(.1, depth)
+    };
+  }
+
+  // ── drawing ─────────────────────────────────────────────────────────────
+  function drawBond(a, b, colorA, colorB) {
+    const pa = project(a), pb = project(b);
+    if (!pa || !pb) return;
+    const s = (pa.scale + pb.scale) * .5;
+    const w = Math.max(2.5, s * .052);
+    ctx.save();
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "rgba(103,232,249,0.12)";
+    ctx.lineWidth = w * 2.4;
+    ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y); ctx.stroke();
+    const grad = ctx.createLinearGradient(pa.x, pa.y, pb.x, pb.y);
+    grad.addColorStop(0, colorA);
+    grad.addColorStop(1, colorB);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = w;
+    ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y); ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawAtom(pos, label, baseColor, radius, strong = false) {
+    const p = project(pos);
+    if (!p) return;
+    const r = Math.max(strong ? 11 : 8, radius * p.scale * .9);
+    const x = p.x, y = p.y;
+
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    const halo = ctx.createRadialGradient(x, y, r * .2, x, y, r * (strong ? 2.5 : 2));
+    halo.addColorStop(0, hexA(baseColor, .22));
+    halo.addColorStop(1, hexA(baseColor, 0));
+    ctx.fillStyle = halo;
+    ctx.beginPath(); ctx.arc(x, y, r * (strong ? 2.5 : 2), 0, TAU); ctx.fill();
+    ctx.restore();
+
+    const g = ctx.createRadialGradient(x - r * .32, y - r * .38, r * .1, x, y, r);
+    g.addColorStop(0, lighten(baseColor, .55));
+    g.addColorStop(.45, baseColor);
+    g.addColorStop(1, darken(baseColor, .4));
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,.3)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    const darkText = ["#f8fafc", "#a5f3fc", "#86efac"].includes(baseColor);
+    ctx.fillStyle = darkText ? "rgba(5,14,26,.92)" : "rgba(255,255,255,.96)";
+    ctx.font = `${strong ? 700 : 600} ${Math.max(10, r * (strong ? .9 : .85))}px "Segoe UI", "Microsoft YaHei", sans-serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(label, x, y + .5);
+  }
+
+  function drawLonePair(dir, idx) {
+    const pos = dir.map((v) => v * 1.12);
+    const p = project(pos);
+    if (!p) return;
+    const c = project([0, 0, 0]);
+    if (!c) return;
+    const s = p.scale;
+    const ang = Math.atan2(p.y - c.y, p.x - c.x);
+    const dx = p.x - c.x, dy = p.y - c.y;
+    const dl = Math.hypot(dx, dy) || 1;
+    const ux = dx / dl, uy = dy / dl;
+
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.strokeStyle = "rgba(244,114,182,.18)";
+    ctx.setLineDash([2, 6]);
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+    ctx.setLineDash([]);
+
+    const rx = Math.max(16, s * .48);
+    const ry = Math.max(9, s * .27);
+    const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, rx);
+    grad.addColorStop(0, "rgba(255,255,255,.20)");
+    grad.addColorStop(.28, "rgba(244,114,182,.25)");
+    grad.addColorStop(.68, "rgba(167,139,250,.10)");
+    grad.addColorStop(1, "rgba(244,114,182,0)");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y, rx, ry, ang, 0, TAU);
+    ctx.fill();
+
+    const perpX = -uy, perpY = ux;
+    const offset = Math.max(4, s * .075);
+    for (const sign of [-1, 1]) {
+      const ex = p.x + perpX * offset * sign + ux * (idx % 2 ? 2 : 0);
+      const ey = p.y + perpY * offset * sign + uy * (idx % 2 ? 2 : 0);
+      const er = Math.max(2.2, s * .032);
+      ctx.fillStyle = "rgba(255,255,255,.9)";
+      ctx.shadowColor = "rgba(244,114,182,.9)";
+      ctx.shadowBlur = 9;
+      ctx.beginPath(); ctx.arc(ex, ey, er, 0, TAU); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawAngle() {
+    const dirs = model.dirs;
+    if (dirs.length < 2) return;
+    if (model.key === "linear") {
+      const p = project([0, 1.15, 0]);
+      if (p) drawPill("180°", p.x, p.y - 16, "rgba(165,243,252,.95)");
+      return;
+    }
+    let a = norm(dirs[0]);
+    let b = norm(dirs[1]);
+    let bestSeparation = -1;
+    for (let i = 0; i < dirs.length; i++) {
+      for (let j = i + 1; j < dirs.length; j++) {
+        const pi = project(dirs[i].map((v) => v * BOND));
+        const pj = project(dirs[j].map((v) => v * BOND));
+        if (!pi || !pj) continue;
+        const separation = Math.hypot(pi.x - pj.x, pi.y - pj.y);
+        if (separation > bestSeparation) {
+          bestSeparation = separation;
+          a = norm(dirs[i]);
+          b = norm(dirs[j]);
+        }
+      }
+    }
+    const cos = clamp(dot(a, b), -1, 1);
+    const angle = Math.acos(cos);
+    let perp = norm([b[0] - a[0] * cos, b[1] - a[1] * cos, b[2] - a[2] * cos]);
+    const radius = 1.22;
+    const pts = [];
+    for (let i = 0; i <= 26; i++) {
+      const t = angle * i / 26;
+      const d = [
+        a[0] * Math.cos(t) + perp[0] * Math.sin(t),
+        a[1] * Math.cos(t) + perp[1] * Math.sin(t),
+        a[2] * Math.cos(t) + perp[2] * Math.sin(t)
+      ];
+      const p = project(d.map((v) => v * radius));
+      if (p) pts.push(p);
+    }
+    if (pts.length < 2) return;
+    ctx.save();
+    ctx.strokeStyle = "rgba(103,232,249,.72)";
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([3, 5]);
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    const mid = pts[Math.floor(pts.length / 2)];
+    drawPill(model.angle, mid.x + 10, mid.y - 20, "rgba(165,243,252,.96)");
+    ctx.restore();
+  }
+
+  function drawPill(text, x, y, color) {
+    ctx.font = '600 10.5px "Segoe UI", "Microsoft YaHei", sans-serif';
+    const padX = 7;
+    const w = ctx.measureText(text).width + padX * 2;
+    const h = 21;
+    const left = clamp(x, 8, ctxCssW - w - 8);
+    const top = clamp(y - h / 2, 8, ctxCssH - h - 8);
+    ctx.save();
+    ctx.fillStyle = "rgba(4,10,20,.78)";
+    roundRect(left, top, w, h, 6);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(148,163,184,.16)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, left + padX, top + h / 2 + .5);
+    ctx.restore();
+  }
+
+  function roundRect(x, y, w, h, r) {
+    const rr = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + rr, y);
+    ctx.arcTo(x + w, y, x + w, y + h, rr);
+    ctx.arcTo(x + w, y + h, x, y + h, rr);
+    ctx.arcTo(x, y + h, x, y, rr);
+    ctx.arcTo(x, y, x + w, y, rr);
+    ctx.closePath();
+  }
+
+  function hexA(hex, a) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+  }
+  function lighten(hex, f) {
+    const n = parseInt(hex.slice(1), 16);
+    const r = Math.round(((n >> 16) & 255) + (255 - ((n >> 16) & 255)) * f);
+    const g = Math.round(((n >> 8) & 255) + (255 - ((n >> 8) & 255)) * f);
+    const b = Math.round((n & 255) + (255 - (n & 255)) * f);
+    return `rgb(${r},${g},${b})`;
+  }
+  function darken(hex, f) {
+    const n = parseInt(hex.slice(1), 16);
+    const r = Math.round(((n >> 16) & 255) * (1 - f));
+    const g = Math.round(((n >> 8) & 255) * (1 - f));
+    const b = Math.round((n & 255) * (1 - f));
+    return `rgb(${r},${g},${b})`;
+  }
+
+  function render() {
+    const aspect = vw / Math.max(1, vh);
+    const fit = Math.max(1, 1.08 / Math.max(.25, aspect));
+    const camDistance = distance * fit;
+    const eye = [
+      camDistance * Math.cos(pitch) * Math.sin(yaw),
+      camDistance * Math.sin(pitch),
+      camDistance * Math.cos(pitch) * Math.cos(yaw)
+    ];
+    viewMat = lookAt(eye, [0, 0, 0], [0, 1, 0]);
+    projMat = perspective(FOV, aspect, .1, 100);
+
+    ctx.clearRect(0, 0, vw, vh);
+
+    const center = [0, 0, 0];
+    const atoms = [{ pos: center, label: model.center, color: model.centerColor, radius: .38, strong: true }];
+    for (const dir of model.dirs) {
+      atoms.push({
+        pos: [dir[0] * BOND, dir[1] * BOND, dir[2] * BOND],
+        label: model.ligand,
+        color: model.ligandColor,
+        radius: .24,
+        strong: false
+      });
+    }
+
+    for (const dir of model.dirs) {
+      drawBond(center, [dir[0] * BOND, dir[1] * BOND, dir[2] * BOND], "rgba(103,232,249,.88)", hexA(model.ligandColor, .55));
+    }
+    if (model.lone && showLone) {
+      model.loneDirs.forEach((dir, i) => drawLonePair(dir, i));
+    }
+
+    atoms.sort((a, b) => (project(b.pos)?.depth || 0) - (project(a.pos)?.depth || 0));
+    for (const atom of atoms) drawAtom(atom.pos, atom.label, atom.color, atom.radius, atom.strong);
+    drawAngle();
+  }
+
+  function resize() {
+    const rect = stageView.getBoundingClientRect();
+    vw = Math.max(1, Math.floor(rect.width));
+    vh = Math.max(1, Math.floor(rect.height));
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(vw * dpr);
+    canvas.height = Math.round(vh * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctxCssW = vw;
+    ctxCssH = vh;
+  }
+
+  function frame(now) {
+    const dt = Math.min(.05, (now - lastFrame) / 1000);
+    lastFrame = now;
+    if (!dragging) {
+      yaw += (yawTarget - yaw) * Math.min(1, dt * 5);
+      pitch += (pitchTarget - pitch) * Math.min(1, dt * 5);
+    }
+    distance += (distanceTarget - distance) * Math.min(1, dt * 8);
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  // ── events ──────────────────────────────────────────────────────────────
+  for (const btn of geomButtons) {
+    btn.addEventListener("click", () => setModel(btn.dataset.model));
+  }
+  loneToggle.addEventListener("click", () => {
+    if (model.lone === 0) return;
+    showLone = !showLone;
+    syncUI();
+  });
+  resetViewBtn.addEventListener("click", () => {
+    yawTarget = model.view.yaw;
+    pitchTarget = model.view.pitch;
+    distanceTarget = model.view.distance;
+  });
+  fullscreenBtn.addEventListener("click", async () => {
+    try {
+      if (!document.fullscreenElement) await stageCard.requestFullscreen();
+      else await document.exitFullscreen();
+    } catch (err) { /* fullscreen may be unavailable */ }
+  });
+  document.addEventListener("fullscreenchange", () => {
+    fullscreenBtn.title = document.fullscreenElement ? "退出全屏" : "全屏观察";
+    fullscreenBtn.setAttribute("aria-label", fullscreenBtn.title);
+    setTimeout(resize, 60);
+  });
+
+  stageView.addEventListener("pointerdown", (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    dragging = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    stageView.classList.add("dragging");
+    stageView.setPointerCapture?.(e.pointerId);
+    e.preventDefault();
+  });
+  stageView.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - lastX;
+    const dy = e.clientY - lastY;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    yaw -= dx * .006;
+    pitch = clamp(pitch + dy * .006, -1.3, 1.3);
+    yawTarget = yaw;
+    pitchTarget = pitch;
+  });
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false;
+    stageView.classList.remove("dragging");
+    try { stageView.releasePointerCapture?.(e.pointerId); } catch (err) {}
+  }
+  stageView.addEventListener("pointerup", endDrag);
+  stageView.addEventListener("pointercancel", endDrag);
+  stageView.addEventListener("pointerleave", (e) => { if (e.buttons === 0) endDrag(e); });
+  stageView.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    distanceTarget = clamp(distanceTarget * Math.exp(e.deltaY * .0012), 6.2, 14);
+  }, { passive: false });
+  stageView.addEventListener("dblclick", () => {
+    yawTarget = model.view.yaw;
+    pitchTarget = model.view.pitch;
+    distanceTarget = model.view.distance;
+  });
+
+  let ro = null;
+  if ("ResizeObserver" in window) {
+    ro = new ResizeObserver(() => resize());
+    ro.observe(stageView);
+  }
+  window.addEventListener("resize", resize);
+
+  resize();
+  syncUI();
+  requestAnimationFrame((now) => {
+    lastFrame = now;
+    frame(now);
+  });
+})();
+</script>
+</body>
+</html>

@@ -703,6 +703,7 @@
   .module-card.soon:hover { transform: none; border-color: var(--line); box-shadow: none; }
   .module-card.soon .module-art { min-height: 145px; }
   .soon .art-svg { opacity: 0.62; }
+  .vsepr-art { transform: scale(1.22); transform-origin: 50% 52%; }
   .coming-label {
     position: absolute;
     right: 14px;
@@ -925,8 +926,8 @@
           <a class="btn btn-ghost" href="#modules">浏览模块</a>
         </div>
         <div class="hero-stats" aria-label="平台概况">
-          <div><strong>01</strong>已上线模块</div>
-          <div><strong>03</strong>杂化类型</div>
+          <div><strong>02</strong>已上线模块</div>
+          <div><strong>05</strong>空间构型</div>
           <div><strong>0</strong>外部依赖</div>
         </div>
       </div>
@@ -948,7 +949,7 @@
     </section>
 
     <section class="stat-strip" aria-label="平台数据">
-      <div><span>当前版本</span><strong>第一站 · 电子云杂化</strong></div>
+      <div><span>当前版本</span><strong>双模块 · 电子云与分子构型</strong></div>
       <div><span>适配场景</span><strong>课堂演示 / 自主探索</strong></div>
       <div><span>运行方式</span><strong>浏览器直接打开</strong></div>
       <div class="stat-note"><span>维护方式</span><strong>GitHub Pages 长期托管</strong></div>
@@ -992,27 +993,28 @@
           </div>
         </a>
 
-        <div class="module-card soon" aria-label="分子空间构型，筹备中">
+        <a class="module-card" href="molecular-geometry.html" aria-label="打开分子空间构型模块">
           <div class="module-art">
             <div class="module-art-label"><i style="background:#fbbf24;box-shadow:0 0 8px #fbbf24"></i>VSEPR / MOLECULAR SHAPE</div>
-            <svg class="art-svg" viewBox="0 0 300 180" fill="none" aria-hidden="true">
-              <path d="M150 36 84 148h132L150 36Z" stroke="rgba(103,232,249,.22)" stroke-dasharray="2 5"/>
-              <path d="M150 90 150 38M150 90 87 146M150 90 213 146M150 90 150 136" stroke="rgba(148,163,184,.22)"/>
-              <circle cx="150" cy="90" r="16" fill="rgba(103,232,249,.1)" stroke="rgba(103,232,249,.5)"/>
-              <circle cx="150" cy="38" r="8" fill="rgba(94,234,212,.32)" stroke="rgba(94,234,212,.7)"/>
-              <circle cx="87" cy="146" r="8" fill="rgba(251,191,36,.25)" stroke="rgba(251,191,36,.55)"/>
-              <circle cx="213" cy="146" r="8" fill="rgba(167,139,250,.25)" stroke="rgba(167,139,250,.55)"/>
-              <circle cx="150" cy="136" r="7" fill="rgba(244,114,182,.22)" stroke="rgba(244,114,182,.5)"/>
+            <svg class="art-svg vsepr-art" viewBox="0 0 300 180" fill="none" aria-hidden="true">
+              <path d="M150 36 84 148h132L150 36Z" stroke="rgba(103,232,249,.26)" stroke-dasharray="2 5"/>
+              <path d="M150 90 150 38M150 90 87 146M150 90 213 146M150 90 150 136" stroke="rgba(148,163,184,.28)"/>
+              <circle cx="150" cy="90" r="16" fill="rgba(103,232,249,.14)" stroke="rgba(103,232,249,.58)"/>
+              <circle cx="150" cy="38" r="8" fill="rgba(94,234,212,.4)" stroke="rgba(94,234,212,.8)"/>
+              <circle cx="87" cy="146" r="8" fill="rgba(251,191,36,.32)" stroke="rgba(251,191,36,.65)"/>
+              <circle cx="213" cy="146" r="8" fill="rgba(167,139,250,.32)" stroke="rgba(167,139,250,.65)"/>
+              <circle cx="150" cy="136" r="7" fill="rgba(244,114,182,.3)" stroke="rgba(244,114,182,.62)"/>
             </svg>
-            <div class="coming-label">COMING SOON</div>
+            <div class="coming-label">AX₂ / AX₃ / AX₄</div>
           </div>
           <div class="module-body">
-            <div class="module-top"><span class="status-pill">筹备中</span><span class="module-num">MODULE 02</span></div>
+            <div class="module-top"><span class="status-pill live">已上线</span><span class="module-num">MODULE 02</span></div>
             <h3>分子空间构型</h3>
-            <p>用 VSEPR 和杂化轨道解释直线形、平面三角形、四面体与三角锥。</p>
-            <div class="tag-row"><span class="tag">VSEPR</span><span class="tag">空间构型</span></div>
+            <p>直线形、平面三角形、正四面体、三角锥和 V 形，配合 VSEPR 与孤对电子判断，观察键角如何被压缩。</p>
+            <div class="tag-row"><span class="tag">VSEPR</span><span class="tag">孤对电子</span><span class="tag">5 种构型</span><span class="tag">3D</span></div>
+            <div class="open-link">打开模块 <span aria-hidden="true">↗</span></div>
           </div>
-        </div>
+        </a>
 
         <div class="module-card soon" aria-label="晶体结构，筹备中">
           <div class="module-art">
