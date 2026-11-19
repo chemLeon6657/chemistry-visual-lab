@@ -632,7 +632,7 @@
       bondType: "三键（1 个 σ + 2 个 π）", length: "120 pm", angle: "180°", geometry: "直线形",
       sigma: 1, pi: 2, far: 7.05, near: 3.15,
       outwardL: [[-1, 0, 0]], outwardR: [[1, 0, 0]],
-      pAxes: [[0, 1, 0], [0, 0, 1]], view: { yaw: .62, pitch: .3, distance: 9.2 },
+      pAxes: [[0, 1, 0], [0, 0, 1]], view: { yaw: .785, pitch: .615, distance: 9.2 },
       note: "两个 sp 碳原子沿键轴形成 σ 键；每个碳还有两个相互垂直的未杂化 p 轨道，分别侧面重叠形成 2 个 π 键，C≡C 呈直线形。"
     }
   };
@@ -1024,15 +1024,20 @@
     if (sigma > .01) {
       const mid = project([0, 0, 0]);
       if (mid) {
+        const leftP = project(leftC);
+        const rightP = project(rightC);
+        const bondAngle = leftP && rightP ? Math.atan2(rightP.y - leftP.y, rightP.x - leftP.x) : 0;
         const rx = Math.max(22, mid.scale * (1.1 + d * .16));
         const ry = Math.max(11, mid.scale * .5);
-        const g = ctx.createRadialGradient(mid.x, mid.y, 0, mid.x, mid.y, rx);
+        ctx.save();
+        ctx.translate(mid.x, mid.y);
+        ctx.rotate(bondAngle);
+        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
         g.addColorStop(0, `rgba(103,232,249,${.28 * sigma})`);
         g.addColorStop(.55, `rgba(94,234,212,${.14 * sigma})`);
         g.addColorStop(1, "rgba(94,234,212,0)");
-        ctx.save();
         ctx.fillStyle = g;
-        ctx.beginPath(); ctx.ellipse(mid.x, mid.y, rx, ry, 0, 0, TAU); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, TAU); ctx.fill();
         ctx.restore();
         // σ electron pair
         const dx = rx * .12;
@@ -1061,11 +1066,11 @@
     }
     if (pi1 > .3) {
       const p = project([0, 1.5, 0]);
-      if (p) pill(model.pi > 1 ? "π" : "π", p.x, p.y - 8, "rgba(196,181,253,.96)");
+      if (p) pill(model.pi > 1 ? "π₁" : "π", p.x, p.y - 8, "rgba(196,181,253,.96)");
     }
     if (pi2 > .3) {
       const p = project([0, 0, 1.6]);
-      if (p) pill("π", p.x, p.y - 8, "rgba(125,211,252,.96)");
+      if (p) pill("π₂", p.x, p.y - 8, "rgba(125,211,252,.96)");
     }
     if (sigma > .5) {
       const p = project([0, 0, 0]);
