@@ -364,26 +364,41 @@
   }
 
   function buildDiamond() {
-    const atoms=[],bonds=[];
+    const atoms=[],bonds=[],keys=new Map();
     const a=2;
     const fcc=[];
     for(const x of [0,1])for(const y of [0,1])for(const z of [0,1])fcc.push([x,y,z]);
     fcc.push([.5,.5,0],[.5,.5,1],[.5,0,.5],[.5,1,.5],[0,.5,.5],[1,.5,.5]);
     const tetra=[[.25,.25,.25],[.75,.75,.25],[.75,.25,.75],[.25,.75,.75]];
-    function add(frac){const pos=[(frac[0]-.5)*a,(frac[1]-.5)*a,(frac[2]-.5)*a];atoms.push(makeAtom(pos,"#cbd5e1",.17,"C","C",{labelColor:"#0f172a"}));return atoms.length-1;}
-    const fccIdx=fcc.map(add),tetraIdx=tetra.map(add);
-    // Every interior tetrahedral C connects to four FCC C: keep the clean cell, no ghost atoms.
+    function key(f){return f.map(v=>Math.round(v*100)).join(",");}
+    function add(frac,ghost=false){
+      const k=key(frac);if(keys.has(k))return keys.get(k);
+      const pos=[(frac[0]-.5)*a,(frac[1]-.5)*a,(frac[2]-.5)*a],idx=atoms.length;
+      atoms.push(makeAtom(pos,ghost?"#8ea4c0":"#cbd5e1",ghost?.105:.17,"C","C",{ghost,labelColor:"#0f172a"}));
+      keys.set(k,idx);return idx;
+    }
+    const baseFrac=[...fcc,...tetra];
+    const fccIdx=fcc.map(f=>add(f));
+    const tetraIdx=tetra.map(f=>add(f));
+    // Keep the normal cell clean; add hidden periodic C for the coordination inspector.
+    for(const f of baseFrac)for(const q of baseFrac)for(const dx of [-2,0,2])for(const dy of [-2,0,2])for(const dz of [-2,0,2]){
+      const g=[q[0]+dx/2,q[1]+dy/2,q[2]+dz/2];
+      if(keys.has(key(g)))continue;
+      const p1=[(f[0]-.5)*a,(f[1]-.5)*a,(f[2]-.5)*a],p2=[(g[0]-.5)*a,(g[1]-.5)*a,(g[2]-.5)*a];
+      if(dist(p1,p2)<.95)add(g,true);
+    }
+    // Visible bonds: each interior tetrahedral C connects to four FCC C.
     for(const ti of tetraIdx){
       const ppos=atoms[ti].pos;
-      const near=[];fccIdx.forEach((fi,index)=>{const d=dist(ppos,atoms[fi].pos);if(d<1.0)near.push({fi,d});});
+      const near=[];fccIdx.forEach(fi=>{const d=dist(ppos,atoms[fi].pos);if(d<1.0)near.push({fi,d});});
       near.sort((x,y)=>x.d-y.d);
-      for(const n of near.slice(0,4))if(!bonds.some(b=>[b[0],b[1]].includes(ti)&&[b[0],b[1]].includes(n.fi)))addBond(bonds,ti,n.fi,"rgba(103,232,249,.38)",1.35);
+      for(const n of near.slice(0,4))addBond(bonds,ti,n.fi,"rgba(103,232,249,.38)",1.35);
     }
     return { atoms,bonds,cellLines:cubeLines(1),camera:{yaw:.82,pitch:.3,distance:8.8},
       legend:[["C 原子","#cbd5e1"]], cellType:"金刚石型（面心立方 + 四面体）", coord:"4", coordMax:4, coordMode:"same", coordCutoff:.95, coordShape:"正四面体",
       status:"金刚石型 · 每个 C 连 4 个 C", foot:"共价键 · 熔点极高", formula:"C", type:"原子晶体", name:"金刚石 · 与 ZnS 同骨架的纯碳晶胞",
       particles:"C 原子", force:"共价键", melting:"≈ 3550 ℃", examples:"金刚石、晶体硅",
-      note:"金刚石与立方 ZnS 的晶胞骨架相同：面心立方位置 + 4 个四面体位置；区别是金刚石所有位置都是 C，ZnS 是 S²⁻ 与 Zn²⁺ 交替。每个 C 只与 4 个 C 成键。",
+      note:"金刚石与立方 ZnS 的晶胞骨架相同：面心立方位置 + 4 个四面体位置，但全部是 C。正常视图只画晶胞内 C；点击「配位」后，顶点/面心 C 会显示相邻晶胞补全的 4 个 C。每个 C 只与 4 个 C 成键。",
       descript:"金刚石是纯碳的原子晶体；把 ZnS 中的 S/Zn 都换成 C，就得到相同的晶胞骨架，但金刚石没有两种元素。每个 C 的配位数为 4。" };
   }
 
