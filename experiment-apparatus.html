@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#04070f" />
+<title>化学实验装置 · 4 种气体制备 · 高中化学可视化平台</title>
+<meta name="description" content="交互式化学实验装置：氧气、二氧化碳、氯气和氨气的发生、除杂、干燥、收集与尾气处理；支持装置拼装、检查和纠错。" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#04070f;--line:rgba(148,163,184,.14);--text:#eaf3ff;--muted:#8ea4c0;--dim:#5e728c;
+    --cyan:#67e8f9;--teal:#5eead4;--violet:#a78bfa;--pink:#f472b6;--amber:#fbbf24;
+    --mono:"Cascadia Code","SFMono-Regular",Consolas,"Liberation Mono",monospace;color-scheme:dark;
+  }
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:"Segoe UI Variable","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  button{font:inherit}a{color:inherit}button,a{-webkit-tap-highlight-color:transparent}:focus-visible{outline:2px solid rgba(103,232,249,.8);outline-offset:3px}
+  .page-glow{position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(920px 650px at 5% -8%,rgba(20,184,166,.15),transparent 64%),radial-gradient(1000px 760px at 98% 2%,rgba(91,33,182,.15),transparent 68%),radial-gradient(900px 700px at 55% 108%,rgba(14,116,144,.11),transparent 66%),linear-gradient(160deg,#050a14 0%,#04070f 55%,#050811 100%)}
+  .page-glow::after{content:"";position:absolute;inset:0;opacity:.22;background-image:linear-gradient(rgba(148,163,184,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.04) 1px,transparent 1px);background-size:46px 46px;mask-image:radial-gradient(circle at 50% 38%,black,transparent 77%);-webkit-mask-image:radial-gradient(circle at 50% 38%,black,transparent 77%)}
+  .shell{width:min(1600px,100%);min-height:100vh;margin:0 auto;padding:22px 28px 14px;display:flex;flex-direction:column}
+  .site-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding:0 2px 16px;animation:rise .7s cubic-bezier(.22,.8,.3,1) both}
+  .brand{display:flex;align-items:center;gap:15px;min-width:0;color:inherit;text-decoration:none}.brand:hover{opacity:.85}
+  .brand-mark{width:52px;height:52px;flex:0 0 auto;border-radius:16px;border:1px solid rgba(103,232,249,.2);background:radial-gradient(circle at 32% 24%,rgba(103,232,249,.2),transparent 55%),linear-gradient(150deg,rgba(11,28,46,.9),rgba(5,11,22,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 34px rgba(0,0,0,.34);display:grid;place-items:center}
+  .brand-mark svg{width:40px;height:40px}
+  .kicker{display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:9.5px;font-weight:650;letter-spacing:.19em;text-transform:uppercase}
+  .kicker::before{content:"";width:16px;height:1px;background:linear-gradient(90deg,var(--cyan),transparent)}
+  .brand h1{margin:4px 0 2px;font-size:clamp(26px,2.7vw,37px);line-height:1.05;letter-spacing:-.04em;font-weight:760}
+  .brand h1 span{background:linear-gradient(105deg,#e7fdff,var(--cyan) 45%,#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand p{margin:0;color:var(--muted);font-size:12px;letter-spacing:.02em}
+  .header-meta{display:flex;flex-direction:column;align-items:flex-end;gap:7px;padding-top:4px;flex:0 0 auto}
+  .meta-pill{display:inline-flex;align-items:center;gap:8px;height:29px;padding:0 11px;border:1px solid rgba(103,232,249,.16);border-radius:999px;background:rgba(8,20,34,.62);color:#c7e9ef;font-size:10px;letter-spacing:.08em;white-space:nowrap}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(94,234,212,.08),0 0 12px rgba(94,234,212,.8);animation:breathe 2.6s ease-in-out infinite}
+  .meta-note{color:var(--dim);font-size:9.5px;letter-spacing:.08em}
+  .workspace{display:grid;grid-template-columns:minmax(0,1fr) 326px;grid-template-areas:"stage task";gap:16px;align-items:start}
+  .panel{position:relative;border:1px solid var(--line);border-radius:22px;background:radial-gradient(100% 100% at 0% 0%,rgba(103,232,249,.045),transparent 48%),linear-gradient(155deg,rgba(13,24,43,.83),rgba(7,14,27,.72));box-shadow:0 22px 60px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.045);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);animation:rise .62s cubic-bezier(.22,.8,.3,1) both}
+  .stage-panel{grid-area:stage;padding:16px;min-width:0;overflow:hidden}
+  .task-panel{grid-area:task;padding:17px;position:sticky;top:16px}
+  .stage-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:13px}
+  .stage-kicker{color:var(--dim);font-size:9.3px;font-weight:650;letter-spacing:.18em;text-transform:uppercase}
+  .stage-title{margin:4px 0 0;font-size:19px;line-height:1.2;font-weight:670;letter-spacing:-.03em}.stage-title span{background:linear-gradient(100deg,#f4feff,#a5f3fc 60%,#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stage-status{margin-top:5px;color:var(--muted);font-size:9.5px;display:flex;align-items:center;gap:6px}.stage-status i{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 9px var(--teal)}
+  .gas-tabs{display:flex;gap:4px;padding:4px;border:1px solid rgba(148,163,184,.14);border-radius:11px;background:rgba(4,10,20,.6);flex-wrap:wrap}
+  .gas-tab{height:30px;padding:0 10px;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--dim);font-size:10px;cursor:pointer;transition:.2s;white-space:nowrap}
+  .gas-tab:hover{color:#dffbff;background:rgba(103,232,249,.055)}
+  .gas-tab.active{color:#f0ffff;border-color:rgba(103,232,249,.32);background:linear-gradient(145deg,rgba(103,232,249,.16),rgba(94,234,212,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 20px rgba(34,211,238,.1)}
+  .pipeline{display:grid;grid-template-columns:minmax(0,1fr) 16px minmax(0,1fr) 16px minmax(0,1fr) 16px minmax(0,1fr) 16px minmax(0,1fr);gap:0;align-items:stretch;position:relative;padding:5px 0 3px;--gas-color:#67e8f9}
+  .slot{position:relative;display:flex;flex-direction:column;min-width:0;min-height:235px;padding:9px 9px 7px;border:1px solid rgba(148,163,184,.14);border-radius:13px;background:linear-gradient(165deg,rgba(8,20,35,.7),rgba(5,12,23,.55));isolation:isolate}
+  .slot.empty{border-style:dashed;background:rgba(4,10,20,.28)}
+  .slot-head{display:flex;justify-content:space-between;align-items:center;gap:4px;position:relative;z-index:2;color:var(--dim);font-size:8px;letter-spacing:.04em;white-space:nowrap}
+  .slot-head b{font-weight:550;color:rgba(226,240,255,.72)}
+  .remove{width:18px;height:18px;display:grid;place-items:center;border:1px solid rgba(148,163,184,.15);border-radius:6px;background:rgba(4,10,20,.4);color:var(--dim);font-size:12px;line-height:1;cursor:pointer;padding:0}
+  .remove:hover{color:#fecdd3;border-color:rgba(244,114,182,.35);background:rgba(244,114,182,.1)}
+  .slot-art{height:83px;display:flex;align-items:center;justify-content:center;margin:5px 0 2px;position:relative;z-index:1}
+  .slot-art svg{display:block;width:100%;height:100%;max-width:135px;overflow:visible}
+  .slot-name{margin-top:auto;color:#e5f7ff;font-size:10px;line-height:1.35;font-weight:600;text-align:center;min-height:27px;display:flex;align-items:center;justify-content:center;position:relative;z-index:2}
+  .slot-desc{color:var(--dim);font-size:8px;line-height:1.35;text-align:center;margin-top:2px;min-height:22px;position:relative;z-index:2}
+  .slot-hint{color:rgba(94,114,140,.72);font-size:8px;line-height:1.45;text-align:center;margin:auto 0;min-height:46px;display:flex;align-items:center;justify-content:center;border-top:1px dashed rgba(148,163,184,.1);position:relative;z-index:2}
+  .slot.ok{border-color:rgba(94,234,212,.55);box-shadow:0 0 0 1px rgba(94,234,212,.12),0 0 20px rgba(94,234,212,.06)}
+  .slot.err{border-color:rgba(244,114,182,.6);box-shadow:0 0 0 1px rgba(244,114,182,.12),0 0 20px rgba(244,114,182,.06)}
+  .slot.found{border-color:rgba(251,191,36,.65);box-shadow:0 0 0 1px rgba(251,191,36,.14);background:linear-gradient(165deg,rgba(251,191,36,.09),rgba(5,12,23,.55))}
+  .slot.found::after{content:"找到错误";position:absolute;right:8px;top:8px;color:#fde68a;font-size:7px;letter-spacing:.03em;z-index:5}
+  .slot.challenge{cursor:pointer}.slot.challenge:hover{border-color:rgba(103,232,249,.38)}
+  .connector{position:relative;display:flex;align-items:center;justify-content:center;min-height:1px;color:rgba(103,232,249,.42);font-size:10px;overflow:hidden}
+  .connector::before{content:"";position:absolute;left:2px;right:2px;top:50%;height:1px;background:linear-gradient(90deg,rgba(103,232,249,.18),rgba(103,232,249,.4),rgba(103,232,249,.18))}
+  .connector::after{content:"";position:absolute;right:1px;top:50%;transform:translateY(-50%);border-left:4px solid rgba(103,232,249,.48);border-top:3px solid transparent;border-bottom:3px solid transparent}
+  .flow-dot{position:relative;z-index:2;width:4px;height:4px;border-radius:50%;background:var(--gas-color);box-shadow:0 0 8px var(--gas-color);opacity:0}
+  .pipeline.demo .connector .flow-dot{animation:flow 1.15s linear infinite;animation-delay:var(--delay,0s)}
+  .pipeline.demo .slot{animation:slotPulse 1.4s ease-in-out infinite;animation-delay:var(--delay,0s)}
+  .pipeline.demo .connector::before{background:linear-gradient(90deg,rgba(103,232,249,.1),var(--gas-color),rgba(103,232,249,.1));opacity:.8}
+  .slot-art .bubble{animation:bubble 1.8s ease-in-out infinite}
+  @keyframes flow{0%{opacity:0;transform:translateX(-5px)}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translateX(5px)}}
+  @keyframes slotPulse{0%,100%{box-shadow:0 0 0 1px rgba(103,232,249,.03),0 0 0 rgba(34,211,238,0)}50%{box-shadow:0 0 0 1px rgba(103,232,249,.2),0 0 22px rgba(34,211,238,.1)}}
+  @keyframes bubble{0%,100%{transform:translateY(0);opacity:.25}50%{transform:translateY(-4px);opacity:.8}}
+  .stage-foot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:11px;padding-top:10px;border-top:1px solid rgba(148,163,184,.08);color:var(--dim);font-size:8.8px}
+  .stage-foot strong{color:#dff8ff;font-family:var(--mono);font-size:9px;font-weight:550}.foot-spacer{margin-left:auto}.gas-chip{display:inline-flex;align-items:center;gap:5px;color:#bdfbf1}.gas-chip i{width:5px;height:5px;border-radius:50%;background:var(--gas-color);box-shadow:0 0 8px var(--gas-color)}
+  .task-panel .task-head{display:flex;justify-content:space-between;align-items:flex-start;gap:9px}
+  .task-kicker{color:var(--dim);font-size:9.5px;font-weight:650;letter-spacing:.18em;text-transform:uppercase}
+  .gas-title{display:flex;align-items:baseline;gap:7px;margin-top:4px}.gas-title h2{margin:0;font-size:24px;line-height:1.1;font-weight:650;letter-spacing:-.03em}.gas-title span{font-family:var(--mono);font-size:12px;color:var(--gas-color);font-weight:600}
+  .gas-badge{display:inline-flex;align-items:center;height:23px;padding:0 8px;border:1px solid color-mix(in srgb,var(--gas-color) 30%,transparent);border-radius:999px;background:color-mix(in srgb,var(--gas-color) 8%,transparent);color:var(--gas-color);font-size:8px;white-space:nowrap}
+  .task-req{margin:9px 0 12px;color:var(--muted);font-size:9.8px;line-height:1.65}
+  .equation-box{padding:9px 10px;border:1px solid rgba(148,163,184,.1);border-radius:9px;background:rgba(4,10,20,.36);color:#dff8ff;font-family:var(--mono);font-size:9.2px;line-height:1.6;word-break:break-word}
+  .task-facts{display:grid;gap:0;margin-top:11px}.task-fact{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid rgba(148,163,184,.07);font-size:9px}.task-fact:last-child{border-bottom:0}.task-fact span{color:var(--dim);flex:0 0 auto}.task-fact strong{color:#d8e9ff;font-size:9px;font-weight:550;text-align:right;line-height:1.4}
+  .task-note{margin:10px 0 0;padding-top:9px;border-top:1px solid rgba(148,163,184,.07);color:var(--dim);font-size:8.8px;line-height:1.65}.task-note strong{color:#fbcfe8;font-weight:550}
+  .status-box{margin-top:11px;padding:9px 10px;border:1px solid rgba(148,163,184,.12);border-radius:9px;background:rgba(4,10,20,.34);color:var(--muted);font-size:8.8px;line-height:1.55;min-height:46px}
+  .status-box.ok{color:#bdfbf1;border-color:rgba(94,234,212,.3);background:rgba(94,234,212,.06)}
+  .status-box.err{color:#fecdd3;border-color:rgba(244,114,182,.3);background:rgba(244,114,182,.06)}
+  .status-box strong{font-weight:600}.status-box ul{margin:4px 0 0;padding-left:14px}.status-box li{margin:2px 0}
+  .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}
+  .action-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:34px;padding:0 8px;border:1px solid rgba(148,163,184,.16);border-radius:9px;background:rgba(4,10,20,.46);color:#d9edff;font-size:9px;font-weight:550;cursor:pointer;transition:.2s;text-align:center}
+  .action-btn:hover:not(:disabled){border-color:rgba(103,232,249,.35);background:rgba(103,232,249,.08)}
+  .action-btn.primary{border-color:rgba(103,232,249,.35);background:linear-gradient(145deg,rgba(103,232,249,.16),rgba(94,234,212,.06));color:#efffff;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+  .action-btn.primary:hover:not(:disabled){background:linear-gradient(145deg,rgba(103,232,249,.23),rgba(94,234,212,.09));box-shadow:0 0 22px rgba(34,211,238,.1)}
+  .action-btn:disabled{opacity:.38;cursor:not-allowed}
+  .action-btn.challenge{grid-column:1/-1;border-color:rgba(244,114,182,.2);color:#fbcfe8;background:rgba(244,114,182,.05)}
+  .action-btn.challenge:hover{border-color:rgba(244,114,182,.4);background:rgba(244,114,182,.09)}
+  .shelf-panel{grid-column:1/-1;margin-top:16px;padding:15px 16px 16px}
+  .shelf-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .shelf-kicker{color:var(--dim);font-size:9px;font-weight:650;letter-spacing:.18em;text-transform:uppercase}
+  .shelf-title{margin:3px 0 0;font-size:15px;font-weight:650}.shelf-sub{margin:3px 0 0;color:var(--dim);font-size:8.5px}.shelf-hint{color:rgba(94,114,140,.82);font-size:8.5px}
+  .shelf-groups{display:grid;gap:10px}.shelf-group{display:grid;grid-template-columns:72px minmax(0,1fr);gap:7px;align-items:start}
+  .shelf-group-title{padding-top:7px;color:rgba(94,114,140,.86);font-size:8.5px;line-height:1.35;text-align:right}
+  .shelf-items{display:flex;flex-wrap:wrap;gap:6px}
+  .part-card{display:flex;align-items:center;gap:6px;width:calc((100% - 24px)/4);min-width:120px;min-height:58px;padding:5px 7px;border:1px solid rgba(148,163,184,.12);border-radius:9px;background:linear-gradient(160deg,rgba(10,22,37,.7),rgba(5,12,23,.48));color:#dbeeff;text-align:left;cursor:pointer;transition:.18s}
+  .part-card:hover{border-color:rgba(103,232,249,.36);background:rgba(103,232,249,.06);transform:translateY(-1px)}
+  .part-art{width:47px;height:39px;flex:0 0 auto}.part-art svg{width:100%;height:100%;display:block}
+  .part-copy{min-width:0}.part-name{display:block;color:#e6f8ff;font-size:9.2px;line-height:1.3;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.part-desc{display:block;margin-top:2px;color:var(--dim);font-size:7.5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .shelf-panel.disabled .shelf-items{opacity:.36;pointer-events:none}
+  .site-footer{display:flex;justify-content:space-between;gap:22px;padding:14px 4px 0;color:rgba(94,114,140,.9);font-size:9px;line-height:1.55}.site-footer p{margin:0;max-width:980px}.footer-tag{flex:0 0 auto;color:rgba(103,232,249,.48);white-space:nowrap}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes breathe{0%,100%{opacity:.65;transform:scale(.9)}50%{opacity:1;transform:scale(1.12)}}
+  @media(max-width:1240px){.shell{padding-left:20px;padding-right:20px}.workspace{grid-template-columns:minmax(0,1fr) 300px}.slot{min-height:220px}.slot-art{height:75px}.part-card{width:calc((100% - 18px)/3)}}
+  @media(max-width:1060px){.workspace{grid-template-columns:1fr;grid-template-areas:"stage" "task"}.task-panel{position:static;display:grid;grid-template-columns:1fr 1fr;gap:12px}.task-panel .task-head,.task-panel .task-req,.task-panel .equation-box,.task-panel .status-box,.task-panel .action-grid{grid-column:1/-1}.task-panel .task-facts{margin-top:0}.task-panel .task-note{grid-column:1/-1;margin-top:0}.shelf-panel{grid-column:1}}
+  @media(max-width:760px){.shell{padding:14px 12px 10px}.brand{gap:11px}.brand-mark{width:44px;height:44px;border-radius:13px}.brand-mark svg{width:34px;height:34px}.brand h1{font-size:clamp(23px,7vw,31px)}.brand p{display:none}.kicker{font-size:8.5px;letter-spacing:.14em}.header-meta{display:none}.stage-panel{padding:12px;border-radius:18px}.stage-title{font-size:16px}.gas-tabs{width:100%}.gas-tab{flex:1;padding:0 5px;font-size:9px}.pipeline{grid-template-columns:1fr;gap:0;padding:2px 0}.connector{min-height:18px;width:100%;transform:none}.connector::before{left:50%;right:auto;top:1px;bottom:1px;width:1px;height:auto;background:linear-gradient(180deg,rgba(103,232,249,.18),rgba(103,232,249,.4),rgba(103,232,249,.18))}.connector::after{right:auto;top:auto;bottom:1px;left:50%;transform:translateX(-50%);border-left:3px solid transparent;border-right:3px solid transparent;border-top:4px solid rgba(103,232,249,.48);border-bottom:0}.pipeline.demo .connector .flow-dot{animation:flowY 1.15s linear infinite}.connector .flow-dot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}.slot{min-height:205px;padding:8px}.slot-art{height:72px}.slot-name{font-size:9.5px}.slot-desc{font-size:7.6px}.slot-hint{min-height:34px;font-size:7.6px}.task-panel{display:block;padding:14px;border-radius:18px}.task-panel .task-facts{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;margin-top:9px}.task-panel .task-note{margin-top:10px}.action-grid{grid-template-columns:1fr 1fr}.shelf-panel{padding:12px;border-radius:18px}.shelf-group{grid-template-columns:1fr;gap:4px}.shelf-group-title{text-align:left;padding-top:0}.shelf-items{gap:5px}.part-card{width:calc((100% - 5px)/2);min-width:0;min-height:54px;padding:4px 5px;gap:4px}.part-art{width:32px;height:30px}.part-name{font-size:8px}.part-desc{font-size:7px}.site-footer{flex-direction:column;gap:5px}}
+  @keyframes flowY{0%{opacity:0;transform:translate(-50%,-7px)}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translate(-50%,7px)}}
+
+  @media(max-width:760px){
+    .pipeline{gap:0}
+    .connector{min-height:14px}
+    .slot{display:grid;grid-template-columns:58px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:8px;row-gap:1px;min-height:0;padding:8px;align-items:center}
+    .slot-head{grid-column:2;grid-row:1;justify-self:stretch;font-size:8px}
+    .slot-art{grid-column:1;grid-row:1/4;width:58px;height:62px;margin:0;align-self:center;justify-self:center}
+    .slot-art svg{max-width:58px;max-height:62px}
+    .slot-name{grid-column:2;grid-row:2;justify-content:flex-start;text-align:left;margin:0;min-height:0;font-size:10px}
+    .slot-desc{grid-column:2;grid-row:3;justify-content:flex-start;text-align:left;margin:0;min-height:0;font-size:8px}
+    .slot-hint{grid-column:2;grid-row:3;justify-content:flex-start;text-align:left;margin:0;min-height:0;padding:0;border:0;font-size:8px}
+    .slot.empty .slot-desc{display:none}
+    .slot.found::after{right:7px;top:7px;font-size:6.5px}
+    .part-art{width:38px;height:34px}
+  }
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="page-glow" aria-hidden="true"></div>
+<div class="shell">
+  <header class="site-header">
+    <a class="brand" href="./" title="返回平台首页" aria-label="返回高中化学可视化平台首页">
+      <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none"><defs><linearGradient id="markGrad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#67e8f9"/><stop offset=".55" stop-color="#5eead4"/><stop offset="1" stop-color="#a78bfa"/></linearGradient><radialGradient id="coreGrad" cx="0" cy="0" r="1" gradientTransform="translate(32 32) rotate(90) scale(6)" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".45" stop-color="#c7feff"/><stop offset="1" stop-color="#67e8f9" stop-opacity="0"/></radialGradient></defs><circle cx="32" cy="32" r="7" fill="url(#coreGrad)"/><ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(28 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".8"/><ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(-32 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".5"/><ellipse cx="32" cy="32" rx="24" ry="8" transform="rotate(90 32 32)" stroke="url(#markGrad)" stroke-width="1.8" opacity=".32"/><circle cx="32" cy="32" r="2.5" fill="#f4ffff"/></svg></div>
+      <div><div class="kicker">高中化学可视化平台 · 实验与探究</div><h1>化学<span>实验装置</span></h1><p>从发生、除杂到收集，搭出正确的实验流程</p></div>
+    </a>
+    <div class="header-meta"><div class="meta-pill"><span class="live-dot"></span>气体制备实验台</div><div class="meta-note">点击装配 · 检查装置 · 纠错挑战</div></div>
+  </header>
+
+  <main class="workspace">
+    <section class="panel stage-panel">
+      <div class="stage-head">
+        <div>
+          <div class="stage-kicker">GAS PREPARATION / APPARATUS</div>
+          <h2 class="stage-title">搭一条<span id="stageGasName">氧气</span>的制备流水线</h2>
+          <div class="stage-status"><i></i><span id="stageStatus">未装配</span></div>
+        </div>
+        <div class="gas-tabs" role="group" aria-label="选择目标气体">
+          <button class="gas-tab active" type="button" data-gas="o2">O₂</button>
+          <button class="gas-tab" type="button" data-gas="co2">CO₂</button>
+          <button class="gas-tab" type="button" data-gas="cl2">Cl₂</button>
+          <button class="gas-tab" type="button" data-gas="nh3">NH₃</button>
+        </div>
+      </div>
+
+      <div class="pipeline" id="pipeline" style="--gas-color:#67e8f9"></div>
+
+      <div class="stage-foot">
+        <span>装置顺序：发生 → 除杂 → 干燥 → 收集 → 尾气</span>
+        <span class="foot-spacer"></span>
+        <span class="gas-chip"><i></i><span id="gasChip">O₂ · 无色</span></span>
+      </div>
+    </section>
+
+    <aside class="panel task-panel">
+      <div class="task-head">
+        <div><div class="task-kicker">实验任务</div><div class="gas-title"><h2 id="taskGasName">氧气</h2><span id="taskGasFormula">O₂</span></div></div>
+        <span class="gas-badge" id="gasBadge">无色气体</span>
+      </div>
+      <p class="task-req" id="taskRequirement"></p>
+      <div class="equation-box" id="equationBox"></div>
+      <div class="task-facts">
+        <div class="task-fact"><span>收集方法</span><strong id="factMethod"></strong></div>
+        <div class="task-fact"><span>检验方法</span><strong id="factTest"></strong></div>
+        <div class="task-fact"><span>装置难点</span><strong id="factDifficulty"></strong></div>
+      </div>
+      <p class="task-note" id="taskNote"></p>
+      <div class="status-box" id="statusBox" aria-live="polite">从下方仪器库选择装置，点击放入对应位置。</div>
+      <div class="action-grid">
+        <button class="action-btn primary" id="assembleBtn" type="button">一键装配</button>
+        <button class="action-btn" id="checkBtn" type="button">检查装置</button>
+        <button class="action-btn" id="demoBtn" type="button" disabled>开始演示</button>
+        <button class="action-btn challenge" id="challengeBtn" type="button">纠错挑战</button>
+      </div>
+    </aside>
+
+    <section class="panel shelf-panel" id="shelfPanel">
+      <div class="shelf-head">
+        <div><div class="shelf-kicker">APPARATUS LIBRARY</div><h2 class="shelf-title">仪器库</h2><p class="shelf-sub">点击仪器，放入对应的装置位；再点装置位上的 × 可以换掉。</p></div>
+        <div class="shelf-hint">有干扰项，先想清楚再放。</div>
+      </div>
+      <div class="shelf-groups" id="shelfGroups"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><p>科学说明：装置图为教学示意，未按真实仪器比例绘制。气体除杂、干燥、收集和尾气处理需同时考虑气体性质与实验安全；加热、有毒气体和防倒吸操作应在通风条件下进行。</p><span class="footer-tag">高中化学可视化平台 · 实验装置</span></footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+  const hexA=(hex,a)=>{const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;};
+
+  const SLOTS=[
+    {key:"generate",label:"01 发生装置",hint:"选择制气反应"},
+    {key:"purify",label:"02 除杂",hint:"除去挥发性杂质"},
+    {key:"dry",label:"03 干燥",hint:"选择合适干燥剂"},
+    {key:"collect",label:"04 收集",hint:"依据密度和溶解性"},
+    {key:"tail",label:"05 尾气处理",hint:"有毒或刺激性气体"}
+  ];
+
+  const COMPONENTS={
+    "o2-gen":{slot:"generate",name:"KMnO₄ 加热",short:"固体加热制 O₂",art:"testtube",heat:true,desc:"试管 + 酒精灯"},
+    "co2-gen":{slot:"generate",name:"大理石 + 稀盐酸",short:"固液不加热",art:"flask",heat:false,desc:"锥形瓶 + 长颈漏斗"},
+    "cl2-gen":{slot:"generate",name:"MnO₂ + 浓盐酸",short:"固液加热",art:"flask",heat:true,desc:"烧瓶 + 分液漏斗"},
+    "nh3-gen":{slot:"generate",name:"NH₄Cl + Ca(OH)₂",short:"固体加热",art:"testtube",heat:true,desc:"试管 + 酒精灯"},
+    "nacl-wash":{slot:"purify",name:"饱和食盐水",short:"除去 HCl",art:"wash",desc:"洗气瓶"},
+    "nahco3-wash":{slot:"purify",name:"饱和 NaHCO₃",short:"除去 HCl",art:"wash",desc:"洗气瓶"},
+    "naoh-wash":{slot:"purify",name:"NaOH 溶液",short:"会吸收酸性气体",art:"wash",desc:"洗气瓶"},
+    "h2o-wash":{slot:"purify",name:"水",short:"可能溶解目标气体",art:"wash",desc:"洗气瓶"},
+    "h2so4-dry":{slot:"dry",name:"浓硫酸",short:"酸性干燥剂",art:"drytube",desc:"洗气瓶 / 干燥管"},
+    "cao-dry":{slot:"dry",name:"碱石灰",short:"碱性干燥剂",art:"drytube",desc:"干燥管"},
+    "cacl2-dry":{slot:"dry",name:"无水 CaCl₂",short:"中性干燥剂",art:"drytube",desc:"干燥管"},
+    "up-jar":{slot:"collect",name:"向上排空气",short:"密度比空气大",art:"jar-up",desc:"集气瓶"},
+    "down-jar":{slot:"collect",name:"向下排空气",short:"密度比空气小",art:"jar-down",desc:"集气瓶"},
+    "water":{slot:"collect",name:"排水法",short:"难溶于水",art:"water",desc:"水槽 + 集气瓶"},
+    "naoh-tail":{slot:"tail",name:"NaOH 溶液吸收",short:"防倒吸",art:"tail",desc:"烧杯 + 倒扣漏斗"},
+    "water-tail":{slot:"tail",name:"水吸收",short:"防倒吸",art:"tail",desc:"烧杯 + 倒扣漏斗"},
+    "none-tail":{slot:"tail",name:"无需尾气处理",short:"可直接排放",art:"none",desc:"无"}
+  };
+
+  const GASES={
+    o2:{
+      key:"o2",name:"氧气",formula:"O₂",color:"#67e8f9",badge:"无色气体",
+      requirement:"用 KMnO₄ 加热制取一瓶 O₂，选择合适的方法收集。",
+      equation:"2KMnO₄ —Δ→ K₂MnO₄ + MnO₂ + O₂↑",
+      method:"排水法 / 向上排空气法",test:"带火星木条复燃",difficulty:"先移导管，后熄灭酒精灯",
+      note:"O₂ 不易溶于水，排水法收集更纯；向上排空气法也可，但纯度较低。",
+      allowed:{generate:["o2-gen"],purify:[],dry:[],collect:["water","up-jar"],tail:["none-tail"]},
+      required:["generate","collect"],
+      correct:{generate:"o2-gen",purify:null,dry:null,collect:"water",tail:"none-tail"},
+      challenge:{setup:{generate:"co2-gen",collect:"down-jar"},errors:[
+        {slot:"generate",reason:"这个发生装置生成的是 CO₂；O₂ 应使用 KMnO₄ 加热。"},
+        {slot:"collect",reason:"O₂ 密度比空气大，应向上排空气或用排水法，不能向下排空气。"}
+      ]}
+    },
+    co2:{
+      key:"co2",name:"二氧化碳",formula:"CO₂",color:"#94a3b8",badge:"无色气体",
+      requirement:"用大理石和稀盐酸制取一瓶较纯净、干燥的 CO₂。",
+      equation:"CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂↑",
+      method:"向上排空气法",test:"澄清石灰水变浑浊",difficulty:"除 HCl，不能用 NaOH 洗气",
+      note:"CO₂ 密度比空气大，用向上排空气法；不能用排水法，也不能用 NaOH 除杂，因为 CO₂ 会被吸收。",
+      allowed:{generate:["co2-gen"],purify:["nahco3-wash"],dry:["h2so4-dry"],collect:["up-jar"],tail:["none-tail"]},
+      required:["generate","purify","dry","collect"],
+      correct:{generate:"co2-gen",purify:"nahco3-wash",dry:"h2so4-dry",collect:"up-jar",tail:"none-tail"},
+      challenge:{setup:{purify:"naoh-wash",collect:"down-jar"},errors:[
+        {slot:"purify",reason:"NaOH 会吸收 CO₂，不能用来除去 HCl；应使用饱和 NaHCO₃。"},
+        {slot:"collect",reason:"CO₂ 密度比空气大，应向上排空气，不能向下排空气。"}
+      ]}
+    },
+    cl2:{
+      key:"cl2",name:"氯气",formula:"Cl₂",color:"#bef264",badge:"黄绿色气体",
+      requirement:"用 MnO₂ 与浓盐酸制取一瓶干燥的 Cl₂，并处理尾气。",
+      equation:"MnO₂ + 4HCl(浓) —Δ→ MnCl₂ + Cl₂↑ + 2H₂O",
+      method:"向上排空气法",test:"湿润淀粉碘化钾试纸变蓝",difficulty:"饱和食盐水除 HCl，NaOH 吸收尾气",
+      note:"Cl₂ 有毒，必须在通风条件下进行，尾气用 NaOH 溶液吸收；不能用排水法收集。",
+      allowed:{generate:["cl2-gen"],purify:["nacl-wash"],dry:["h2so4-dry"],collect:["up-jar"],tail:["naoh-tail"]},
+      required:["generate","purify","dry","collect","tail"],
+      correct:{generate:"cl2-gen",purify:"nacl-wash",dry:"h2so4-dry",collect:"up-jar",tail:"naoh-tail"},
+      challenge:{setup:{purify:"naoh-wash",tail:"none-tail"},errors:[
+        {slot:"purify",reason:"NaOH 会同时吸收 Cl₂，不能用来除 HCl；应使用饱和食盐水。"},
+        {slot:"tail",reason:"Cl₂ 有毒，必须用 NaOH 溶液吸收尾气，不能直接排放。"}
+      ]}
+    },
+    nh3:{
+      key:"nh3",name:"氨气",formula:"NH₃",color:"#c4b5fd",badge:"刺激性气味",
+      requirement:"用 NH₄Cl 与 Ca(OH)₂ 制取一瓶干燥的 NH₃，并注意防倒吸。",
+      equation:"2NH₄Cl + Ca(OH)₂ —Δ→ CaCl₂ + 2NH₃↑ + 2H₂O",
+      method:"向下排空气法",test:"湿润红色石蕊试纸变蓝",difficulty:"碱石灰干燥，不能用浓硫酸",
+      note:"NH₃ 密度比空气小，用向下排空气法；极易溶于水，不能用排水法；尾气可用水吸收并防倒吸。",
+      allowed:{generate:["nh3-gen"],purify:[],dry:["cao-dry"],collect:["down-jar"],tail:["water-tail"]},
+      required:["generate","dry","collect","tail"],
+      correct:{generate:"nh3-gen",purify:null,dry:"cao-dry",collect:"down-jar",tail:"water-tail"},
+      challenge:{setup:{dry:"h2so4-dry",collect:"up-jar"},errors:[
+        {slot:"dry",reason:"NH₃ 是碱性气体，不能用浓硫酸干燥；应使用碱石灰。"},
+        {slot:"collect",reason:"NH₃ 密度比空气小，应向下排空气，不能向上排空气。"}
+      ]}
+    }
+  };
+
+  const SHELF_GROUPS=[
+    {key:"generate",label:"发生装置"},
+    {key:"purify",label:"除杂"},
+    {key:"dry",label:"干燥"},
+    {key:"collect",label:"收集"},
+    {key:"tail",label:"尾气"}
+  ];
+
+  const params=new URLSearchParams(location.search);
+  let currentGas=GASES[params.get("gas")]?params.get("gas"):"o2";
+  let gas=GASES[currentGas];
+  let selected={};
+  let challenge=false, challengeFound=new Set(), lastCheckOk=false, demoTimer=null;
+
+  const pipeline=document.getElementById("pipeline");
+  const shelfGroups=document.getElementById("shelfGroups");
+  const shelfPanel=document.getElementById("shelfPanel");
+  const stageGasName=document.getElementById("stageGasName");
+  const stageStatus=document.getElementById("stageStatus");
+  const gasChip=document.getElementById("gasChip");
+  const taskGasName=document.getElementById("taskGasName");
+  const taskGasFormula=document.getElementById("taskGasFormula");
+  const gasBadge=document.getElementById("gasBadge");
+  const taskRequirement=document.getElementById("taskRequirement");
+  const equationBox=document.getElementById("equationBox");
+  const factMethod=document.getElementById("factMethod");
+  const factTest=document.getElementById("factTest");
+  const factDifficulty=document.getElementById("factDifficulty");
+  const taskNote=document.getElementById("taskNote");
+  const statusBox=document.getElementById("statusBox");
+  const assembleBtn=document.getElementById("assembleBtn");
+  const checkBtn=document.getElementById("checkBtn");
+  const demoBtn=document.getElementById("demoBtn");
+  const challengeBtn=document.getElementById("challengeBtn");
+  const gasTabs=Array.from(document.querySelectorAll(".gas-tab"));
+
+  function artFor(kind,color,heat){
+    const c=color||"#67e8f9";
+    const soft=hexA(c,.12),line=hexA(c,.55);
+    const glass=`fill="rgba(8,22,38,.44)" stroke="${line}" stroke-width="2.2"`;
+    const liquid=`fill="${hexA(c,.16)}"`;
+    if(kind==="testtube"){
+      return `<svg viewBox="0 0 120 90" fill="none" aria-hidden="true"><path d="M51 13v43c0 7 4 11 9 11s9-4 9-11V13" ${glass}/><path d="M51 44h18" stroke="${line}" stroke-width="1"/><path d="M55 67c-4 4-5 9-3 13 2 4 7 5 10 3 5-2 8-8 6-13-1-3-4-5-7-5" fill="${hexA("#fbbf24",.22)}" stroke="${hexA("#fbbf24",.65)}" stroke-width="1.8"/><path d="M41 18h38" stroke="rgba(148,163,184,.3)"/><path d="M59 7h4" stroke="${line}"/><circle cx="59" cy="80" r="2" fill="${hexA("#fbbf24",.55)}"/>${heat?`<text x="83" y="79" fill="rgba(251,191,36,.62)" font-size="6">Δ</text>`:""}</svg>`;
+    }
+    if(kind==="flask"){
+      return `<svg viewBox="0 0 120 90" fill="none" aria-hidden="true"><path d="M50 18h8v14l13 25c3 6-1 12-8 12H45c-7 0-11-6-8-12l13-25V18Z" ${glass}/><path d="M44 18h20" stroke="${line}"/><path d="M38 55c7 4 20 5 32 1" ${liquid}/><path d="M76 16v23" stroke="${line}"/><path d="M70 39h12" stroke="${line}"/><path d="M86 18h8v11c0 3-2 5-5 5s-5-2-5-5V18Z" stroke="${line}" fill="rgba(8,22,38,.3)"/><path d="M90 34v6" stroke="${line}"/>${heat?`<path d="M53 72c-4 4-4 9-1 12 3 3 8 2 10-2 2-5-1-9-5-10" fill="${hexA("#fbbf24",.2)}" stroke="${hexA("#fbbf24",.62)}" stroke-width="1"/>`:""}</svg>`;
+    }
+    if(kind==="wash"){
+      return `<svg viewBox="0 0 120 90" fill="none" aria-hidden="true"><rect x="39" y="26" width="42" height="48" rx="5" ${glass}/><path d="M46 43h28v25H46Z" ${liquid}/><path d="M46 43h28" stroke="${line}" stroke-dasharray="2 3"/><path d="M48 24V12h6v22" stroke="${line}"/><path d="M73 24V12h6v22" stroke="${line}"/><path d="M53 47v12m8-12v8m8-8v13" stroke="${hexA(c,.55)}" stroke-width="1"/><path d="M34 24h44" stroke="${line}" opacity=".4"/></svg>`;
+    }
+    if(kind==="drytube"){
+      return `<svg viewBox="0 0 120 90" fill="none" aria-hidden="true"><path d="M43 17v46c0 6 5 10 11 10h12c6 0 11-4 11-10V17" ${glass}/><path d="M55 17v42c0 4 3 7 6 7s6-3 6-7V17" stroke="${line}" stroke-width="1" opacity=".55"/><path d="M45 45c7 3 20 3 30 0" stroke="${line}" opacity=".4"/><circle cx="51" cy="57" r="2" fill="${hexA(c,.5)}"/><circle cx="61" cy="64" r="2.3" fill="${hexA(c,.5)}"/><circle cx="71" cy="55" r="2" fill="${hexA(c,.5)}"/><path d="M43 17h30" stroke="${line}" opacity=".45"/></svg>`;
+    }
+    if(kind==="jar-up"){
+      return `<svg viewBox="0 0 120 90" fill="none" aria-hidden="true"><path d="M43 18h34v55c0 4-3 7-7 7H50c-4 0-7-3-7-7V18Z" ${glass}/><path d="M43 18h34" stroke="${line}"/><path d="M57 52V31m-5 6 5-6 5 6" stroke="${hexA(c,.8)}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M48 69h24" stroke="${line}" opacity=".3"/></svg>`;
+    }
+    if(kind==="jar-down"){
+      return `<svg viewBox="0 0 120 90" fill="none" aria-hidden="true"><path d="M43 74h34V19c0-4-3-7-7-7H50c-4 0-7 3-7 7v55Z" ${glass}/><path d="M43 74h34" stroke="${line}"/><path d="M57 40v21m-5-6 5 6 5-6" stroke="${hexA(c,.8)}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M48 25h24" stroke="${line}" opacity=".3"/></svg>`;
+    }
+    if(kind==="water"){
+      return `<svg viewBox="0 0 120 90" fill="none" aria-hidden="true"><path d="M22 58h76v18c0 4-3 7-7 7H29c-4 0-7-3-7-7V58Z" ${glass}/><path d="M24 65c12 4 24-3 36 0s24 3 34-1v10c0 3-2 5-5 5H29c-3 0-5-2-5-5V65Z" fill="rgba(103,232,249,.12)"/><path d="M47 58V19h26v39" ${glass}/><path d="M51 28h18" stroke="${line}" opacity=".35"/><path d="M60 38v15m-4-5 4 5 4-5" stroke="${hexA(c,.75)}" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M26 58h68" stroke="${line}" opacity=".4"/></svg>`;
+    }
+    if(kind==="tail"){
+      return `<svg viewBox="0 0 120 90" fill="none" aria-hidden="true"><path d="M32 46h56v25c0 5-4 9-9 9H41c-5 0-9-4-9-9V46Z" ${glass}/><path d="M34 60c12 4 28-4 40 0s22 2 14-2" fill="rgba(103,232,249,.11)"/><path d="M38 46h44" stroke="${line}" opacity=".4"/><path d="M58 38h4v8" stroke="${line}"/><path d="M51 38c0-4 4-7 9-7s9 3 9 7" stroke="${line}"/><path d="M54 78c-3 0-6-6-6-12m18 12c3 0 6-6 6-12" stroke="${hexA(c,.3)}"/><path d="M34 60c12 4 24-4 36 0s22 2 14-2" fill="${hexA(c,.12)}"/></svg>`;
+    }
+    return `<svg viewBox="0 0 120 90" fill="none" aria-hidden="true"><circle cx="60" cy="45" r="22" stroke="${line}" stroke-dasharray="3 4" fill="rgba(8,22,38,.25)"/><path d="M52 45h16" stroke="${line}" stroke-linecap="round"/><text x="60" y="34" text-anchor="middle" fill="${hexA(c,.7)}" font-size="7">无需</text></svg>`;
+  }
+
+  function syncTask(){
+    stageGasName.textContent=gas.name;
+    gasChip.textContent=`${gas.formula} · ${gas.badge}`;
+    taskGasName.textContent=gas.name;
+    taskGasFormula.textContent=gas.formula;
+    gasBadge.textContent=gas.badge;
+    gasBadge.style.setProperty("--gas-color",gas.color);
+    taskRequirement.textContent=gas.requirement;
+    equationBox.textContent=gas.equation;
+    factMethod.textContent=gas.method;
+    factTest.textContent=gas.test;
+    factDifficulty.textContent=gas.difficulty;
+    taskNote.innerHTML=`<strong>注意：</strong>${gas.note}`;
+    pipeline.style.setProperty("--gas-color",gas.color);
+    for(const tab of gasTabs){
+      const on=tab.dataset.gas===currentGas;
+      tab.classList.toggle("active",on);
+      tab.setAttribute("aria-pressed",on?"true":"false");
+    }
+    document.documentElement.style.setProperty("--gas-color",gas.color);
+  }
+
+  function renderPipeline(){
+    const parts=[];
+    for(let i=0;i<SLOTS.length;i++){
+      const slot=SLOTS[i];
+      const id=selected[slot.key];
+      const comp=id?COMPONENTS[id]:null;
+      const isErr=lastCheckOk===false && !challenge && false;
+      let cls="slot";
+      if(!comp)cls+=" empty";
+      if(challenge)cls+=" challenge";
+      if(!challenge && window.__slotErrors?.includes(slot.key))cls+=" err";
+      if(!challenge && window.__slotOk?.includes(slot.key))cls+=" ok";
+      if(challenge && challengeFound.has(slot.key))cls+=" found";
+      const art=comp?artFor(comp.art,gas.color,comp.heat):`<svg viewBox="0 0 120 90" fill="none" aria-hidden="true"><circle cx="60" cy="45" r="21" stroke="rgba(148,163,184,.16)" stroke-dasharray="3 4"/><path d="M60 37v12m-5-5 5 5 5-5" stroke="rgba(103,232,249,.28)" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      parts.push(`<div class="${cls}" data-slot="${slot.key}" tabindex="0" role="button" aria-label="${slot.label}${comp?"，当前为"+comp.name:"，未放置"}">
+        <div class="slot-head"><b>${slot.label}</b>${comp&&!challenge?`<button class="remove" type="button" data-remove="${slot.key}" aria-label="移除${slot.label}">×</button>`:""}</div>
+        <div class="slot-art">${art}</div>
+        <div class="slot-name">${comp?comp.name:"未放置"}</div>
+        <div class="slot-desc">${comp?comp.short:slot.hint}</div>
+        ${!comp?`<div class="slot-hint">点击下方仪器放入</div>`:""}
+      </div>`);
+      if(i<SLOTS.length-1)parts.push(`<div class="connector" aria-hidden="true"><span class="flow-dot" style="--delay:${i*.28}s"></span></div>`);
+    }
+    pipeline.innerHTML=parts.join("");
+  }
+
+  function renderShelf(){
+    shelfGroups.innerHTML=SHELF_GROUPS.map(g=>{
+      const items=Object.entries(COMPONENTS).filter(([,c])=>c.slot===g.key).map(([id,c])=>`<button class="part-card" type="button" data-id="${id}" title="${c.name} · ${c.desc}">
+        <span class="part-art">${artFor(c.art,gas.color,c.heat)}</span>
+        <span class="part-copy"><span class="part-name">${c.name}</span><span class="part-desc">${c.short}</span></span>
+      </button>`).join("");
+      return `<div class="shelf-group"><div class="shelf-group-title">${g.label}</div><div class="shelf-items">${items}</div></div>`;
+    }).join("");
+    shelfPanel.classList.toggle("disabled",challenge);
+  }
+
+  function updateTaskStatus(){
+    if(challenge){
+      const total=gas.challenge.errors.length;
+      if(challengeFound.size===total){
+        statusBox.className="status-box ok";
+        statusBox.innerHTML="<strong>全部找到了。</strong>这套装置的问题都集中在实验原理和安全上。";
+      }else{
+        statusBox.className="status-box";
+        statusBox.innerHTML=`找出这套装置中的 <strong>${total}</strong> 处错误：点击你认为有问题的装置位。`;
+      }
+      return;
+    }
+    if(lastCheckOk){
+      statusBox.className="status-box ok";
+      statusBox.innerHTML="<strong>装置正确。</strong>可以点击“开始演示”，观察气体流动。";
+    }else if(window.__hasChecked){
+      const errs=window.__lastErrors||[];
+      statusBox.className="status-box err";
+      statusBox.innerHTML=`<strong>发现 ${errs.length} 处问题：</strong><ul>${errs.map(e=>`<li>${e.msg}</li>`).join("")}</ul>`;
+    }else{
+      statusBox.className="status-box";
+      statusBox.innerHTML="从下方仪器库选择装置，点击放入对应位置。";
+    }
+  }
+
+  function clearCheck(){
+    window.__slotErrors=[];window.__slotOk=[];window.__hasChecked=false;window.__lastErrors=[];lastCheckOk=false;demoBtn.disabled=true;
+  }
+
+  function stopDemo(){
+    clearTimeout(demoTimer);
+    pipeline.classList.remove("demo");
+    demoBtn.textContent="开始演示";
+  }
+
+  function placeComponent(id){
+    if(challenge)return;
+    stopDemo();
+    const comp=COMPONENTS[id];if(!comp)return;
+    selected[comp.slot]=id;
+    clearCheck();
+    stageStatus.textContent="已放置："+comp.name;
+    renderPipeline();
+    updateTaskStatus();
+  }
+
+  function removeComponent(slot){
+    if(challenge)return;
+    stopDemo();
+    selected[slot]=null;
+    clearCheck();
+    stageStatus.textContent="未装配";
+    renderPipeline();
+    updateTaskStatus();
+  }
+
+  function reasonFor(slot,id){
+    const c=COMPONENTS[id];
+    if(slot==="generate")return `这个发生装置不适用于制备 ${gas.name}。`;
+    if(slot==="purify"){
+      if(gas.key==="o2"||gas.key==="nh3")return `制备 ${gas.name} 不需要这一步除杂；加入该试剂可能损失气体或引入新杂质。`;
+      if(id==="naoh-wash")return `NaOH 会吸收 ${gas.formula}，不能用于除杂。`;
+      if(id==="h2o-wash")return `水会溶解或吸收 ${gas.formula}，不能用于除杂。`;
+      return `该试剂不能除去 ${gas.name} 中的杂质，或会损失目标气体。`;
+    }
+    if(slot==="dry"){
+      if(gas.key==="o2")return "制备 O₂ 不需要干燥；这一步没有除杂目的。";
+      if(gas.key==="nh3"&&id==="h2so4-dry")return "NH₃ 是碱性气体，不能用浓硫酸干燥。";
+      if(gas.key==="nh3"&&id==="cacl2-dry")return "CaCl₂ 会与 NH₃ 形成加合物，不能干燥 NH₃。";
+      if((gas.key==="co2"||gas.key==="cl2")&&id==="cao-dry")return `碱石灰会吸收 ${gas.formula}，不能用于干燥。`;
+      return `该干燥剂不适合 ${gas.name}，可能发生反应或无法达到干燥目的。`;
+    }
+    if(slot==="collect"){
+      if(id==="water")return `${gas.name} 溶于水或与水反应，不能用排水法收集。`;
+      if(id==="down-jar")return `${gas.name} 密度比空气大，应向上排空气。`;
+      if(id==="up-jar")return `${gas.name} 密度比空气小，应向下排空气。`;
+      return `该收集方法与 ${gas.name} 的密度或溶解性不符。`;
+    }
+    if(slot==="tail"){
+      if(gas.key==="o2"||gas.key==="co2")return `${gas.name} 不需要尾气处理。`;
+      if(id==="none-tail")return `${gas.name} 不能直接排放，需要尾气处理。`;
+      if(gas.key==="nh3")return "NH₃ 应用水或稀酸吸收，并注意防倒吸。";
+      return `该尾气处理方式不适合 ${gas.name}。`;
+    }
+    return "该仪器不适合当前装置位。";
+  }
+
+  function validate(){
+    const errors=[];
+    for(const slot of SLOTS){
+      const id=selected[slot.key];
+      const req=gas.required.includes(slot.key);
+      if(!id){
+        if(req)errors.push({slot:slot.key,msg:`缺少${slot.label.replace(/^\d+\s*/,"")}。`});
+        continue;
+      }
+      const allowed=gas.allowed[slot.key]||[];
+      if(!allowed.includes(id))errors.push({slot:slot.key,msg:reasonFor(slot.key,id)});
+    }
+    return errors;
+  }
+
+  function checkSetup(){
+    if(challenge)return false;
+    const errors=validate();
+    window.__hasChecked=true;window.__lastErrors=errors;
+    window.__slotErrors=errors.map(e=>e.slot);
+    window.__slotOk=SLOTS.filter(s=>!errors.some(e=>e.slot===s.key)&&selected[s.key]).map(s=>s.key);
+    lastCheckOk=errors.length===0;
+    demoBtn.disabled=!lastCheckOk;
+    stageStatus.textContent=lastCheckOk?"装置正确":"装置有问题";
+    renderPipeline();
+    updateTaskStatus();
+    return lastCheckOk;
+  }
+
+  function assemble(){
+    if(challenge)return;
+    selected={...gas.correct};
+    clearCheck();
+    checkSetup();
+    stageStatus.textContent="已装配标准装置";
+  }
+
+  function startDemo(){
+    if(challenge)return;
+    if(!lastCheckOk&&!checkSetup())return;
+    clearTimeout(demoTimer);
+    pipeline.classList.add("demo");
+    demoBtn.disabled=true;demoBtn.textContent="演示中…";
+    stageStatus.textContent="气体正在流动…";
+    statusBox.className="status-box ok";
+    statusBox.innerHTML=`<strong>演示中：</strong>${gas.name}沿装置依次通过发生、除杂、干燥、收集和尾气处理。`;
+    demoTimer=setTimeout(()=>{
+      pipeline.classList.remove("demo");
+      demoBtn.textContent="开始演示";demoBtn.disabled=false;
+      stageStatus.textContent="演示完成";
+      statusBox.className="status-box ok";
+      statusBox.innerHTML=`<strong>演示完成。</strong>${gas.test}。${gas.note}`;
+    },6800);
+  }
+
+  function startChallenge(){
+    if(challenge)return;
+    stopDemo();
+    challenge=true;challengeFound=new Set();
+    selected={...gas.correct,...gas.challenge.setup};
+    clearCheck();
+    demoBtn.disabled=true;assembleBtn.disabled=true;checkBtn.disabled=true;
+    challengeBtn.textContent="退出纠错";
+    stageStatus.textContent="纠错模式";
+    renderPipeline();renderShelf();updateTaskStatus();
+  }
+
+  function exitChallenge(){
+    challenge=false;challengeFound.clear();
+    assembleBtn.disabled=false;checkBtn.disabled=false;challengeBtn.textContent="纠错挑战";
+    selected={};clearCheck();renderPipeline();renderShelf();
+    stageStatus.textContent="未装配";
+    updateTaskStatus();
+  }
+
+  function handleChallengeSlot(slotKey){
+    if(!challenge)return;
+    const err=gas.challenge.errors.find(e=>e.slot===slotKey);
+    if(err&&!challengeFound.has(slotKey)){
+      challengeFound.add(slotKey);
+      renderPipeline();
+      statusBox.className="status-box ok";
+      if(challengeFound.size===gas.challenge.errors.length){
+        statusBox.innerHTML="<strong>全部找到了。</strong>这套装置的问题都集中在实验原理和安全上。";
+      }else{
+        statusBox.innerHTML=`<strong>找到一处：</strong>${err.reason}`;
+      }
+    }else if(err&&challengeFound.has(slotKey)){
+      statusBox.className="status-box";
+      statusBox.innerHTML=`<strong>已经找到这里了：</strong>${err.reason}`;
+    }else{
+      statusBox.className="status-box";
+      statusBox.innerHTML="这个位置没有问题，再看看其他装置。";
+    }
+  }
+
+  function setGas(key){
+    if(!GASES[key])return;
+    stopDemo();
+    if(challenge)exitChallenge();
+    currentGas=key;gas=GASES[key];selected={};clearCheck();
+    syncTask();renderPipeline();renderShelf();updateTaskStatus();
+    stageStatus.textContent="未装配";
+    demoBtn.disabled=true;
+  }
+
+  pipeline.addEventListener("click",(e)=>{
+    const remove=e.target.closest(".remove");
+    if(remove){e.stopPropagation();removeComponent(remove.dataset.remove);return;}
+    const slot=e.target.closest(".slot");
+    if(slot&&challenge)handleChallengeSlot(slot.dataset.slot);
+  });
+  pipeline.addEventListener("keydown",(e)=>{
+    if(e.key!=="Enter"&&e.key!==" ")return;
+    const slot=e.target.closest(".slot");
+    if(slot&&challenge){e.preventDefault();handleChallengeSlot(slot.dataset.slot);}
+  });
+  shelfGroups.addEventListener("click",(e)=>{
+    const card=e.target.closest(".part-card");
+    if(card)placeComponent(card.dataset.id);
+  });
+  for(const tab of gasTabs)tab.addEventListener("click",()=>setGas(tab.dataset.gas));
+  assembleBtn.addEventListener("click",assemble);
+  checkBtn.addEventListener("click",()=>{if(challenge)return;checkSetup();});
+  demoBtn.addEventListener("click",startDemo);
+  challengeBtn.addEventListener("click",()=>{challenge?exitChallenge():startChallenge();});
+
+  syncTask();
+  renderPipeline();
+  renderShelf();
+  updateTaskStatus();
+  if(params.get("assemble")==="1")setTimeout(assemble,30);
+  if(params.get("challenge")==="1")setTimeout(startChallenge,30);
+})();
+</script>
+</body>
+</html>

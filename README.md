@@ -14,13 +14,14 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 
 | 页面 | 内容 | 文件 |
 | --- | --- | --- |
-| 平台首页 | 平台介绍、五个模块导航 | `index.html` |
+| 平台首页 | 平台介绍、六个模块导航 | `index.html` |
 | 电子云杂化实验室 | sp / sp² / sp³ 杂化过程、C–C 成键阶段、键角、空间构型 | `electron-cloud.html` |
 | 分子空间构型 | VSEPR、孤对电子、直线形/平面三角形/四面体/三角锥/V 形 | `molecular-geometry.html` |
 | C–C 成键过程 | 乙烷/乙烯/乙炔的 σ 键与 π 键形成过程 | `bond-formation.html` |
 | 晶体结构 | NaCl、金刚石、干冰、铜的晶胞、配位数与作用力 | `crystal-structure.html` |
 | 反应机理 | 取代、加成、消去反应与能量曲线 | `reaction-mechanism.html` |
 | 元素周期表 | 118 种元素、性质热力图、元素详情、周期律趋势 | `periodic-table.html` |
+| 化学实验装置 | O₂、CO₂、Cl₂、NH₃ 的发生、除杂、干燥、收集、尾气与纠错 | `experiment-apparatus.html` |
 
 ## 已上线模块
 
@@ -72,12 +73,21 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 - 第三周期、第ⅠA族、第ⅦA族趋势图，随性质切换联动。
 - 支持 `?element=26&property=radius&series=period3` 参数。
 
+### 化学实验装置
+
+- 四种气体：O₂、CO₂、Cl₂、NH₃。
+- 五段装置链：发生 → 除杂 → 干燥 → 收集 → 尾气。
+- 点击仪器装配，检查装置，错误会给出原因。
+- 一键装配、气体流动演示、纠错挑战。
+- 手机端改为紧凑纵向装置链。
+- 支持 `?gas=cl2&assemble=1` 和 `?gas=cl2&challenge=1` 参数。
+
 ## 后续计划
 
 - 化学平衡与反应速率
 - 电化学
 - 有机官能团与同分异构
-- 化学实验装置
+- 分离提纯实验
 
 ## 特点
 
