@@ -57,6 +57,25 @@
   .stage-title{margin:3px 0 0;font-size:22px;line-height:1.2;letter-spacing:-.03em;font-weight:670}.stage-title span{color:var(--g-color,#67e8f9)}
   .stage-sub{margin:6px 0 0;color:var(--dim);font-size:10px}
   .group-stage{position:relative;flex:1;min-height:300px;border:1px solid rgba(148,163,184,.1);border-radius:15px;background:radial-gradient(70% 90% at 50% 45%,rgba(12,47,68,.35),transparent 70%),linear-gradient(180deg,rgba(4,11,22,.36),rgba(4,9,18,.68));overflow:hidden;display:flex;align-items:center;justify-content:center;isolation:isolate}
+
+  .group-stage{align-items:stretch;justify-content:stretch}
+  #molCanvas{position:absolute;inset:0;z-index:1;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+  #molCanvas:active{cursor:grabbing}
+  .mol-meta{position:absolute;left:15px;top:13px;z-index:3;pointer-events:none;padding:8px 10px 8px 11px;border:1px solid rgba(148,163,184,.11);border-radius:10px;background:rgba(4,10,20,.55);backdrop-filter:blur(8px)}
+  .fragment-symbol{font-size:25px;line-height:1;margin-bottom:3px}
+  .fragment-general{font-family:var(--mono);font-size:11px;color:#efffff;letter-spacing:.03em}.fragment-general b{color:var(--g-color,#67e8f9);font-weight:600}
+  .fragment-example{margin-top:3px;color:var(--dim);font-size:9px}.fragment-example strong{color:#e5f9ff;font-family:var(--mono);font-size:10px;font-weight:550}
+  .mol-legend{position:absolute;left:15px;bottom:13px;z-index:3;display:flex;align-items:center;gap:9px;padding:5px 8px;border:1px solid rgba(148,163,184,.1);border-radius:8px;background:rgba(4,10,20,.55);color:rgba(148,163,184,.82);font-size:8px;pointer-events:none}
+  .mol-legend span{display:inline-flex;align-items:center;gap:4px}.mol-legend i{width:7px;height:7px;border-radius:50%;box-shadow:0 0 6px currentColor}
+  .mol-hint{position:absolute;right:14px;bottom:13px;z-index:3;padding:5px 8px;border:1px solid rgba(148,163,184,.1);border-radius:8px;background:rgba(4,10,20,.55);color:rgba(148,163,184,.8);font-size:8px;pointer-events:none}
+  .mol-reset{position:absolute;right:13px;top:13px;z-index:4;height:27px;padding:0 8px;border:1px solid rgba(148,163,184,.15);border-radius:7px;background:rgba(4,10,20,.55);color:var(--muted);font-size:8px;cursor:pointer;transition:.2s;backdrop-filter:blur(8px)}
+  .mol-reset:hover{color:#efffff;border-color:rgba(103,232,249,.35);background:rgba(103,232,249,.08)}
+  .group-stage .fragment-symbol{font-size:26px!important;margin-bottom:2px}
+  .group-stage .fragment-general{font-size:11px!important}
+  .group-stage .fragment-example{font-size:9px!important}
+  .mascot-note .fish,.bar-tip .fish-mini{object-fit:contain;border-radius:50%;background:rgba(103,232,249,.05)}
+  .bar-tip .fish-mini{width:28px;height:28px}
+  .mascot-note .fish{width:46px;height:46px}
   .group-stage::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(148,163,184,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.035) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(circle at 50% 45%,black,transparent 78%);-webkit-mask-image:radial-gradient(circle at 50% 45%,black,transparent 78%);pointer-events:none}
   .fragment{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:9px;padding:16px 20px}
   .fragment-chain{position:absolute;inset:0;z-index:0;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:.8}
@@ -128,7 +147,7 @@
   <div class="mode-bar" role="group" aria-label="切换学习模式">
     <button class="mode-tab active" type="button" data-mode="groups"><span class="num">01</span>官能团图鉴</button>
     <button class="mode-tab" type="button" data-mode="isomers"><span class="num">02</span>同分异构体</button>
-    <div class="bar-tip"><svg class="fish-mini" viewBox="0 0 64 52" aria-hidden="true"><path d="M8 27c8-12 24-15 35-6 5 4 7 9 5 14-2 5-8 8-15 6-8-2-13-7-18-14" fill="rgba(103,232,249,.12)" stroke="#67e8f9" stroke-width="2"/><path d="M8 27 1 18l3 10-3 10 8-9" fill="rgba(94,234,212,.16)" stroke="#5eead4" stroke-width="1.7"/><circle cx="40" cy="23" r="3" fill="#eaffff"/><circle cx="41" cy="23" r="1.4" fill="#04101c"/><circle cx="46" cy="30" r="2.2" fill="#f9a8d4" opacity=".8"/></svg><span>小肥鱼：先看官能团，再看碳骨架。</span></div>
+    <div class="bar-tip"><img class="fish-mini" src="mascot-head.png" alt="" /><span>鲸鱼娘：先看官能团，再看碳骨架。</span></div>
   </div>
 
   <main class="workspace">
@@ -141,12 +160,15 @@
       <section class="panel stage-panel">
         <div class="stage-head"><div><div class="panel-kicker">GROUP IN FOCUS</div><h2 class="stage-title" id="groupTitle">羟基 <span>—OH</span></h2><p class="stage-sub" id="groupSub">醇的官能团</p></div></div>
         <div class="group-stage" id="groupStage">
-          <div class="fragment" id="fragment">
+          <canvas id="molCanvas" aria-label="可拖动旋转的三维球棍分子模型"></canvas>
+          <div class="mol-meta" id="fragment">
             <div class="fragment-symbol" id="fragmentSymbol">—OH</div>
             <div class="fragment-general" id="fragmentGeneral"><b>R—OH</b></div>
-            <div class="fragment-label" id="fragmentLabel">醇类</div>
-            <div class="fragment-example" id="fragmentExample">代表物：乙醇 <strong>CH₃CH₂OH</strong></div>
+            <div class="fragment-example" id="fragmentExample">乙醇 <strong>CH₃CH₂OH</strong></div>
           </div>
+          <div class="mol-legend"><span><i style="background:#cbd5e1"></i>C</span><span><i style="background:#f8fafc"></i>H</span><span><i style="background:#fb7185"></i>O</span><span><i style="background:#60a5fa"></i>N</span><span><i style="background:#f59e0b"></i>Br</span></div>
+          <div class="mol-hint">拖动旋转 · 滚轮缩放</div>
+          <button class="mol-reset" id="molReset" type="button">重置视角</button>
         </div>
         <div class="stage-foot"><span class="key" id="footKey">官能团决定性质</span><span class="sep">·</span><span id="footText">—OH 决定醇的取代、氧化和酯化反应</span></div>
       </section>
@@ -158,13 +180,13 @@
         <div class="info-label">主要反应</div><div class="reaction-chips" id="detailReactions"></div>
         <div class="test-box" id="detailTest"><strong>检验：</strong>—</div>
         <div class="note-box" id="detailNote"></div>
-        <div class="mascot-note"><svg class="fish" viewBox="0 0 64 52" aria-hidden="true"><path d="M8 27c8-12 24-15 35-6 5 4 7 9 5 14-2 5-8 8-15 6-8-2-13-7-18-14" fill="rgba(103,232,249,.12)" stroke="#67e8f9" stroke-width="2"/><path d="M8 27 1 18l3 10-3 10 8-9" fill="rgba(94,234,212,.16)" stroke="#5eead4" stroke-width="1.7"/><circle cx="40" cy="23" r="3" fill="#eaffff"/><circle cx="41" cy="23" r="1.4" fill="#04101c"/><path d="M44 33c2-2 5-1 5 1" stroke="#f9a8d4" stroke-width="1.5" fill="none"/></svg><p><strong>小肥鱼提示：</strong>有机反应先找官能团；同分异构体再数碳骨架。</p></div>
+        <div class="mascot-note"><img class="fish" src="mascot-head.png" alt="" /><p><strong>鲸鱼娘提示：</strong>有机反应先找官能团；同分异构体再数碳骨架。</p></div>
       </aside>
     </section>
 
     <section class="isomer-view" id="isomerView">
       <div class="panel isomer-panel">
-        <div class="isomer-head"><div><div class="panel-kicker">ISOMER LAB</div><h2 class="isomer-title">同分异构体实验室</h2><p class="isomer-sub">分子式相同、结构不同；点两张卡片对比。</p></div><div class="mascot-note" style="margin:0;max-width:250px"><svg class="fish" viewBox="0 0 64 52" aria-hidden="true"><path d="M8 27c8-12 24-15 35-6 5 4 7 9 5 14-2 5-8 8-15 6-8-2-13-7-18-14" fill="rgba(103,232,249,.12)" stroke="#67e8f9" stroke-width="2"/><path d="M8 27 1 18l3 10-3 10 8-9" fill="rgba(94,234,212,.16)" stroke="#5eead4" stroke-width="1.7"/><circle cx="40" cy="23" r="3" fill="#eaffff"/><circle cx="41" cy="23" r="1.4" fill="#04101c"/><path d="M44 33c2-2 5-1 5 1" stroke="#f9a8d4" stroke-width="1.5" fill="none"/></svg><p><strong>同一分子式，不一定是同一种物质。</strong></p></div></div>
+        <div class="isomer-head"><div><div class="panel-kicker">ISOMER LAB</div><h2 class="isomer-title">同分异构体实验室</h2><p class="isomer-sub">分子式相同、结构不同；点两张卡片对比。</p></div><div class="mascot-note" style="margin:0;max-width:250px"><img class="fish" src="mascot-head.png" alt="" /><p><strong>同一分子式，不一定是同一种物质。</strong></p></div></div>
         <div class="formula-tabs" id="formulaTabs"></div>
         <div class="isomer-layout">
           <div><div class="isomer-grid" id="isomerGrid"></div><div class="isomer-notes"><div class="isonote"><b>碳链异构</b><span>碳骨架不同：正丁烷 / 异丁烷</span></div><div class="isonote"><b>位置异构</b><span>官能团位置不同：1-丁醇 / 2-丁醇</span></div><div class="isonote"><b>官能团异构</b><span>官能团不同：乙醇 / 二甲醚</span></div></div></div>
@@ -195,6 +217,21 @@
     {id:"amide",name:"酰胺",symbol:"—CONH—",general:"R—CONH—R′",example:"乙酰胺",formula:"CH₃CONH₂",color:"#93c5fd",type:"酰胺基",sub:"含氮衍生物",props:"可发生水解；酰胺基不是氨基",reactions:["水解"],test:"酸性或碱性条件下水解",note:"酰胺基中羰基与氮相连，碱性明显弱于胺。"}
   ];
 
+
+  const MOLECULES={
+    alkane:{atoms:[["C",-0.75,0,0],["C",0.75,0,0],["H",-1.45,.85,.45],["H",-1.45,-.85,.45],["H",-1.45,0,-.95],["H",1.45,.85,-.45],["H",1.45,-.85,-.45],["H",1.45,0,.95]],bonds:[[0,1,1],[0,2,1],[0,3,1],[0,4,1],[1,5,1],[1,6,1],[1,7,1]]},
+    alkene:{atoms:[["C",-.67,0,0],["C",.67,0,0],["H",-1.3,.95,0],["H",-1.3,-.95,0],["H",1.3,.95,0],["H",1.3,-.95,0]],bonds:[[0,1,2],[0,2,1],[0,3,1],[1,4,1],[1,5,1]]},
+    alkyne:{atoms:[["C",-.6,0,0],["C",.6,0,0],["H",-1.65,0,0],["H",1.65,0,0]],bonds:[[0,1,3],[0,2,1],[1,3,1]]},
+    halo:{atoms:[["C",-.75,0,0],["C",.75,0,0],["Br",1.95,.1,0],["H",-1.4,.9,.4],["H",-1.4,-.9,.4],["H",-1.4,0,-.9],["H",1.3,.9,-.35],["H",1.3,-.9,-.35]],bonds:[[0,1,1],[1,2,1],[0,3,1],[0,4,1],[0,5,1],[1,6,1],[1,7,1]]},
+    alcohol:{atoms:[["C",-.8,0,0],["C",.6,0,0],["O",1.9,.35,0],["H",2.45,1.05,0],["H",-1.45,.9,.4],["H",-1.45,-.9,.4],["H",-1.45,0,-.9],["H",1.1,.9,-.35],["H",1.1,-.9,-.35]],bonds:[[0,1,1],[1,2,1],[2,3,1],[0,4,1],[0,5,1],[0,6,1],[1,7,1],[1,8,1]]},
+    phenol:{atoms:[["C",1.35,0,0],["C",.675,1.169,0],["C",-.675,1.169,0],["C",-1.35,0,0],["C",-.675,-1.169,0],["C",.675,-1.169,0],["O",2.45,0,0],["H",3.0,.7,0],["H",1.2,1.9,0],["H",-1.2,1.9,0],["H",-2.3,0,0],["H",-1.2,-1.9,0],["H",1.2,-1.9,0]],bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1],[6,7,1],[1,8,1],[2,9,1],[3,10,1],[4,11,1],[5,12,1]]},
+    aldehyde:{atoms:[["C",-.8,0,0],["C",.6,0,0],["O",1.15,1.1,0],["H",1.15,-1.0,0],["H",-1.45,.9,.4],["H",-1.45,-.9,.4],["H",-1.45,0,-.9]],bonds:[[0,1,1],[1,2,2],[1,3,1],[0,4,1],[0,5,1],[0,6,1]]},
+    ketone:{atoms:[["C",-1.5,0,0],["C",0,0,0],["C",1.5,0,0],["O",0,1.25,0],["H",-2.15,.9,.4],["H",-2.15,-.9,.4],["H",-2.15,0,-.9],["H",2.15,.9,.4],["H",2.15,-.9,.4],["H",2.15,0,-.9]],bonds:[[0,1,1],[1,2,1],[1,3,2],[0,4,1],[0,5,1],[0,6,1],[2,7,1],[2,8,1],[2,9,1]]},
+    acid:{atoms:[["C",-1.0,0,0],["C",.4,0,0],["O",.9,1.1,0],["O",1.2,-1.0,0],["H",1.8,-1.2,0],["H",-1.65,.9,.4],["H",-1.65,-.9,.4],["H",-1.65,0,-.9]],bonds:[[0,1,1],[1,2,2],[1,3,1],[3,4,1],[0,5,1],[0,6,1],[0,7,1]]},
+    ester:{atoms:[["C",-2.2,0,0],["C",-.9,0,0],["O",-.3,1.15,0],["O",0,-1.0,0],["C",1.2,-.5,0],["C",2.4,-.5,0],["H",-2.8,.9,.4],["H",-2.8,-.9,.4],["H",-2.8,0,-.9],["H",1.2,.4,0],["H",1.2,-1.4,0],["H",3.0,.2,.4],["H",3.0,-1.2,.4],["H",3.0,-.5,-.9]],bonds:[[0,1,1],[1,2,2],[1,3,1],[3,4,1],[4,5,1],[0,6,1],[0,7,1],[0,8,1],[4,9,1],[4,10,1],[5,11,1],[5,12,1],[5,13,1]]},
+    amine:{atoms:[["C",-.7,0,0],["N",.7,.25,0],["H",1.25,1.0,0],["H",1.25,-.5,0],["H",-1.35,.9,.4],["H",-1.35,-.9,.4],["H",-1.35,0,-.9]],bonds:[[0,1,1],[1,2,1],[1,3,1],[0,4,1],[0,5,1],[0,6,1]]},
+    amide:{atoms:[["C",-1.0,0,0],["C",.4,0,0],["O",.9,1.15,0],["N",1.0,-1.0,0],["H",1.6,-1.3,0],["H",1.6,-.6,0],["H",-1.65,.9,.4],["H",-1.65,-.9,.4],["H",-1.65,0,-.9]],bonds:[[0,1,1],[1,2,2],[1,3,1],[3,4,1],[3,5,1],[0,6,1],[0,7,1],[0,8,1]]}
+  };
   const SETS=[
     {id:"c4h10",formula:"C₄H₁₀",name:"丁烷",count:2,isomers:[
       {name:"正丁烷",cond:"CH₃—CH₂—CH₂—CH₃",type:"碳链异构"},
@@ -236,8 +273,10 @@
   const groupSub=document.getElementById("groupSub");
   const fragmentSymbol=document.getElementById("fragmentSymbol");
   const fragmentGeneral=document.getElementById("fragmentGeneral");
-  const fragmentLabel=document.getElementById("fragmentLabel");
   const fragmentExample=document.getElementById("fragmentExample");
+  const molCanvas=document.getElementById("molCanvas");
+  const molCtx=molCanvas?molCanvas.getContext("2d"):null;
+  const molReset=document.getElementById("molReset");
   const detailName=document.getElementById("detailName");
   const detailSub=document.getElementById("detailSub");
   const detailBadge=document.getElementById("detailBadge");
@@ -252,6 +291,83 @@
   const compareItems=document.getElementById("compareItems");
   const compareCount=document.getElementById("compareCount");
   const compareSummary=document.getElementById("compareSummary");
+
+
+  const ATOM_STYLE={C:{color:"#cbd5e1",r:.27,label:"C"},H:{color:"#f8fafc",r:.17,label:"H"},O:{color:"#fb7185",r:.25,label:"O"},N:{color:"#60a5fa",r:.25,label:"N"},Br:{color:"#f59e0b",r:.31,label:"Br"}};
+  let currentMolecule=null, molMaxR=2, molYaw=.55, molPitch=.18, molZoom=1, molDragging=false, molAuto=true, molLastX=0, molLastY=0, molW=1, molH=1;
+
+  function resizeMol(){
+    if(!molCanvas)return;
+    const r=molCanvas.getBoundingClientRect();
+    molW=Math.max(1,Math.floor(r.width));molH=Math.max(1,Math.floor(r.height));
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    molCanvas.width=Math.round(molW*dpr);molCanvas.height=Math.round(molH*dpr);
+    if(molCtx)molCtx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function loadMolecule(id){
+    currentMolecule=MOLECULES[id]||null;
+    molYaw=.55;molPitch=.18;molZoom=1;molAuto=true;molDragging=false;
+    let maxR=1;
+    if(currentMolecule)for(const [,x,y,z] of currentMolecule.atoms)maxR=Math.max(maxR,Math.hypot(x,y,z));
+    molMaxR=maxR;
+  }
+  function rotatePoint(p){
+    const cy=Math.cos(molYaw),sy=Math.sin(molYaw),cp=Math.cos(molPitch),sp=Math.sin(molPitch);
+    let x=p[0]*cy-p[2]*sy;
+    let z=p[0]*sy+p[2]*cy;
+    let y=p[1]*cp-z*sp;
+    z=p[1]*sp+z*cp;
+    return [x,y,z];
+  }
+  function renderMol(){
+    if(!molCtx||!currentMolecule){requestAnimationFrame(renderMol);return;}
+    if(!molDragging&&molAuto)molYaw+=.0035;
+    const w=molW,h=molH,cx=w*.5,cy=h*.52;
+    const scale=Math.min(w,h)/(molMaxR*2.15)*molZoom;
+    molCtx.clearRect(0,0,w,h);
+    const pts=currentMolecule.atoms.map(([el,x,y,z])=>{const r=rotatePoint([x,y,z]);return {el,x:cx+r[0]*scale,y:cy-r[1]*scale,z:r[2]};});
+    const bonds=currentMolecule.bonds.map(([i,j,order])=>({i,j,order,z:(pts[i].z+pts[j].z)/2})).sort((a,b)=>a.z-b.z);
+    for(const b of bonds){
+      const a=pts[b.i],c=pts[b.j];if(!a||!c)continue;
+      const dx=c.x-a.x,dy=c.y-a.y,len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len;
+      const offs=b.order===2?[-3.2,3.2]:b.order===3?[-4.2,0,4.2]:[0];
+      molCtx.save();molCtx.lineCap="round";
+      for(const o of offs){
+        molCtx.strokeStyle=b.order>1?"rgba(205,230,245,.82)":"rgba(180,205,225,.68)";molCtx.lineWidth=Math.max(2,3.0*(scale/55));
+        molCtx.beginPath();molCtx.moveTo(a.x+nx*o,a.y+ny*o);molCtx.lineTo(c.x+nx*o,c.y+ny*o);molCtx.stroke();
+      }
+      molCtx.restore();
+    }
+    const atoms=pts.map((p,i)=>({...p,i})).sort((a,b)=>a.z-b.z);
+    for(const a of atoms){
+      const st=ATOM_STYLE[a.el]||ATOM_STYLE.C;
+      const depth=1+Math.max(-1,Math.min(1,a.z/molMaxR))*.12;
+      const r=Math.max(a.el==="H"?5:8,st.r*scale*depth);
+      molCtx.save();
+      const g=molCtx.createRadialGradient(a.x-r*.32,a.y-r*.35,r*.12,a.x,a.y,r);
+      g.addColorStop(0,"#ffffff");g.addColorStop(.22,st.color);g.addColorStop(1,"#334155");
+      molCtx.shadowColor=st.color+"66";molCtx.shadowBlur=Math.min(18,r*.8);
+      molCtx.fillStyle=g;molCtx.beginPath();molCtx.arc(a.x,a.y,r,0,Math.PI*2);molCtx.fill();
+      molCtx.shadowBlur=0;molCtx.strokeStyle="rgba(255,255,255,.42)";molCtx.lineWidth=1;molCtx.stroke();
+      molCtx.fillStyle=a.el==="H"?"#1e293b":"#07101e";
+      molCtx.font=`600 ${Math.max(7,r*.78)}px "Segoe UI","Microsoft YaHei",sans-serif`;
+      molCtx.textAlign="center";molCtx.textBaseline="middle";molCtx.fillText(st.label,a.x,a.y+.4);
+      molCtx.restore();
+    }
+    requestAnimationFrame(renderMol);
+  }
+  if(molCanvas){
+    resizeMol();
+    if("ResizeObserver" in window)new ResizeObserver(resizeMol).observe(molCanvas);
+    molCanvas.addEventListener("pointerdown",(e)=>{molDragging=true;molAuto=false;molLastX=e.clientX;molLastY=e.clientY;molCanvas.setPointerCapture?.(e.pointerId);});
+    molCanvas.addEventListener("pointermove",(e)=>{if(!molDragging)return;const dx=e.clientX-molLastX,dy=e.clientY-molLastY;molLastX=e.clientX;molLastY=e.clientY;molYaw-=dx*.008;molPitch=Math.max(-1.2,Math.min(1.2,molPitch+dy*.008));});
+    const stopDrag=(e)=>{molDragging=false;try{molCanvas.releasePointerCapture?.(e.pointerId);}catch(err){}};
+    molCanvas.addEventListener("pointerup",stopDrag);molCanvas.addEventListener("pointercancel",stopDrag);
+    molCanvas.addEventListener("wheel",(e)=>{e.preventDefault();molZoom=Math.max(.55,Math.min(2.3,molZoom*Math.exp(-e.deltaY*.0012)));},{passive:false});
+    molCanvas.addEventListener("dblclick",()=>{molYaw=.55;molPitch=.18;molZoom=1;molAuto=true;});
+    molReset?.addEventListener("click",()=>{molYaw=.55;molPitch=.18;molZoom=1;molAuto=true;});
+    requestAnimationFrame(renderMol);
+  }
 
   let currentGroup=GROUPS[0];
   let currentSet=SETS[0];
@@ -272,9 +388,8 @@
     fragmentSymbol.textContent=g.symbol;
     fragmentSymbol.style.color=g.color;
     fragmentGeneral.innerHTML=`通式：<b>${g.general}</b>`;
-    fragmentLabel.textContent=g.type;
-    fragmentIllustration(g);
-    fragmentExample.innerHTML=`代表物：${g.example} <strong>${g.formula}</strong>`;
+    fragmentExample.innerHTML=`${g.example} <strong>${g.formula}</strong>`;
+    loadMolecule(g.id);
     detailName.textContent=g.name;
     detailSub.textContent=g.type;
     detailBadge.textContent=g.type;
@@ -327,9 +442,13 @@
 
   renderGroupList();
   selectGroup("alcohol");
+  const params=new URLSearchParams(location.search);
+  if(params.get("group")){
+    const g=GROUPS.find(x=>x.id===params.get("group"));
+    if(g)selectGroup(g.id);
+  }
   renderFormulaTabs();
   renderIsomers();
-  const params=new URLSearchParams(location.search);
   if(params.get("mode")==="isomers")document.querySelector('[data-mode="isomers"]').click();
   if(params.get("set")){
     const set=SETS.find(x=>x.id===params.get("set"));

@@ -890,7 +890,7 @@
   .map-foot strong { color:#bdfbf1; font-weight:550; }
   .mascot-card { position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; padding:18px 18px 15px; border:1px solid rgba(94,234,212,.16); border-radius:24px; background: radial-gradient(500px 320px at 30% 0%, rgba(34,211,238,.1), transparent 65%), linear-gradient(155deg, rgba(9,28,44,.82), rgba(5,14,26,.75)); }
   .mascot-badge { display:inline-flex; align-items:center; gap:6px; align-self:flex-start; height:23px; padding:0 8px; border:1px solid rgba(94,234,212,.22); border-radius:999px; background:rgba(94,234,212,.06); color:#bdfbf1; font-size:8px; letter-spacing:.06em; }
-  .mascot-fish { width:100%; max-width:230px; margin:2px auto 0; display:block; filter:drop-shadow(0 18px 32px rgba(0,0,0,.25)); }
+  .mascot-fish { width:100%; max-width:200px; margin:2px auto 0; display:block; object-fit:contain; filter:drop-shadow(0 18px 32px rgba(0,0,0,.25)); }
   .mascot-speech { position:relative; margin-top:10px; padding:10px 11px; border:1px solid rgba(148,163,184,.11); border-radius:10px; background:rgba(4,10,20,.42); color:var(--dim); font-size:9.5px; line-height:1.65; }
   .mascot-speech::before { content:""; position:absolute; left:20px; top:-5px; width:8px; height:8px; transform:rotate(45deg); border-left:1px solid rgba(148,163,184,.11); border-top:1px solid rgba(148,163,184,.11); background:#071421; }
   .mascot-speech strong { color:#e7fdff; font-weight:550; }
@@ -1261,35 +1261,13 @@
             <div class="map-row"><div class="map-row-label">变化与反应</div><div class="map-chain"><a class="map-node" href="reaction-gallery.html"><i class="mdot" style="--mc:#f472b6"></i>反应观察台</a><span class="map-arrow">→</span><a class="map-node" href="reaction-mechanism.html"><i class="mdot" style="--mc:#fb923c"></i>反应机理</a></div></div>
             <div class="map-row"><div class="map-row-label">有机与实验</div><div class="map-chain"><a class="map-node" href="organic-groups.html"><i class="mdot" style="--mc:#5eead4"></i>有机官能团</a><span class="map-arrow">→</span><a class="map-node" href="experiment-apparatus.html"><i class="mdot" style="--mc:#38bdf8"></i>实验装置</a><span class="map-arrow">→</span><a class="map-node" href="bond-formation.html"><i class="mdot" style="--mc:#c084fc"></i>C–C 成键</a></div></div>
           </div>
-          <div class="map-foot"><strong>小肥鱼建议：</strong>先看“位置与结构”，再看“反应”，最后用实验验证。</div>
+          <div class="map-foot"><strong>鲸鱼娘建议：</strong>先看“位置与结构”，再看“反应”，最后用实验验证。</div>
         </div>
-        <aside class="mascot-card" aria-label="小肥鱼助教">
-          <div class="mascot-badge"><span class="live-dot" style="width:5px;height:5px"></span>小肥鱼助教</div>
-          <svg class="mascot-fish" viewBox="0 0 220 170" fill="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="fishBody" x1="45" y1="35" x2="160" y2="145" gradientUnits="userSpaceOnUse"><stop stop-color="#5eead4"/><stop offset=".55" stop-color="#67e8f9"/><stop offset="1" stop-color="#a78bfa"/></linearGradient>
-              <radialGradient id="fishBelly" cx="0" cy="0" r="1" gradientTransform="translate(112 112) rotate(90) scale(40 62)" gradientUnits="userSpaceOnUse"><stop stop-color="#eaffff" stop-opacity=".65"/><stop offset="1" stop-color="#dffcff" stop-opacity="0"/></radialGradient>
-            </defs>
-            <path d="M27 87 1 58l10 29-10 29 26-21" fill="rgba(94,234,212,.28)" stroke="#5eead4" stroke-width="2"/>
-            <path d="M80 49c-12-18-26-23-39-16 8 15 17 24 31 30" fill="rgba(103,232,249,.24)" stroke="#67e8f9" stroke-width="2"/>
-            <ellipse cx="111" cy="87" rx="72" ry="51" fill="url(#fishBody)" stroke="rgba(234,255,255,.55)" stroke-width="1.6"/>
-            <ellipse cx="118" cy="104" rx="54" ry="28" fill="url(#fishBelly)"/>
-            <path d="M135 127c-15 16-31 21-48 18 12-12 25-21 42-25" fill="rgba(94,234,212,.25)" stroke="#5eead4" stroke-width="2"/>
-            <path d="M94 62c12-9 33-9 46-2" stroke="rgba(4,10,20,.7)" stroke-width="4" stroke-linecap="round"/>
-            <circle cx="111" cy="61" r="15" fill="rgba(4,16,28,.86)" stroke="#dffcff" stroke-width="2"/>
-            <circle cx="146" cy="67" r="12" fill="rgba(4,16,28,.86)" stroke="#dffcff" stroke-width="2"/>
-            <path d="M126 61h8" stroke="#dffcff" stroke-width="2"/>
-            <circle cx="115" cy="58" r="3.2" fill="#f4ffff"/><circle cx="149" cy="64" r="2.8" fill="#f4ffff"/>
-            <circle cx="116" cy="59" r="1.2" fill="#04101c"/><circle cx="149" cy="65" r="1.1" fill="#04101c"/>
-            <path d="M137 93c4-4 10-3 13 1" stroke="#04101c" stroke-width="2.4" stroke-linecap="round"/>
-            <circle cx="158" cy="103" r="6" fill="#f9a8d4" opacity=".55"/>
-            <path d="M181 43c7-7 15-8 22-3" stroke="rgba(103,232,249,.5)" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="190" cy="35" r="3" fill="rgba(103,232,249,.35)"/><circle cx="202" cy="27" r="2" fill="rgba(103,232,249,.28)"/>
-            <path d="M176 116h22v27h-22z" fill="rgba(8,20,35,.55)" stroke="#dffcff" stroke-width="1.5" transform="rotate(-15 187 129)"/>
-            <path d="M179 133h16" stroke="#f9a8d4" stroke-width="5" transform="rotate(-15 187 129)"/>
-          </svg>
+        <aside class="mascot-card" aria-label="鲸鱼娘助教">
+          <div class="mascot-badge"><span class="live-dot" style="width:5px;height:5px"></span>鲸鱼娘助教 · DEEPSEEK Q</div>
+          <img class="mascot-fish" src="mascot-chibi.png" alt="鲸鱼娘助教" />
           <div class="mascot-speech"><strong>先选一个模块吧。</strong><br>不知道从哪开始，就点“元素周期表”，我带你从位置找规律。</div>
-          <div class="mascot-name">XIAO FEI YU · LAB ASSISTANT</div>
+          <div class="mascot-name">DEEPSEEK WHALE GIRL · LAB ASSISTANT</div>
         </aside>
       </div>
     </section>

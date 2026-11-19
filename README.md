@@ -14,7 +14,7 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 
 | 页面 | 内容 | 文件 |
 | --- | --- | --- |
-| 平台首页 | 平台介绍、八个模块导航、知识地图、小肥鱼助教 | `index.html` |
+| 平台首页 | 平台介绍、八个模块导航、知识地图、鲸鱼娘助教 | `index.html` |
 | 电子云杂化实验室 | sp / sp² / sp³ 杂化过程、C–C 成键阶段、键角、空间构型 | `electron-cloud.html` |
 | 分子空间构型 | VSEPR、孤对电子、直线形/平面三角形/四面体/三角锥/V 形 | `molecular-geometry.html` |
 | C–C 成键过程 | 乙烷/乙烯/乙炔的 σ 键与 π 键形成过程 | `bond-formation.html` |
@@ -97,6 +97,7 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 ### 有机官能团与同分异构
 
 - 12 类常见官能团：烷烃、烯烃、炔烃、卤代烃、醇、酚、醛、酮、羧酸、酯、胺、酰胺。
+- 官能团中心区为可拖动旋转、滚轮缩放的 3D 球棍模型，C/H/O/N/Br 原子和单/双/三键直接可见。
 - 官能团 → 代表物 → 性质 → 检验 → 易错点。
 - 同分异构体实验室：C₂H₆O、C₄H₁₀、C₅H₁₂、C₄H₁₀O、C₄H₈O₂。
 - 点击两张异构体卡片对比，区分碳链异构、位置异构、官能团异构。
@@ -104,9 +105,10 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 
 ### 平台助教与知识地图
 
-- `platform-shell.js` 在所有页面注入小肥鱼助教和全局模块入口。
+- `platform-shell.js` 在所有页面注入 Q 版鲸鱼娘助教和全局模块入口。
+- 鲸鱼娘使用蓝发 Q 版角色 PNG，已去除深色背景、菜单和文字；资源为 `mascot-chibi.png`、`mascot-head.png`。
 - 首页新增知识地图，把位置、结构、反应、实验串成一条学习路径。
-- 小肥鱼出现在提示、空状态和课堂引导中，不遮挡主要内容。
+- 鲸鱼娘出现在提示、空状态和课堂引导中，不遮挡主要内容。
 
 ## 后续计划
 
