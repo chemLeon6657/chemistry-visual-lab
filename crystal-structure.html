@@ -293,7 +293,7 @@
       if(dist([(f[0]-.5)*a,(f[1]-.5)*a,(f[2]-.5)*a],[(g[0]-.5)*a,(g[1]-.5)*a,(g[2]-.5)*a])<1.15&&!clKeys.has(key(g)))add(g,"Cl",true);
     }
     return { atoms,bonds,cellLines:cubeLines(1),camera:{yaw:.65,pitch:.28,distance:8.0},
-      legend:[["Na⁺（小）","#a78bfa"],["Cl⁻（大）","#86efac"]], cellType:"面心立方（NaCl 型）", coord:"6", coordMode:"opposite", coordCutoff:1.15, coordShape:"八面体",
+      legend:[["Na⁺（小）","#a78bfa"],["Cl⁻（大）","#86efac"]], cellType:"面心立方（NaCl 型）", coord:"6", coordMax:6, coordMode:"opposite", coordCutoff:1.15, coordShape:"八面体",
       status:"NaCl 型 · 配位数 6:6", foot:"离子键 · 高熔点", formula:"NaCl", type:"离子晶体", name:"氯化钠 · 面心立方晶胞",
       particles:"Na⁺、Cl⁻", force:"离子键", melting:"801 ℃", examples:"NaCl、KCl",
       note:"Cl⁻ 位于 8 个顶点 + 6 个面心，形成面心立方；Na⁺ 位于 12 条棱心和体心，填满八面体空隙。每个 Na⁺、Cl⁻ 周围都有 6 个异种离子。",
@@ -308,11 +308,12 @@
       atoms.push(makeAtom([x,y,z],"#86efac",.19,"Cl⁻","Cl",{labelColor:"#052e16"}));
     }
     // Hidden neighbouring Cs+ positions are used only by the coordination inspector.
-    for(const x of [-1.6,1.6])for(const y of [-1.6,1.6])for(const z of [-1.6,1.6]){
+    for(const x of [-1.6,0,1.6])for(const y of [-1.6,0,1.6])for(const z of [-1.6,0,1.6]){
+      if(x===0&&y===0&&z===0)continue;
       atoms.push(makeAtom([x,y,z],"#c4b5fd",.17,"Cs⁺","Cs",{ghost:true,labelColor:"#2e1065"}));
     }
     return { atoms,bonds,cellLines:cubeLines(.8),ghostsOnlyInspect:true,camera:{yaw:.65,pitch:.26,distance:7.8},
-      legend:[["Cs⁺","#c4b5fd"],["Cl⁻","#86efac"]], cellType:"简单立方（CsCl 型）", coord:"8", coordMode:"opposite", coordCutoff:1.45, coordShape:"立方体",
+      legend:[["Cs⁺","#c4b5fd"],["Cl⁻","#86efac"]], cellType:"简单立方（CsCl 型）", coord:"8", coordMax:8, coordMode:"opposite", coordCutoff:1.45, coordShape:"立方体",
       status:"CsCl 型 · 配位数 8:8", foot:"离子键 · 熔点较高", formula:"CsCl", type:"离子晶体", name:"氯化铯 · 简单立方型离子晶体",
       particles:"Cs⁺、Cl⁻", force:"离子键", melting:"645 ℃", examples:"CsCl、CsBr",
       note:"Cl⁻ 位于立方体顶点、Cs⁺ 位于体心；每个 Cs⁺ 周围有 8 个 Cl⁻，每个 Cl⁻ 周围有 8 个 Cs⁺。注意：这是两套简单立方互相穿插，不是同种原子的体心立方（BCC）。",
@@ -374,7 +375,7 @@
       const k=key(frac); if(keys.has(k))return keys.get(k);
       const pos=[(frac[0]-.5)*scale,(frac[1]-.5)*scale,(frac[2]-.5)*scale];
       const idx=atoms.length;
-      atoms.push(makeAtom(pos,ghost?"#8ea4c0":colors[species],ghost?.15:radii[species],species,species,{ghost,labelColor:species==="Zn"?"#082f49":species==="S"?"#451a03":"#0f172a"}));
+      atoms.push(makeAtom(pos,ghost?"#8ea4c0":colors[species],ghost?(kind==="diamond"?.105:.15):radii[species],species,species,{ghost,labelColor:species==="Zn"?"#082f49":species==="S"?"#451a03":"#0f172a"}));
       keys.set(k,idx); return idx;
     }
     const base=[];
@@ -390,14 +391,14 @@
       }
     }
     const isZnS=kind==="zns";
-    return { atoms,bonds,cellLines:cubeLines(1.1),camera:{yaw:.82,pitch:.3,distance:8.2},
-      legend:isZnS?[["S²⁻","#fbbf24"],["Zn²⁺","#60a5fa"]]:[["C 原子","#cbd5e1"]],
-      cellType:isZnS?"立方 ZnS 型（闪锌矿）":"金刚石型（面心立方 + 四面体）", coord:"4", coordMode:isZnS?"opposite":"same", coordCutoff:1.05, coordShape:"正四面体",
+    return { atoms,bonds,cellLines:cubeLines(1.1),showGhostAlways:!isZnS,camera:{yaw:.82,pitch:.3,distance:8.2},
+      legend:isZnS?[["S²⁻","#fbbf24"],["Zn²⁺","#60a5fa"]]:[["晶胞内 C","#cbd5e1"],["补全网络的相邻 C","#8ea4c0"]],
+      cellType:isZnS?"立方 ZnS 型（闪锌矿）":"金刚石型（面心立方 + 四面体）", coord:"4", coordMax:4, coordMode:isZnS?"opposite":"same", coordCutoff:1.05, coordShape:"正四面体",
       status:isZnS?"立方 ZnS 型 · 配位数 4:4":"金刚石型 · 每个 C 连 4 个 C",
       foot:isZnS?"共价键 · 熔点高":"共价键 · 熔点极高", formula:isZnS?"ZnS":"C", type:isZnS?"离子晶体（共价性明显）":"原子晶体",
       name:isZnS?"硫化锌 · 立方 ZnS 型":"金刚石 · 完整晶胞",
       particles:isZnS?"Zn²⁺、S²⁻":"C 原子", force:isZnS?"共价键（极性）":"共价键", melting:isZnS?"1700 ℃":"≈ 3550 ℃", examples:isZnS?"ZnS、闪锌矿":"金刚石、晶体硅",
-      note:isZnS?"S²⁻ 作面心立方排列，Zn²⁺ 填入一半四面体空隙；每个离子周围有 4 个异种离子。":"每个 C 只与周围 4 个 C 成键，不是 8 个；晶胞内只保留 8 个 C 原子，配位模式用虚线指向相邻晶胞的最近邻。",
+      note:isZnS?"S²⁻ 作面心立方排列，Zn²⁺ 填入一半四面体空隙；每个离子周围有 4 个异种离子。":"金刚石是完整空间网络，晶胞内 8 个 C 全部画出；灰色小球是相邻晶胞的 C，用来补全晶胞边界的四面体。每个 C 只与 4 个 C 成键。",
       descript:isZnS?"ZnS 是立方 ZnS 型结构，配位数 4:4，属于共价性明显的离子晶体。":"金刚石是原子晶体，碳原子通过 sp³ 共价键形成空间网状结构，配位数为 4。" };
   }
 
@@ -444,11 +445,11 @@
       if(dist([(f[0]-.5)*a,(f[1]-.5)*a,(f[2]-.5)*a],[(g[0]-.5)*a,(g[1]-.5)*a,(g[2]-.5)*a])<1.0&&!sKeys.has(key(g)))add(g,"S",true);
     }
     return { atoms,bonds,cellLines:cubeLines(1),camera:{yaw:.8,pitch:.3,distance:8.2},
-      legend:[["S²⁻","#fbbf24"],["Zn²⁺","#60a5fa"]], cellType:"面心立方（ZnS 型）", coord:"4", coordMode:"opposite", coordCutoff:1.0, coordShape:"正四面体",
+      legend:[["S²⁻","#fbbf24"],["Zn²⁺","#60a5fa"]], cellType:"立方 ZnS 型（S²⁻ 为 FCC 子晶格）", coord:"4", coordMode:"opposite", coordCutoff:1.0, coordShape:"正四面体",
       status:"立方 ZnS 型 · 配位数 4:4", foot:"共价键 · 熔点高", formula:"ZnS", type:"离子晶体（共价性明显）", name:"硫化锌 · 立方 ZnS 型",
       particles:"Zn²⁺、S²⁻", force:"共价键（极性）", melting:"1700 ℃", examples:"ZnS、闪锌矿",
       note:"S²⁻ 位于 8 个顶点 + 6 个面心，形成面心立方；Zn²⁺ 填入一半四面体空隙。每个离子周围有 4 个异种离子。",
-      descript:"ZnS 是立方 ZnS 型结构；S²⁻ 作面心立方堆积，Zn²⁺ 占一半四面体空隙，配位数 4:4。" };
+      descript:"ZnS 是立方 ZnS（闪锌矿）型结构：S²⁻ 形成面心立方子晶格，Zn²⁺ 占一半四面体空隙；整体不是单质 FCC 点阵，配位数 4:4。" };
   }
 
   function buildSiO2() {
@@ -512,7 +513,7 @@
   function buildGraphite() {
     const data=buildHoneycomb(3,2.5,false);
     return { atoms:data.atoms,bonds:data.bonds,cellLines:[],camera:{yaw:.7,pitch:.38,distance:13.0},
-      legend:[["C 原子","#cbd5e1"]], cellType:"六方层状（混合型）", coord:"3", coordMode:"same", coordCutoff:1.08, coordShape:"平面三角形",
+      legend:[["C 原子","#cbd5e1"]], cellType:"六方层状（混合型）", coord:"3", coordMax:3, coordMode:"same", coordCutoff:1.08, coordShape:"平面三角形",
       status:"层内 3 配位 · 层间范德华力", foot:"共价键 + 分子间作用力", formula:"C", type:"混合型晶体", name:"石墨 · 层状结构",
       particles:"C 原子", force:"共价键 + 分子间作用力", melting:"≈ 3652 ℃ 升华", examples:"石墨、石墨烯",
       note:"同层每个 C 与 3 个 C 形成共价键，层与层之间靠较弱的分子间作用力；因此石墨能导电、可作润滑剂。",
@@ -574,7 +575,7 @@
     for(const p of base)atoms.push(makeAtom(p,"#fb923c",.18,"Cu","Cu",{labelColor:"#431407"}));
     for(const p of ghosts)atoms.push(makeAtom(p,"#fb923c",.16,"Cu","Cu",{ghost:true,labelColor:"#431407"}));
     return { atoms,bonds:[],cellLines:cubeLines(1),camera:{yaw:.7,pitch:.3,distance:8.0},
-      legend:[["Cu 原子","#fb923c"]], cellType:"面心立方最密堆积", coord:"12", coordMode:"same", coordCutoff:1.5, coordShape:"最密堆积",
+      legend:[["Cu 原子","#fb923c"]], cellType:"面心立方最密堆积", coord:"12", coordMax:12, coordMode:"same", coordCutoff:1.5, coordShape:"最密堆积",
       status:"面心立方最密堆积 · 配位数 12", foot:"金属键 · 导电导热", formula:"Cu", type:"金属晶体", name:"铜 · 面心立方晶胞",
       particles:"Cu 原子", force:"金属键", melting:"1085 ℃", examples:"Cu、Ag、Au",
       note:"铜采用面心立方最密堆积：顶点 + 面心共 14 个原子；点击「配位」后会显示相邻晶胞中的 12 个最近邻。",
@@ -742,7 +743,7 @@
       out.push({index:j,d});
     });
     out.sort((x,y)=>x.d-y.d);
-    return out.map(x=>x.index);
+    return out.slice(0,model.coordMax||out.length).map(x=>x.index);
   }
 
   function selectAtom(index){
@@ -779,7 +780,7 @@
     for (const [i,j,color,width] of model.bonds) {
       const ghostBond=model.atoms[i].ghost||model.atoms[j].ghost;
       if(ghostBond){
-        if(!(inspectMode&&selectedAtom!==null&&activeSet&&activeSet.has(i)&&activeSet.has(j)))continue;
+        if(model.showGhostAlways){/* complete diamond network */}else if(!(inspectMode&&selectedAtom!==null&&activeSet&&activeSet.has(i)&&activeSet.has(j)))continue;
       }
       const a=project(model.atoms[i].pos), b=project(model.atoms[j].pos);
       if(!a||!b)continue;
@@ -800,7 +801,7 @@
 
     const atoms=model.atoms.map((a,index)=>({a,index,depth:project(a.pos)?.depth||0})).sort((x,y)=>y.depth-x.depth);
     for (const item of atoms) {
-      const ghostVisible=inspectMode&&selectedAtom!==null&&activeSet&&activeSet.has(item.index);
+      const ghostVisible=(inspectMode&&selectedAtom!==null&&activeSet&&activeSet.has(item.index))||model.showGhostAlways;
       if(item.a.ghost&&!ghostVisible)continue;
       atom(item.a,item.index,{
         selected:item.index===selectedAtom,
