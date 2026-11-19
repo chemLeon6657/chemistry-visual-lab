@@ -530,6 +530,7 @@
         <div class="fact-list">
           <div class="fact-row"><span>杂化方式</span><strong id="factHybrid">sp³–sp³</strong></div>
           <div class="fact-row"><span>C–C 键型</span><strong id="factBondType">单键（1 个 σ）</strong></div>
+          <div class="fact-row"><span>π 电子总数</span><strong id="factPiElectrons">0</strong></div>
           <div class="fact-row"><span>键长</span><strong id="factLength">154 pm</strong></div>
           <div class="fact-row"><span>键角</span><strong id="factAngle">109°28′</strong></div>
           <div class="fact-row"><span>空间构型</span><strong id="factGeometry">四面体</strong></div>
@@ -551,7 +552,7 @@
           <div class="fact-row"><span>σ 键旋转</span><strong>可以</strong></div>
           <div class="fact-row"><span>π 键旋转</span><strong>受限</strong></div>
         </div>
-        <p class="note">σ 键沿键轴方向重叠，π 键由未杂化 p 轨道侧面重叠形成。双键、三键中都含有 σ 键。</p>
+        <p class="note">每个 π 键只有 <strong>2 个电子</strong>。乙烯 π 电子总数为 2，乙炔为 4；π 电子云分布在键轴的上下方或前后方。</p>
       </section>
 
       <section class="card tip-card">
@@ -673,6 +674,7 @@
   const sideName = document.getElementById("sideName");
   const factHybrid = document.getElementById("factHybrid");
   const factBondType = document.getElementById("factBondType");
+  const factPiElectrons = document.getElementById("factPiElectrons");
   const factLength = document.getElementById("factLength");
   const factAngle = document.getElementById("factAngle");
   const factGeometry = document.getElementById("factGeometry");
@@ -728,6 +730,7 @@
     bondAngle.textContent = model.angle;
     factHybrid.textContent = model.hybrid;
     factBondType.textContent = model.bondType;
+    factPiElectrons.textContent = String(model.pi * 2);
     factLength.textContent = model.length;
     factAngle.textContent = model.angle;
     factGeometry.textContent = model.geometry;
@@ -955,14 +958,18 @@
       ctx.fillStyle = g;
       ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, TAU); ctx.fill();
       ctx.restore();
+    }
 
-      // Two electrons sit along the bond direction inside the π cloud.
+    // A π bond contains ONE electron pair (2 electrons), not one pair per lobe.
+    // Show the pair once in the upper/primary lobe; the cloud itself represents
+    // the density in both lobes.
+    if (strength > .35 && p1) {
       const ux = Math.cos(bondAngle), uy = Math.sin(bondAngle);
       ctx.save();
-      ctx.fillStyle = "rgba(255,255,255,.75)";
+      ctx.fillStyle = "rgba(255,255,255,.8)";
       ctx.shadowColor = hexA(color, .9); ctx.shadowBlur = 9;
-      ctx.beginPath(); ctx.arc(p.x - ux * 5, p.y - uy * 5, 2.3, 0, TAU); ctx.fill();
-      ctx.beginPath(); ctx.arc(p.x + ux * 5, p.y + uy * 5, 2.3, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(p1.x - ux * 5, p1.y - uy * 5, 2.3, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(p1.x + ux * 5, p1.y + uy * 5, 2.3, 0, TAU); ctx.fill();
       ctx.restore();
     }
   }
@@ -1062,15 +1069,15 @@
     // labels
     if (sigma > .3) {
       const mid = project([0, 0, 0]);
-      if (mid) pill("σ", mid.x, mid.y - 26, "rgba(165,243,252,.96)");
+      if (mid) pill("σ · 2e⁻", mid.x, mid.y - 26, "rgba(165,243,252,.96)");
     }
     if (pi1 > .3) {
       const p = project([0, 1.5, 0]);
-      if (p) pill(model.pi > 1 ? "π₁" : "π", p.x, p.y - 8, "rgba(196,181,253,.96)");
+      if (p) pill(model.pi > 1 ? "π₁ · 2e⁻" : "π · 2e⁻", p.x, p.y - 8, "rgba(196,181,253,.96)");
     }
     if (pi2 > .3) {
       const p = project([0, 0, 1.6]);
-      if (p) pill("π₂", p.x, p.y - 8, "rgba(125,211,252,.96)");
+      if (p) pill("π₂ · 2e⁻", p.x, p.y - 8, "rgba(125,211,252,.96)");
     }
     if (sigma > .5) {
       const p = project([0, 0, 0]);
