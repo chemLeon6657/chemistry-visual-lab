@@ -14,12 +14,13 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 
 | 页面 | 内容 | 文件 |
 | --- | --- | --- |
-| 平台首页 | 平台介绍、四个模块导航 | `index.html` |
+| 平台首页 | 平台介绍、五个模块导航 | `index.html` |
 | 电子云杂化实验室 | sp / sp² / sp³ 杂化过程、C–C 成键阶段、键角、空间构型 | `electron-cloud.html` |
 | 分子空间构型 | VSEPR、孤对电子、直线形/平面三角形/四面体/三角锥/V 形 | `molecular-geometry.html` |
 | C–C 成键过程 | 乙烷/乙烯/乙炔的 σ 键与 π 键形成过程 | `bond-formation.html` |
 | 晶体结构 | NaCl、金刚石、干冰、铜的晶胞、配位数与作用力 | `crystal-structure.html` |
 | 反应机理 | 取代、加成、消去反应与能量曲线 | `reaction-mechanism.html` |
+| 元素周期表 | 118 种元素、性质热力图、元素详情、周期律趋势 | `periodic-table.html` |
 
 ## 已上线模块
 
@@ -63,11 +64,20 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 - 同步显示能量曲线、反应条件和关键键变化。
 - 支持 `?reaction=substitution|addition|elimination&t=0..1` 参数。
 
+### 元素周期表
+
+- 完整 118 种元素周期表，主表与镧系/锕系分行排列。
+- 按元素类别着色，或切换原子半径、电负性、第一电离能、熔点、密度、常见化合价热力图。
+- 点击元素查看电子排布、原子结构示意图、周期/族、主要性质和常见用途。
+- 第三周期、第ⅠA族、第ⅦA族趋势图，随性质切换联动。
+- 支持 `?element=26&property=radius&series=period3` 参数。
+
 ## 后续计划
 
-- 元素周期律与周期表
-- 化学反应与能量变化
-- 有机物的同分异构体
+- 化学平衡与反应速率
+- 电化学
+- 有机官能团与同分异构
+- 化学实验装置
 
 ## 特点
 

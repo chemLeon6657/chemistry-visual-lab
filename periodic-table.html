@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#04070f" />
+<title>元素周期表 · 位置、结构与性质 · 高中化学可视化平台</title>
+<meta name="description" content="交互式元素周期表：118 种元素、性质热力图、元素详情、周期律趋势和手机适配。" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#04070f;--line:rgba(148,163,184,.14);--text:#eaf3ff;--muted:#8ea4c0;--dim:#5e728c;
+    --cyan:#67e8f9;--teal:#5eead4;--violet:#a78bfa;--pink:#f472b6;--amber:#fbbf24;
+    --mono:"Cascadia Code","SFMono-Regular",Consolas,"Liberation Mono",monospace;color-scheme:dark;
+  }
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:"Segoe UI Variable","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  button,input,select{font:inherit}button,a{-webkit-tap-highlight-color:transparent}:focus-visible{outline:2px solid rgba(103,232,249,.8);outline-offset:3px}
+  .page-glow{position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(920px 650px at 5% -8%,rgba(20,184,166,.15),transparent 64%),radial-gradient(1000px 760px at 98% 2%,rgba(91,33,182,.15),transparent 68%),radial-gradient(900px 700px at 55% 108%,rgba(14,116,144,.11),transparent 66%),linear-gradient(160deg,#050a14 0%,#04070f 55%,#050811 100%)}
+  .page-glow::after{content:"";position:absolute;inset:0;opacity:.22;background-image:linear-gradient(rgba(148,163,184,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.04) 1px,transparent 1px);background-size:46px 46px;mask-image:radial-gradient(circle at 50% 38%,black,transparent 77%);-webkit-mask-image:radial-gradient(circle at 50% 38%,black,transparent 77%)}
+  .shell{width:min(1640px,100%);min-height:100vh;margin:0 auto;padding:22px 28px 14px;display:flex;flex-direction:column}
+  .site-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding:0 2px 16px;animation:rise .7s cubic-bezier(.22,.8,.3,1) both}
+  .brand{display:flex;align-items:center;gap:15px;min-width:0;color:inherit;text-decoration:none}.brand:hover{opacity:.85}
+  .brand-mark{width:52px;height:52px;flex:0 0 auto;border-radius:16px;border:1px solid rgba(103,232,249,.2);background:radial-gradient(circle at 32% 24%,rgba(103,232,249,.2),transparent 55%),linear-gradient(150deg,rgba(11,28,46,.9),rgba(5,11,22,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 34px rgba(0,0,0,.34);display:grid;place-items:center}
+  .brand-mark svg{width:40px;height:40px}
+  .kicker{display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:9.5px;font-weight:650;letter-spacing:.19em;text-transform:uppercase}
+  .kicker::before{content:"";width:16px;height:1px;background:linear-gradient(90deg,var(--cyan),transparent)}
+  .brand h1{margin:4px 0 2px;font-size:clamp(26px,2.7vw,37px);line-height:1.05;letter-spacing:-.04em;font-weight:760}
+  .brand h1 span{background:linear-gradient(105deg,#e7fdff,var(--cyan) 45%,#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand p{margin:0;color:var(--muted);font-size:12px;letter-spacing:.02em}
+  .header-meta{display:flex;flex-direction:column;align-items:flex-end;gap:7px;padding-top:4px;flex:0 0 auto}
+  .meta-pill{display:inline-flex;align-items:center;gap:8px;height:29px;padding:0 11px;border:1px solid rgba(103,232,249,.16);border-radius:999px;background:rgba(8,20,34,.62);color:#c7e9ef;font-size:10px;letter-spacing:.08em;white-space:nowrap}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(94,234,212,.08),0 0 12px rgba(94,234,212,.8);animation:breathe 2.6s ease-in-out infinite}
+  .meta-note{color:var(--dim);font-size:9.5px;letter-spacing:.08em}
+  .workspace{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px;align-items:start}
+  .panel{position:relative;border:1px solid var(--line);border-radius:22px;background:radial-gradient(100% 100% at 0% 0%,rgba(103,232,249,.045),transparent 48%),linear-gradient(155deg,rgba(13,24,43,.83),rgba(7,14,27,.72));box-shadow:0 22px 60px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.045);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);animation:rise .62s cubic-bezier(.22,.8,.3,1) both}
+  .table-panel{padding:16px;min-width:0}
+  .panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:12px}
+  .panel-kicker{color:var(--dim);font-size:9.5px;font-weight:650;letter-spacing:.18em;text-transform:uppercase}
+  .panel-title{margin:4px 0 0;font-size:17px;line-height:1.25;font-weight:650}
+  .panel-sub{margin:4px 0 0;color:var(--dim);font-size:9.5px;line-height:1.55}
+  .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .field{display:flex;align-items:center;gap:7px;height:34px;padding:0 10px;border:1px solid rgba(148,163,184,.14);border-radius:10px;background:rgba(4,10,20,.55);color:var(--dim);font-size:9.5px}
+  .field label{color:var(--dim);white-space:nowrap}
+  .field select{border:0;outline:0;background:transparent;color:#e7f7ff;font-size:10px;cursor:pointer;max-width:128px}
+  .field select option{background:#08111f;color:#e7f7ff}
+  .search-box{position:relative;flex:1;min-width:160px;max-width:250px}
+  .search-box svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--dim);pointer-events:none}
+  .search-box input{width:100%;height:34px;padding:0 12px 0 30px;border:1px solid rgba(148,163,184,.14);border-radius:10px;outline:0;background:rgba(4,10,20,.55);color:#e7f7ff;font-size:10px;transition:.2s}
+  .search-box input::placeholder{color:rgba(94,114,140,.9)}.search-box input:focus{border-color:rgba(103,232,249,.38);background:rgba(103,232,249,.05)}
+  .reset-btn{height:34px;padding:0 11px;border:1px solid rgba(148,163,184,.14);border-radius:10px;background:rgba(4,10,20,.55);color:var(--muted);font-size:9.5px;cursor:pointer;transition:.2s;white-space:nowrap}
+  .reset-btn:hover{color:#effeff;border-color:rgba(103,232,249,.3);background:rgba(103,232,249,.07)}
+  .group-head{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:4px;margin:0 0 4px;color:rgba(94,114,140,.82);font-size:8px;text-align:center;min-width:940px}
+  .group-head span{padding:1px 0 3px;border-bottom:1px solid rgba(148,163,184,.06)}
+  .table-scroll{overflow-x:auto;padding-bottom:3px;scrollbar-width:thin;scrollbar-color:rgba(103,232,249,.2) transparent}
+  .table-scroll::-webkit-scrollbar{height:5px}.table-scroll::-webkit-scrollbar-thumb{background:rgba(103,232,249,.18);border-radius:99px}
+  .ptable{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));grid-template-rows:repeat(7,52px);gap:4px;min-width:940px}
+  .el{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;padding:3px 2px;border:1px solid var(--cat-border,rgba(148,163,184,.14));border-radius:8px;background:linear-gradient(155deg,var(--cat-soft,rgba(148,163,184,.08)),rgba(5,12,23,.76));color:#eefaff;cursor:pointer;overflow:hidden;transition:transform .16s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease;isolation:isolate}
+  .el::before{content:"";position:absolute;left:4px;top:4px;width:4px;height:4px;border-radius:50%;background:var(--cat-color,#94a3b8);box-shadow:0 0 7px var(--cat-color,#94a3b8);opacity:.8;z-index:1}
+  .el:hover{transform:translateY(-2px);border-color:rgba(165,243,252,.55);box-shadow:0 8px 20px rgba(0,0,0,.35),0 0 18px rgba(34,211,238,.08);z-index:3}
+  .el.selected{border-color:rgba(244,114,182,.85);box-shadow:0 0 0 2px rgba(244,114,182,.3),0 0 24px rgba(244,114,182,.18);transform:translateY(-2px);z-index:4}
+  .el.dim{opacity:.22;filter:saturate(.5)}
+  .el.match{box-shadow:0 0 0 1px rgba(251,191,36,.55),0 0 18px rgba(251,191,36,.15);border-color:rgba(251,191,36,.5)}
+  .el-z{position:absolute;left:5px;top:3px;color:rgba(226,240,255,.62);font-family:var(--mono);font-size:6.5px;line-height:1;z-index:2}
+  .el-sym{font-family:var(--mono);font-size:15px;line-height:1.1;font-weight:600;letter-spacing:-.04em;margin-top:2px;z-index:2;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+  .el-name{margin-top:1px;color:rgba(226,240,255,.64);font-size:7.3px;line-height:1.1;z-index:2;white-space:nowrap}
+  .el-val{display:none;margin-top:2px;color:#f2ffff;font-family:var(--mono);font-size:8px;line-height:1.1;z-index:2;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+  .ptable.heat .el-name{display:none}.ptable.heat .el-val{display:block}
+  .ptable.heat .el{background:linear-gradient(155deg,var(--heat-soft,rgba(148,163,184,.1)),rgba(5,12,23,.78))}
+  .ptable.values .el-name{display:none}
+  .ptable.values .el-val{display:block}
+  .placeholder{grid-column:3;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px dashed rgba(148,163,184,.2);border-radius:8px;background:rgba(4,10,20,.3);color:rgba(148,163,184,.62);font-size:7.5px;text-align:center;line-height:1.35;cursor:pointer}
+  .placeholder:hover{color:#bdfbf1;border-color:rgba(103,232,249,.35)}
+  .fblock-wrap{margin-top:9px;display:grid;grid-template-columns:48px repeat(15,minmax(0,1fr));gap:4px;min-width:940px}
+  .fblock-label{display:flex;align-items:center;justify-content:flex-end;padding-right:4px;color:rgba(94,114,140,.82);font-size:8px;white-space:nowrap}
+  .fblock-wrap .el{min-height:43px;padding-top:2px;border-radius:7px}
+  .fblock-wrap .el-sym{font-size:13px}.fblock-wrap .el-name{font-size:6.8px}.fblock-wrap .el-z{font-size:6px}.fblock-wrap .el-val{font-size:7px}
+  .legend-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:10px;font-size:8px;color:var(--dim)}
+  .legend-item{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+  .legend-dot{width:7px;height:7px;border-radius:50%}
+  .heat-scale{display:flex;align-items:center;gap:6px;margin-left:auto;min-width:160px;flex:1;max-width:260px}
+  .scale-bar{flex:1;height:5px;border-radius:99px;background:linear-gradient(90deg,#0e7490,#22d3ee,#fbbf24,#f472b6)}
+  .scale-label{font-family:var(--mono);font-size:7.5px;color:rgba(148,163,184,.82);white-space:nowrap}
+  .detail-panel{padding:17px;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(103,232,249,.18) transparent}
+  .detail-panel::-webkit-scrollbar{width:4px}.detail-panel::-webkit-scrollbar-thumb{background:rgba(103,232,249,.18);border-radius:99px}
+  .detail-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:390px;padding:22px;color:var(--dim)}
+  .empty-orbit{width:96px;height:96px;margin-bottom:18px;border:1px solid rgba(103,232,249,.24);border-radius:50%;position:relative;display:grid;place-items:center;box-shadow:0 0 34px rgba(34,211,238,.08)}
+  .empty-orbit::before,.empty-orbit::after{content:"";position:absolute;inset:18px;border:1px solid rgba(167,139,250,.18);border-radius:50%;transform:rotate(55deg)}
+  .empty-orbit::after{inset:31px;transform:rotate(-45deg);border-color:rgba(94,234,212,.22)}
+  .empty-orbit i{width:12px;height:12px;border-radius:50%;background:var(--cyan);box-shadow:0 0 18px var(--cyan)}
+  .detail-empty h3{margin:0;color:#e8f7ff;font-size:14px;font-weight:600}.detail-empty p{margin:7px 0 0;max-width:220px;font-size:9.5px;line-height:1.65}
+  .detail-card[hidden], .detail-empty[hidden]{display:none!important}
+  .detail-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .symbol-box{display:flex;align-items:flex-end;gap:9px;min-width:0}
+  .big-symbol{font-family:var(--mono);font-size:47px;line-height:.9;font-weight:600;letter-spacing:-.08em;color:#f4ffff;text-shadow:0 0 26px rgba(103,232,249,.22)}
+  .name-box{min-width:0;padding-bottom:2px}.name-box h2{margin:0;font-size:17px;line-height:1.15;font-weight:650;white-space:nowrap}.name-box p{margin:4px 0 0;color:var(--dim);font-family:var(--mono);font-size:8.5px;white-space:nowrap}
+  .cat-badge{display:inline-flex;align-items:center;height:23px;padding:0 9px;border:1px solid var(--cat-border,rgba(103,232,249,.2));border-radius:999px;background:var(--cat-soft,rgba(103,232,249,.07));color:#dffcff;font-size:8.5px;white-space:nowrap}
+  .detail-rule{height:1px;margin:13px 0 10px;background:linear-gradient(90deg,rgba(103,232,249,.25),rgba(148,163,184,.05),transparent)}
+  .shell-wrap{display:flex;align-items:center;justify-content:center;margin:2px 0 4px}
+  #shellSvg{width:170px;height:170px;display:block;filter:drop-shadow(0 0 16px rgba(34,211,238,.08))}
+  .detail-facts{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  .fact{padding:6px 0;border-bottom:1px solid rgba(148,163,184,.07);min-width:0}
+  .fact span{display:block;color:var(--dim);font-size:7.8px;letter-spacing:.03em}.fact strong{display:block;margin-top:2px;color:#d8e9ff;font-size:9.3px;font-weight:550;line-height:1.4;word-break:break-word}
+  .detail-note{margin:11px 0 0;padding:9px 10px;border:1px solid rgba(148,163,184,.09);border-radius:9px;background:rgba(4,10,20,.3);color:var(--dim);font-size:9px;line-height:1.65}
+  .detail-note strong{color:#bdfbf1;font-weight:550}
+  .detail-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+  .detail-tag{display:inline-flex;align-items:center;height:20px;padding:0 7px;border:1px solid rgba(148,163,184,.12);border-radius:999px;color:var(--dim);font-size:7.8px}
+  .detail-links{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+  .detail-links a{display:inline-flex;align-items:center;height:26px;padding:0 9px;border:1px solid rgba(103,232,249,.16);border-radius:8px;background:rgba(103,232,249,.05);color:#bdfbf1;font-size:8.5px;text-decoration:none}
+  .detail-links a:hover{background:rgba(103,232,249,.1);border-color:rgba(103,232,249,.3)}
+  .trend-panel{margin-top:16px;padding:16px 18px 13px;animation-delay:.08s}
+  .trend-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+  .trend-tabs{display:flex;gap:4px;flex-wrap:wrap}.trend-tab{height:28px;padding:0 9px;border:1px solid rgba(148,163,184,.12);border-radius:8px;background:rgba(4,10,20,.4);color:var(--dim);font-size:8.5px;cursor:pointer;transition:.2s}.trend-tab:hover{color:#dffbff;background:rgba(103,232,249,.06)}.trend-tab.active{color:#eaffff;border-color:rgba(103,232,249,.35);background:rgba(103,232,249,.1)}
+  .trend-title{color:#dff8ff;font-size:10.5px;font-weight:550;white-space:nowrap}
+  .chart-wrap{position:relative;min-height:185px;margin-top:5px}
+  #trendSvg{display:block;width:100%;height:190px;overflow:visible}
+  .trend-note{margin:4px 3px 0;color:var(--dim);font-size:8.8px;line-height:1.6}
+  .site-footer{display:flex;justify-content:space-between;gap:22px;padding:14px 4px 0;color:rgba(94,114,140,.9);font-size:9px;line-height:1.55}
+  .site-footer p{margin:0;max-width:960px}.footer-tag{flex:0 0 auto;color:rgba(103,232,249,.48);white-space:nowrap}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes breathe{0%,100%{opacity:.65;transform:scale(.9)}50%{opacity:1;transform:scale(1.12)}}
+  @media(max-width:1180px){.shell{padding-left:20px;padding-right:20px}.workspace{grid-template-columns:minmax(0,1fr) 300px}.table-panel{padding:13px}.el{min-height:50px}}
+  @media(max-width:980px){.shell{padding:18px 16px 14px}.workspace{grid-template-columns:1fr}.detail-panel{position:static;max-height:none;order:2}.table-panel{order:1}.trend-panel{margin-top:13px}.header-meta{display:none}}
+  @media(max-width:680px){.shell{padding:14px 12px 10px}.brand{gap:11px}.brand-mark{width:44px;height:44px;border-radius:13px}.brand-mark svg{width:34px;height:34px}.brand h1{font-size:clamp(23px,7vw,31px)}.brand p{display:none}.kicker{font-size:8.5px;letter-spacing:.14em}.table-panel{padding:11px;border-radius:18px}.panel-head{gap:8px}.panel-title{font-size:15px}.panel-sub{font-size:8.5px}.toolbar{gap:6px}.field{height:32px;padding:0 8px}.search-box{max-width:none;flex-basis:100%}.search-box input{height:32px}.reset-btn{height:32px}.group-head,.ptable,.fblock-wrap{min-width:900px}.ptable{grid-template-rows:repeat(7,49px);gap:3px}.el{border-radius:7px;padding:2px 1px}.el-sym{font-size:14px}.el-name{font-size:6.8px}.el-z{font-size:6px;left:4px}.fblock-wrap{gap:3px;grid-template-columns:43px repeat(15,minmax(0,1fr))}.fblock-wrap .el{min-height:40px}.fblock-wrap .el-sym{font-size:12px}.fblock-wrap .el-name{font-size:6.2px}.detail-panel{padding:15px;border-radius:18px}.detail-facts{grid-template-columns:1fr 1fr}.trend-panel{padding:13px 12px 11px;border-radius:18px}#trendSvg{height:165px}.trend-head{gap:8px}.site-footer{flex-direction:column;gap:5px}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="page-glow" aria-hidden="true"></div>
+<div class="shell">
+  <header class="site-header">
+    <a class="brand" href="./" title="返回平台首页" aria-label="返回高中化学可视化平台首页">
+      <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none"><defs><linearGradient id="markGrad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#67e8f9"/><stop offset=".55" stop-color="#5eead4"/><stop offset="1" stop-color="#a78bfa"/></linearGradient><radialGradient id="coreGrad" cx="0" cy="0" r="1" gradientTransform="translate(32 32) rotate(90) scale(6)" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".45" stop-color="#c7feff"/><stop offset="1" stop-color="#67e8f9" stop-opacity="0"/></radialGradient></defs><circle cx="32" cy="32" r="7" fill="url(#coreGrad)"/><ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(28 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".8"/><ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(-32 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".5"/><ellipse cx="32" cy="32" rx="24" ry="8" transform="rotate(90 32 32)" stroke="url(#markGrad)" stroke-width="1.1" opacity=".32"/><circle cx="32" cy="32" r="2.5" fill="#f4ffff"/></svg></div>
+      <div><div class="kicker">高中化学可视化平台 · 元素周期律</div><h1>元素<span>周期表</span></h1><p>从位置读结构，从结构推性质</p></div>
+    </a>
+    <div class="header-meta"><div class="meta-pill"><span class="live-dot"></span>118 种元素 · 交互式</div><div class="meta-note">选性质热力图 · 点元素看结构 · 看周期律趋势</div></div>
+  </header>
+
+  <section class="workspace" aria-label="元素周期表与元素详情">
+    <section class="panel table-panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">PERIODIC TABLE</div>
+          <h2 class="panel-title">先选一个性质，再看整张表</h2>
+          <p class="panel-sub">颜色越亮，数值越大；没有数据的元素显示“—”。</p>
+        </div>
+        <span class="meta-pill" style="height:25px;font-size:8.5px"><span class="live-dot"></span>可点击</span>
+      </div>
+      <div class="toolbar">
+        <div class="field">
+          <label for="propertySelect">着色方式</label>
+          <select id="propertySelect">
+            <option value="category">按元素类别</option>
+            <option value="radius">原子半径</option>
+            <option value="en">电负性</option>
+            <option value="ie">第一电离能</option>
+            <option value="melt">熔点</option>
+            <option value="density">密度</option>
+            <option value="oxidation">常见化合价</option>
+          </select>
+        </div>
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="searchInput" type="search" placeholder="搜索元素、符号或原子序数" autocomplete="off" aria-label="搜索元素" />
+        </div>
+        <button class="reset-btn" id="resetBtn" type="button">重置</button>
+      </div>
+      <div class="table-scroll">
+      <div class="group-head" aria-hidden="true">
+        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span>
+      </div>
+        <div class="ptable" id="ptable" role="group" aria-label="元素周期表主表"></div>
+        <div class="fblock-wrap" id="fblock"></div>
+      </div>
+      <div class="legend-row" id="legendRow"></div>
+    </section>
+
+    <aside class="panel detail-panel" aria-label="元素详情">
+      <div class="detail-empty" id="detailEmpty">
+        <div class="empty-orbit" aria-hidden="true"><i></i></div>
+        <h3>点击一个元素</h3>
+        <p>查看它的原子结构、周期表位置、主要性质和常见用途。</p>
+      </div>
+      <div class="detail-card" id="detailCard" hidden>
+        <div class="detail-top">
+          <div class="symbol-box"><div class="big-symbol" id="detailSymbol">H</div><div class="name-box"><h2 id="detailName">氢</h2><p id="detailMeta">1 · 1.008</p></div></div>
+          <span class="cat-badge" id="detailCat">非金属</span>
+        </div>
+        <div class="detail-rule"></div>
+        <div class="shell-wrap"><svg id="shellSvg" viewBox="0 0 200 200" role="img" aria-label="原子电子层示意图"></svg></div>
+        <div class="detail-facts">
+          <div class="fact"><span>周期 / 族</span><strong id="factPosition">第 1 周期 · ⅠA</strong></div>
+          <div class="fact"><span>电子排布</span><strong id="factConfig">1s¹</strong></div>
+          <div class="fact"><span>原子半径</span><strong id="factRadius">—</strong></div>
+          <div class="fact"><span>电负性</span><strong id="factEn">—</strong></div>
+          <div class="fact"><span>第一电离能</span><strong id="factIe">—</strong></div>
+          <div class="fact"><span>熔点</span><strong id="factMelt">—</strong></div>
+          <div class="fact"><span>密度</span><strong id="factDensity">—</strong></div>
+          <div class="fact"><span>常见化合价</span><strong id="factOx">—</strong></div>
+        </div>
+        <p class="detail-note" id="detailNote"></p>
+        <div class="detail-tags" id="detailTags"></div>
+        <div class="detail-links">
+          <a href="electron-cloud.html">电子云杂化 →</a>
+          <a href="molecular-geometry.html">分子构型 →</a>
+          <a href="crystal-structure.html">晶体结构 →</a>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="panel trend-panel" aria-label="周期律趋势">
+    <div class="trend-head">
+      <div>
+        <div class="panel-kicker">PERIODIC TREND</div>
+        <h2 class="panel-title" id="trendTitle">原子半径随原子序数的变化</h2>
+      </div>
+      <div class="trend-tabs" role="group" aria-label="选择趋势系列">
+        <button class="trend-tab active" type="button" data-series="period3">第三周期</button>
+        <button class="trend-tab" type="button" data-series="group1">第ⅠA族</button>
+        <button class="trend-tab" type="button" data-series="group17">第ⅦA族</button>
+      </div>
+    </div>
+    <div class="chart-wrap"><svg id="trendSvg" viewBox="0 0 780 190" role="img" aria-label="周期律趋势图"></svg></div>
+    <p class="trend-note" id="trendNote"></p>
+  </section>
+
+  <footer class="site-footer"><p>科学说明：周期表位置按 IUPAC 标准排列；原子半径、电负性、电离能、熔点和密度为教学用近似值，不同来源可能略有差异。稀有气体、超重元素的部分数据暂未收录，详情卡会显示“—”。</p><span class="footer-tag">高中化学可视化平台 · 元素周期表</span></footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+  const fmt=(v,d=0)=>Number(v).toFixed(d);
+  const hexA=(hex,a)=>{const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;};
+  const rgbA=(rgb,a)=>rgb.replace("rgb(","rgba(").replace(")",`,${a})`);
+
+  const CATEGORIES={
+    alkali:{name:"碱金属",color:"#f472b6"},
+    alkaline:{name:"碱土金属",color:"#fb923c"},
+    transition:{name:"过渡金属",color:"#fbbf24"},
+    post:{name:"其他金属",color:"#a3e635"},
+    metalloid:{name:"类金属",color:"#2dd4bf"},
+    nonmetal:{name:"非金属",color:"#38bdf8"},
+    halogen:{name:"卤素",color:"#a78bfa"},
+    noble:{name:"稀有气体",color:"#c084fc"},
+    lanthanide:{name:"镧系",color:"#f9a8d4"},
+    actinide:{name:"锕系",color:"#fda4af"},
+    unknown:{name:"性质未知",color:"#94a3b8"}
+  };
+
+  const BASE=`1|H|氢|1.008|1|1|nonmetal|气|
+2|He|氦|4.003|1|18|noble|气|
+3|Li|锂|6.94|2|1|alkali|固|
+4|Be|铍|9.012|2|2|alkaline|固|
+5|B|硼|10.81|2|13|metalloid|固|
+6|C|碳|12.011|2|14|nonmetal|固|
+7|N|氮|14.007|2|15|nonmetal|气|
+8|O|氧|15.999|2|16|nonmetal|气|
+9|F|氟|18.998|2|17|halogen|气|
+10|Ne|氖|20.180|2|18|noble|气|
+11|Na|钠|22.990|3|1|alkali|固|
+12|Mg|镁|24.305|3|2|alkaline|固|
+13|Al|铝|26.982|3|13|post|固|
+14|Si|硅|28.085|3|14|metalloid|固|
+15|P|磷|30.974|3|15|nonmetal|固|
+16|S|硫|32.06|3|16|nonmetal|固|
+17|Cl|氯|35.45|3|17|halogen|气|
+18|Ar|氩|39.948|3|18|noble|气|
+19|K|钾|39.098|4|1|alkali|固|
+20|Ca|钙|40.078|4|2|alkaline|固|
+21|Sc|钪|44.956|4|3|transition|固|
+22|Ti|钛|47.867|4|4|transition|固|
+23|V|钒|50.942|4|5|transition|固|
+24|Cr|铬|51.996|4|6|transition|固|
+25|Mn|锰|54.938|4|7|transition|固|
+26|Fe|铁|55.845|4|8|transition|固|
+27|Co|钴|58.933|4|9|transition|固|
+28|Ni|镍|58.693|4|10|transition|固|
+29|Cu|铜|63.546|4|11|transition|固|
+30|Zn|锌|65.38|4|12|transition|固|
+31|Ga|镓|69.723|4|13|post|固|
+32|Ge|锗|72.630|4|14|metalloid|固|
+33|As|砷|74.922|4|15|metalloid|固|
+34|Se|硒|78.971|4|16|nonmetal|固|
+35|Br|溴|79.904|4|17|halogen|液|
+36|Kr|氪|83.798|4|18|noble|气|
+37|Rb|铷|85.468|5|1|alkali|固|
+38|Sr|锶|87.62|5|2|alkaline|固|
+39|Y|钇|88.906|5|3|transition|固|
+40|Zr|锆|91.224|5|4|transition|固|
+41|Nb|铌|92.906|5|5|transition|固|
+42|Mo|钼|95.95|5|6|transition|固|
+43|Tc|锝|98|5|7|transition|固*|
+44|Ru|钌|101.07|5|8|transition|固|
+45|Rh|铑|102.91|5|9|transition|固|
+46|Pd|钯|106.42|5|10|transition|固|
+47|Ag|银|107.87|5|11|transition|固|
+48|Cd|镉|112.41|5|12|transition|固|
+49|In|铟|114.82|5|13|post|固|
+50|Sn|锡|118.71|5|14|post|固|
+51|Sb|锑|121.76|5|15|metalloid|固|
+52|Te|碲|127.60|5|16|metalloid|固|
+53|I|碘|126.90|5|17|halogen|固|
+54|Xe|氙|131.29|5|18|noble|气|
+55|Cs|铯|132.91|6|1|alkali|固|
+56|Ba|钡|137.33|6|2|alkaline|固|
+57|La|镧|138.91|6|3|lanthanide|固|lan
+58|Ce|铈|140.12|6|3|lanthanide|固|lan
+59|Pr|镨|140.91|6|3|lanthanide|固|lan
+60|Nd|钕|144.24|6|3|lanthanide|固|lan
+61|Pm|钷|145|6|3|lanthanide|固*|lan
+62|Sm|钐|150.36|6|3|lanthanide|固|lan
+63|Eu|铕|151.96|6|3|lanthanide|固|lan
+64|Gd|钆|157.25|6|3|lanthanide|固|lan
+65|Tb|铽|158.93|6|3|lanthanide|固|lan
+66|Dy|镝|162.50|6|3|lanthanide|固|lan
+67|Ho|钬|164.93|6|3|lanthanide|固|lan
+68|Er|铒|167.26|6|3|lanthanide|固|lan
+69|Tm|铥|168.93|6|3|lanthanide|固|lan
+70|Yb|镱|173.05|6|3|lanthanide|固|lan
+71|Lu|镥|174.97|6|3|lanthanide|固|lan
+72|Hf|铪|178.49|6|4|transition|固|
+73|Ta|钽|180.95|6|5|transition|固|
+74|W|钨|183.84|6|6|transition|固|
+75|Re|铼|186.21|6|7|transition|固|
+76|Os|锇|190.23|6|8|transition|固|
+77|Ir|铱|192.22|6|9|transition|固|
+78|Pt|铂|195.08|6|10|transition|固|
+79|Au|金|196.97|6|11|transition|固|
+80|Hg|汞|200.59|6|12|transition|液|
+81|Tl|铊|204.38|6|13|post|固|
+82|Pb|铅|207.2|6|14|post|固|
+83|Bi|铋|208.98|6|15|post|固|
+84|Po|钋|209|6|16|post|固|
+85|At|砹|210|6|17|halogen|固|
+86|Rn|氡|222|6|18|noble|气|
+87|Fr|钫|223|7|1|alkali|固|
+88|Ra|镭|226|7|2|alkaline|固|
+89|Ac|锕|227|7|3|actinide|固|act
+90|Th|钍|232.04|7|3|actinide|固|act
+91|Pa|镤|231.04|7|3|actinide|固|act
+92|U|铀|238.03|7|3|actinide|固|act
+93|Np|镎|237|7|3|actinide|固*|act
+94|Pu|钚|244|7|3|actinide|固*|act
+95|Am|镅|243|7|3|actinide|固*|act
+96|Cm|锔|247|7|3|actinide|固*|act
+97|Bk|锫|247|7|3|actinide|固*|act
+98|Cf|锎|251|7|3|actinide|固*|act
+99|Es|锿|252|7|3|actinide|固*|act
+100|Fm|镄|257|7|3|actinide|固*|act
+101|Md|钔|258|7|3|actinide|固*|act
+102|No|锘|259|7|3|actinide|固*|act
+103|Lr|铹|266|7|3|actinide|固*|act
+104|Rf|𬬻|267|7|4|transition|固*|
+105|Db|𬭊|268|7|5|transition|固*|
+106|Sg|𬭳|269|7|6|transition|固*|
+107|Bh|𬭛|270|7|7|transition|固*|
+108|Hs|𬭶|269|7|8|transition|固*|
+109|Mt|鿏|278|7|9|transition|固*|
+110|Ds|𫟼|281|7|10|transition|固*|
+111|Rg|𬬭|282|7|11|transition|固*|
+112|Cn|鿔|285|7|12|transition|固*|
+113|Nh|鿭|286|7|13|post|固*|
+114|Fl|𫓧|289|7|14|post|固*|
+115|Mc|镆|290|7|15|post|固*|
+116|Lv|𫟷|293|7|16|post|固*|
+117|Ts|鿬|294|7|17|halogen|固*|
+118|Og|鿫|294|7|18|noble|固*|`;
+
+  const PROPS={
+    1:{config:"1s¹",en:2.20,radius:53,ie:1312,melt:-259,density:0.00009,ox:"+1, −1"},
+    2:{config:"1s²",en:null,radius:31,ie:2372,melt:-272,density:0.00018,ox:"0"},
+    3:{config:"[He] 2s¹",en:0.98,radius:167,ie:520,melt:180,density:0.534,ox:"+1"},
+    4:{config:"[He] 2s²",en:1.57,radius:112,ie:899,melt:1287,density:1.85,ox:"+2"},
+    5:{config:"[He] 2s² 2p¹",en:2.04,radius:87,ie:801,melt:2076,density:2.34,ox:"+3"},
+    6:{config:"[He] 2s² 2p²",en:2.55,radius:67,ie:1086,melt:3550,density:2.27,ox:"+4, +2, −4"},
+    7:{config:"[He] 2s² 2p³",en:3.04,radius:56,ie:1402,melt:-210,density:0.00125,ox:"+5, +3, −3"},
+    8:{config:"[He] 2s² 2p⁴",en:3.44,radius:48,ie:1314,melt:-218,density:0.00143,ox:"−2"},
+    9:{config:"[He] 2s² 2p⁵",en:3.98,radius:42,ie:1681,melt:-220,density:0.0017,ox:"−1"},
+    10:{config:"[He] 2s² 2p⁶",en:null,radius:38,ie:2081,melt:-249,density:0.0009,ox:"0"},
+    11:{config:"[Ne] 3s¹",en:0.93,radius:190,ie:496,melt:98,density:0.97,ox:"+1"},
+    12:{config:"[Ne] 3s²",en:1.31,radius:145,ie:738,melt:650,density:1.74,ox:"+2"},
+    13:{config:"[Ne] 3s² 3p¹",en:1.61,radius:118,ie:578,melt:660,density:2.70,ox:"+3"},
+    14:{config:"[Ne] 3s² 3p²",en:1.90,radius:111,ie:786,melt:1414,density:2.33,ox:"+4"},
+    15:{config:"[Ne] 3s² 3p³",en:2.19,radius:98,ie:1012,melt:44,density:1.82,ox:"+5, +3, −3"},
+    16:{config:"[Ne] 3s² 3p⁴",en:2.58,radius:88,ie:1000,melt:115,density:2.07,ox:"+6, +4, −2"},
+    17:{config:"[Ne] 3s² 3p⁵",en:3.16,radius:79,ie:1251,melt:-101,density:0.0032,ox:"+7, +5, +1, −1"},
+    18:{config:"[Ne] 3s² 3p⁶",en:null,radius:71,ie:1521,melt:-189,density:0.0018,ox:"0"},
+    19:{config:"[Ar] 4s¹",en:0.82,radius:243,ie:419,melt:63,density:0.86,ox:"+1"},
+    20:{config:"[Ar] 4s²",en:1.00,radius:194,ie:590,melt:842,density:1.55,ox:"+2"},
+    21:{config:"[Ar] 3d¹ 4s²",en:1.36,radius:184,ie:633,melt:1541,density:2.99,ox:"+3"},
+    22:{config:"[Ar] 3d² 4s²",en:1.54,radius:176,ie:659,melt:1668,density:4.51,ox:"+4, +3"},
+    23:{config:"[Ar] 3d³ 4s²",en:1.63,radius:171,ie:651,melt:1910,density:6.11,ox:"+5, +4"},
+    24:{config:"[Ar] 3d⁵ 4s¹",en:1.66,radius:166,ie:653,melt:1907,density:7.15,ox:"+6, +3"},
+    25:{config:"[Ar] 3d⁵ 4s²",en:1.55,radius:161,ie:717,melt:1246,density:7.44,ox:"+7, +4, +2"},
+    26:{config:"[Ar] 3d⁶ 4s²",en:1.83,radius:156,ie:762,melt:1538,density:7.87,ox:"+3, +2"},
+    27:{config:"[Ar] 3d⁷ 4s²",en:1.88,radius:152,ie:760,melt:1495,density:8.86,ox:"+2, +3"},
+    28:{config:"[Ar] 3d⁸ 4s²",en:1.91,radius:149,ie:737,melt:1455,density:8.91,ox:"+2"},
+    29:{config:"[Ar] 3d¹⁰ 4s¹",en:1.90,radius:145,ie:745,melt:1085,density:8.96,ox:"+2, +1"},
+    30:{config:"[Ar] 3d¹⁰ 4s²",en:1.65,radius:142,ie:906,melt:420,density:7.14,ox:"+2"},
+    31:{config:"[Ar] 3d¹⁰ 4s² 4p¹",en:1.81,radius:136,ie:579,melt:30,density:5.91,ox:"+3"},
+    32:{config:"[Ar] 3d¹⁰ 4s² 4p²",en:2.01,radius:125,ie:762,melt:938,density:5.32,ox:"+4"},
+    33:{config:"[Ar] 3d¹⁰ 4s² 4p³",en:2.18,radius:114,ie:947,melt:817,density:5.73,ox:"+5, +3, −3"},
+    34:{config:"[Ar] 3d¹⁰ 4s² 4p⁴",en:2.55,radius:103,ie:941,melt:221,density:4.81,ox:"+6, +4, −2"},
+    35:{config:"[Ar] 3d¹⁰ 4s² 4p⁵",en:2.96,radius:94,ie:1140,melt:-7,density:3.12,ox:"+5, +1, −1"},
+    36:{config:"[Ar] 3d¹⁰ 4s² 4p⁶",en:3.00,radius:88,ie:1351,melt:-157,density:0.0037,ox:"0"},
+    37:{config:"[Kr] 5s¹",en:0.82,radius:265,ie:403,melt:39,density:1.53,ox:"+1"},
+    38:{config:"[Kr] 5s²",en:0.95,radius:219,ie:550,melt:777,density:2.64,ox:"+2"},
+    47:{config:"[Kr] 4d¹⁰ 5s¹",en:1.93,radius:165,ie:731,melt:962,density:10.49,ox:"+1"},
+    53:{config:"[Kr] 4d¹⁰ 5s² 5p⁵",en:2.66,radius:115,ie:1008,melt:114,density:4.93,ox:"+7, +5, −1"},
+    55:{config:"[Xe] 6s¹",en:0.79,radius:298,ie:376,melt:28,density:1.93,ox:"+1"},
+    56:{config:"[Xe] 6s²",en:0.89,radius:253,ie:503,melt:727,density:3.51,ox:"+2"},
+    74:{config:"[Xe] 4f¹⁴ 5d⁴ 6s²",en:2.36,radius:193,ie:770,melt:3422,density:19.25,ox:"+6"},
+    78:{config:"[Xe] 4f¹⁴ 5d⁹ 6s¹",en:2.28,radius:177,ie:870,melt:1768,density:21.45,ox:"+2, +4"},
+    79:{config:"[Xe] 4f¹⁴ 5d¹⁰ 6s¹",en:2.54,radius:174,ie:890,melt:1064,density:19.30,ox:"+3, +1"},
+    80:{config:"[Xe] 4f¹⁴ 5d¹⁰ 6s²",en:2.00,radius:171,ie:1007,melt:-39,density:13.53,ox:"+2, +1"},
+    82:{config:"[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²",en:2.33,radius:154,ie:716,melt:327,density:11.34,ox:"+2, +4"},
+    92:{config:"[Rn] 5f³ 6d¹ 7s²",en:1.38,radius:240,ie:598,melt:1132,density:18.95,ox:"+6, +4"}
+  };
+
+  const NOTES={
+    1:"最轻的元素。H₂ 可作燃料，H⁺ 是酸中的常见离子。",
+    2:"化学性质极稳定，用于低温制冷、气球和气氛保护。",
+    3:"锂离子电池的重要材料；与水反应生成 LiOH 和 H₂。",
+    5:"硼砂、硼酸的重要元素；高硬度硼纤维用于材料。",
+    6:"金刚石、石墨、CO₂ 和有机物的骨架元素；同素异形体性质差异大。",
+    7:"N₂ 占空气约 78%；NH₃ 是化肥工业的重要原料。",
+    8:"支持呼吸和燃烧；O₂、H₂O 是常见物质。",
+    9:"最活泼的非金属；氟化物用于牙膏和制冷剂历史。",
+    10:"霓虹灯中的稀有气体；化学性质稳定。",
+    11:"NaCl、NaOH 的组成元素；焰色反应呈黄色。",
+    12:"MgO 耐火材料；镁合金轻质；燃烧发出耀眼白光。",
+    13:"Al₂O₃ 和铝土矿的重要元素；铝材轻、耐腐蚀。",
+    14:"SiO₂、硅酸盐和半导体的核心元素。",
+    15:"P₄、磷酸盐和化肥；白磷易自燃。",
+    16:"H₂SO₄、SO₂ 的组成元素；硫在氧气中燃烧呈蓝紫色火焰。",
+    17:"Cl₂ 用于消毒；NaCl、HCl 是常见含氯物质。",
+    18:"焊接保护气；化学性质稳定。",
+    19:"KOH、钾肥的组成元素；焰色反应呈紫色（透过蓝色钴玻璃）。",
+    20:"CaCO₃、骨骼和牙齿的重要元素；焰色反应呈砖红色。",
+    21:"钪铝合金用于航空航天；常作为过渡金属代表。",
+    22:"钛合金强度高、耐腐蚀，用于航空和医疗植入物。",
+    23:"钒钢强度高；V₂O₅ 可作催化剂。",
+    24:"不锈钢中的重要元素；Cr₂O₇²⁻ 是常见强氧化剂。",
+    25:"锰钢耐磨；KMnO₄ 是常见强氧化剂。",
+    26:"铁、钢和血红蛋白的核心元素；Fe³⁺/Fe²⁺ 转化常见。",
+    27:"钴用于电池材料和硬质合金；维生素 B₁₂ 含钴。",
+    28:"镍用于不锈钢、电池和催化剂。",
+    29:"铜导线、铜合金和 CuSO₄；铜绿是碱式碳酸铜。",
+    30:"镀锌防锈；ZnSO₄、ZnO 常见。",
+    31:"镓的熔点低，可用于温度计和半导体材料。",
+    32:"锗是早期半导体材料；GeO₂ 用于光学材料。",
+    33:"砷化镓用于半导体；砷及其化合物有毒。",
+    34:"硒用于光电材料和人体微量元素。",
+    35:"Br₂ 是红棕色液体；溴化物和溴水常见。",
+    36:"稀有气体，用于照明和激光。",
+    37:"铷原子钟用于计时；性质与钾相似。",
+    38:"Sr 的焰色反应呈洋红色；锶盐用于烟火。",
+    47:"AgNO₃、银镜反应；银的导电性最好。",
+    53:"I₂ 遇淀粉变蓝；碘酒、碘化钾常见。",
+    55:"铯原子钟是国际秒定义的基础；性质极活泼。",
+    56:"BaSO₄ 是“钡餐”；焰色反应呈黄绿色。",
+    74:"钨丝用于白炽灯；WC 硬度高。",
+    78:"铂用于催化剂、电极和首饰；化学性质稳定。",
+    79:"金用于首饰、电子触点和货币；化学性质稳定。",
+    80:"汞是常温下唯一的液态金属；汞蒸气有毒。",
+    82:"铅蓄电池、铅合金和防护材料；铅及其化合物有毒。",
+    92:"铀是核燃料；UO₂ 用于核反应堆。"
+  };
+
+  const ELEMENTS=BASE.trim().split("\n").map(line=>{
+    const [z,sym,name,mass,period,group,cat,state,f]=line.split("|");
+    return {z:+z,sym,name,mass:+mass,period:+period,group:+group,cat,state:state||"固",f:f||null};
+  });
+  const byZ=Object.fromEntries(ELEMENTS.map(e=>[e.z,e]));
+  for(const e of ELEMENTS){
+    const p=PROPS[e.z]||{};
+    Object.assign(e,{config:p.config||null,en:p.en??null,radius:p.radius??null,ie:p.ie??null,melt:p.melt??null,density:p.density??null,ox:p.ox||"—"});
+  }
+
+  const GROUP_LABEL=g=>{
+    if(g===1)return "ⅠA";if(g===2)return "ⅡA";if(g===3)return "ⅢB";if(g===4)return "ⅣB";if(g===5)return "ⅤB";if(g===6)return "ⅥB";if(g===7)return "ⅦB";if(g===8||g===9||g===10)return "Ⅷ";if(g===11)return "ⅠB";if(g===12)return "ⅡB";if(g===13)return "ⅢA";if(g===14)return "ⅣA";if(g===15)return "ⅤA";if(g===16)return "ⅥA";if(g===17)return "ⅦA";return "0";
+  };
+
+  const PROPERTY_META={
+    category:{label:"按元素类别",unit:"",numeric:false},
+    radius:{label:"原子半径",unit:"pm",digits:0,numeric:true},
+    en:{label:"电负性",unit:"",digits:2,numeric:true},
+    ie:{label:"第一电离能",unit:"kJ·mol⁻¹",digits:0,numeric:true},
+    melt:{label:"熔点",unit:"℃",digits:0,numeric:true},
+    density:{label:"密度",unit:"g·cm⁻³",digits:3,numeric:true,log:true},
+    oxidation:{label:"常见化合价",unit:"",numeric:false}
+  };
+
+  const ptable=document.getElementById("ptable");
+  const fblock=document.getElementById("fblock");
+  const legendRow=document.getElementById("legendRow");
+  const propertySelect=document.getElementById("propertySelect");
+  const searchInput=document.getElementById("searchInput");
+  const resetBtn=document.getElementById("resetBtn");
+  const detailEmpty=document.getElementById("detailEmpty");
+  const detailCard=document.getElementById("detailCard");
+  const trendSvg=document.getElementById("trendSvg");
+  const trendTitle=document.getElementById("trendTitle");
+  const trendNote=document.getElementById("trendNote");
+  const trendTabs=Array.from(document.querySelectorAll(".trend-tab"));
+
+  const SERIES={
+    period3:{name:"第三周期",zs:[11,12,13,14,15,16,17,18]},
+    group1:{name:"第ⅠA族",zs:[3,11,19,37,55,87]},
+    group17:{name:"第ⅦA族",zs:[9,17,35,53,85]}
+  };
+
+  const params=new URLSearchParams(location.search);
+  let currentProperty=PROPERTY_META[params.get("property")]?params.get("property"):"category";
+  let currentSeries=SERIES[params.get("series")]?params.get("series"):"period3";
+  let selectedZ=null;
+  let query="";
+
+  function elButton(e, position=true){
+    const c=CATEGORIES[e.cat]||CATEGORIES.unknown;
+    const b=document.createElement("button");
+    b.type="button";
+    b.className="el";
+    b.dataset.z=String(e.z);
+    if(position){b.style.gridColumn=String(e.group);b.style.gridRow=String(e.period);}
+    b.style.setProperty("--cat",c.color);
+    b.style.setProperty("--cat-color",c.color);
+    b.style.setProperty("--cat-soft",hexA(c.color,.14));
+    b.style.setProperty("--cat-border",hexA(c.color,.28));
+    b.setAttribute("aria-label",`${e.z} 号元素 ${e.name} ${e.sym}`);
+    b.innerHTML=`<span class="el-z">${e.z}</span><span class="el-sym">${e.sym}</span><span class="el-name">${e.name}</span><span class="el-val"></span>`;
+    b.addEventListener("click",()=>selectElement(e.z));
+    return b;
+  }
+
+  function renderTable(){
+    ptable.innerHTML="";
+    for(const e of ELEMENTS){
+      if(e.f)continue;
+      ptable.appendChild(elButton(e));
+    }
+    for(const [row,z] of [[6,57],[7,89]]){
+      const p=document.createElement("button");
+      p.type="button";p.className="placeholder";p.style.gridColumn="3";p.style.gridRow=String(row);
+      p.dataset.z=String(z);
+      p.innerHTML=row===6?"57–71<br>镧系":"89–103<br>锕系";
+      p.setAttribute("aria-label",row===6?"查看镧系":"查看锕系");
+      p.addEventListener("click",()=>selectElement(z));
+      ptable.appendChild(p);
+    }
+    fblock.innerHTML="";
+    for(const [label,fkey,z0] of [["镧系","lan",57],["锕系","act",89]]){
+      const lab=document.createElement("div");lab.className="fblock-label";lab.textContent=label;fblock.appendChild(lab);
+      for(let z=z0;z<z0+15;z++){
+        const e=byZ[z];
+        if(e)fblock.appendChild(elButton(e,false));
+      }
+    }
+  }
+
+  function valueFor(e,prop){
+    if(prop==="oxidation")return e.ox;
+    if(prop==="category")return "";
+    return e[prop];
+  }
+
+  function formatValue(v,prop){
+    if(v===null||v===undefined||Number.isNaN(v))return "—";
+    const m=PROPERTY_META[prop];
+    if(prop==="density"){
+      if(v<0.01)return v.toExponential(1);
+      return Number(v).toFixed(v<1?3:2);
+    }
+    if(prop==="en")return Number(v).toFixed(2);
+    if(prop==="radius"||prop==="ie"||prop==="melt")return String(Math.round(v));
+    return String(v);
+  }
+
+  function normalizeValue(v,prop){
+    if(v===null||v===undefined||Number.isNaN(v))return null;
+    if(prop==="density")return Math.log10(Math.max(v,1e-8));
+    return v;
+  }
+
+  function heatPool(prop){
+    return ELEMENTS.map(e=>normalizeValue(e[prop],prop)).filter(v=>v!==null);
+  }
+
+  function heatColor(t){
+    const stops=[[0,[14,116,144]],[.35,[34,211,238]],[.68,[251,191,36]],[1,[244,114,182]]];
+    t=clamp(t,0,1);
+    let a=stops[0],b=stops[stops.length-1];
+    for(let i=0;i<stops.length-1;i++){if(t>=stops[i][0]&&t<=stops[i+1][0]){a=stops[i];b=stops[i+1];break;}}
+    const u=(t-a[0])/Math.max(.0001,b[0]-a[0]);
+    const c=a[1].map((v,i)=>Math.round(v+(b[1][i]-v)*u));
+    return `rgb(${c[0]},${c[1]},${c[2]})`;
+  }
+
+  function applyProperty(){
+    const prop=currentProperty;
+    const meta=PROPERTY_META[prop];
+    ptable.classList.toggle("heat",meta.numeric);
+    ptable.classList.toggle("values",prop==="oxidation");
+    const pool=meta.numeric?heatPool(prop):[];
+    const min=pool.length?Math.min(...pool):0,max=pool.length?Math.max(...pool):1;
+    for(const b of document.querySelectorAll(".el")){
+      const e=byZ[+b.dataset.z];
+      if(!e)continue;
+      const val=valueFor(e,prop);
+      const valEl=b.querySelector(".el-val");
+      const c=CATEGORIES[e.cat]||CATEGORIES.unknown;
+      if(meta.numeric){
+        const nv=normalizeValue(val,prop);
+        if(nv===null){
+          valEl.textContent="—";
+          b.style.setProperty("--heat-soft","rgba(148,163,184,.06)");
+          b.style.borderColor="rgba(148,163,184,.12)";
+        }else{
+          const t=(nv-min)/Math.max(1e-9,max-min);
+          const col=heatColor(t);
+          valEl.textContent=formatValue(val,prop);
+          b.style.setProperty("--heat-soft",rgbA(col,.3));
+          b.style.borderColor=rgbA(col,.45);
+        }
+        b.style.setProperty("--cat-soft",b.style.getPropertyValue("--heat-soft"));
+        b.style.setProperty("--cat-border",b.style.borderColor);
+        b.title=`${e.name} ${e.sym} · ${meta.label} ${formatValue(val,prop)}${meta.unit?" "+meta.unit:""}`;
+      }else{
+        b.style.setProperty("--cat",c.color);
+        b.style.setProperty("--cat-color",c.color);
+        b.style.setProperty("--cat-soft",hexA(c.color,.14));
+        b.style.setProperty("--cat-border",hexA(c.color,.28));
+        b.style.borderColor="";
+        valEl.textContent=prop==="oxidation"?e.ox:"";
+        b.title=`${e.name} ${e.sym}${prop==="oxidation"?" · 常见化合价 "+e.ox:""}`;
+      }
+    }
+    renderLegend(meta,min,max);
+    renderTrend();
+  }
+
+  function renderLegend(meta,min,max){
+    if(meta.numeric){
+      const unit=meta.unit?` ${meta.unit}`:"";
+      const lo=currentProperty==="density"?Math.pow(10,min):min;
+      const hi=currentProperty==="density"?Math.pow(10,max):max;
+      legendRow.innerHTML=`<span class="legend-item">当前：${meta.label}${unit}</span><span class="legend-item">数值越亮，数值越大</span><div class="heat-scale"><span class="scale-label">${formatValue(lo,currentProperty)}</span><span class="scale-bar"></span><span class="scale-label">${formatValue(hi,currentProperty)}</span></div>`;
+    }else{
+      legendRow.innerHTML=Object.values(CATEGORIES).map(c=>`<span class="legend-item"><i class="legend-dot" style="background:${c.color};box-shadow:0 0 7px ${c.color}88"></i>${c.name}</span>`).join("")+`<span class="legend-item" style="margin-left:auto">点击元素查看详情</span>`;
+    }
+  }
+
+  function selectElement(z){
+    const e=byZ[z];if(!e)return;
+    selectedZ=z;
+    for(const b of document.querySelectorAll(".el"))b.classList.toggle("selected",+b.dataset.z===z);
+    detailEmpty.hidden=true;detailCard.hidden=false;
+    const c=CATEGORIES[e.cat]||CATEGORIES.unknown;
+    document.getElementById("detailSymbol").textContent=e.sym;
+    document.getElementById("detailName").textContent=e.name;
+    document.getElementById("detailMeta").textContent=`${e.z} · ${e.mass}`;
+    const cat=document.getElementById("detailCat");cat.textContent=c.name;cat.style.setProperty("--cat-border",hexA(c.color,.35));cat.style.setProperty("--cat-soft",hexA(c.color,.09));cat.style.color=c.color;
+    document.getElementById("factPosition").textContent=e.f?`第 ${e.period} 周期 · ${e.f==="lan"?"镧系":"锕系"}`:`第 ${e.period} 周期 · ${GROUP_LABEL(e.group)}族`;
+    document.getElementById("factConfig").textContent=e.config||"—（高中不要求）";
+    document.getElementById("factRadius").textContent=e.radius?`${e.radius} pm`:"—";
+    document.getElementById("factEn").textContent=e.en!==null?fmt(e.en,2):"—";
+    document.getElementById("factIe").textContent=e.ie!==null?`${fmt(e.ie,0)} kJ·mol⁻¹`:"—";
+    document.getElementById("factMelt").textContent=e.melt!==null?`${fmt(e.melt,0)} ℃`:"—";
+    document.getElementById("factDensity").textContent=e.density!==null?`${formatValue(e.density,"density")} g·cm⁻³`:"—";
+    document.getElementById("factOx").textContent=e.ox||"—";
+    document.getElementById("detailNote").innerHTML=`<strong>位置 → 结构 → 性质：</strong>${e.config?`电子排布为 ${e.config}，`:"高中阶段主要掌握其位置与分类，"}它在周期表中的位置决定了主要性质与常见反应。${NOTES[e.z]||"该元素在高中阶段主要作为周期表位置与分类的示例。"}`;
+    document.getElementById("detailTags").innerHTML=[`第${e.period}周期`,e.f?(e.f==="lan"?"镧系":"锕系"):`${GROUP_LABEL(e.group)}族`,c.name,e.state==="固*"?"人造元素":e.state+"态"].map(t=>`<span class="detail-tag">${t}</span>`).join("");
+    drawShells(e.z);
+    if(!query)clearSearchHighlight();
+  }
+
+  const ORBITALS=[["1s",2],["2s",2],["2p",6],["3s",2],["3p",6],["4s",2],["3d",10],["4p",6],["5s",2],["4d",10],["5p",6],["6s",2],["4f",14],["5d",10],["6p",6],["7s",2],["5f",14],["6d",10],["7p",6]];
+  function shellCounts(z){
+    let left=z;const shells=[0,0,0,0,0,0,0];
+    for(const [name,cap] of ORBITALS){
+      const take=Math.min(cap,left);if(take<=0)continue;
+      const n=+name[0];shells[n-1]+=take;left-=take;if(left<=0)break;
+    }
+    return shells.filter((v,i)=>i===0||v>0);
+  }
+  function drawShells(z){
+    const svg=document.getElementById("shellSvg");
+    const shells=shellCounts(z);
+    const cx=100,cy=100;
+    let out=`<defs><radialGradient id="nuc"><stop stop-color="#f4ffff"/><stop offset=".45" stop-color="#67e8f9"/><stop offset="1" stop-color="#0e7490" stop-opacity=".3"/></radialGradient></defs>`;
+    out+=`<circle cx="${cx}" cy="${cy}" r="7" fill="url(#nuc)"/>`;
+    shells.forEach((count,i)=>{
+      const r=22+i*11;
+      out+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(103,232,249,${.14+i*.02})" stroke-width=".8"/>`;
+      for(let k=0;k<count;k++){
+        const a=(k/count)*Math.PI*2-Math.PI/2;
+        const x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
+        out+=`<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="1.7" fill="rgba(165,243,252,.9)"/>`;
+      }
+    });
+    svg.innerHTML=out;
+  }
+
+  function applySearch(){
+    const q=query.trim().toLowerCase();
+    for(const b of document.querySelectorAll(".el")){
+      const e=byZ[+b.dataset.z];if(!e)continue;
+      const hit=!q||String(e.z)===q||e.sym.toLowerCase().includes(q)||e.name.includes(query.trim());
+      b.classList.toggle("dim",!!q&&!hit);
+      b.classList.toggle("match",!!q&&hit);
+    }
+  }
+  function clearSearchHighlight(){
+    for(const b of document.querySelectorAll(".el"))b.classList.remove("dim","match");
+  }
+
+  function trendValue(e,prop){
+    const v=e[prop];
+    if(v===null||v===undefined||Number.isNaN(v))return null;
+    return prop==="density"?Math.log10(Math.max(v,1e-8)):v;
+  }
+  function renderTrend(){
+    const meta=PROPERTY_META[currentProperty];
+    const prop=meta.numeric?currentProperty:"radius";
+    const label=PROPERTY_META[prop].label;
+    const series=SERIES[currentSeries];
+    const pts=series.zs.map(z=>byZ[z]).filter(e=>trendValue(e,prop)!==null).map(e=>({e,v:trendValue(e,prop)}));
+    trendTitle.textContent=`${label} · ${series.name}`;
+    trendTabs.forEach(b=>b.classList.toggle("active",b.dataset.series===currentSeries));
+    if(pts.length<2){
+      trendSvg.innerHTML=`<text x="390" y="95" text-anchor="middle" fill="rgba(148,163,184,.7)" font-size="11">该系列暂无足够数据</text>`;
+      trendNote.textContent="当前性质在该系列中数据不足。";
+      return;
+    }
+    const W=780,H=190,m={l:50,r:20,t:16,b:34};
+    const min=Math.min(...pts.map(p=>p.v)),max=Math.max(...pts.map(p=>p.v));
+    const pad=(max-min)*.16||1;
+    const lo=min-pad,hi=max+pad;
+    const x=i=>m.l+(W-m.l-m.r)*(pts.length===1?.5:i/(pts.length-1));
+    const y=v=>m.t+(H-m.t-m.b)*(1-(v-lo)/(hi-lo));
+    let svg=`<defs><linearGradient id="lineGrad" x1="0" x2="1"><stop stop-color="#67e8f9"/><stop offset=".55" stop-color="#5eead4"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs>`;
+    for(let i=0;i<=4;i++){
+      const yy=m.t+(H-m.t-m.b)*i/4;
+      svg+=`<line x1="${m.l}" y1="${yy}" x2="${W-m.r}" y2="${yy}" stroke="rgba(148,163,184,.1)" stroke-width="1"/>`;
+      const tv=hi-(hi-lo)*i/4;
+      const disp=prop==="density"?formatValue(Math.pow(10,tv),prop):formatValue(tv,prop);
+      svg+=`<text x="${m.l-8}" y="${yy+3}" text-anchor="end" fill="rgba(94,114,140,.8)" font-size="8">${disp}</text>`;
+    }
+    const path=pts.map((p,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ");
+    svg+=`<path d="${path}" fill="none" stroke="url(#lineGrad)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    pts.forEach((p,i)=>{
+      const xx=x(i),yy=y(p.v);
+      svg+=`<circle cx="${xx}" cy="${yy}" r="4" fill="#ecfeff" stroke="rgba(103,232,249,.65)" stroke-width="2"/><text x="${xx}" y="${H-13}" text-anchor="middle" fill="rgba(226,240,255,.78)" font-size="8.5">${p.e.sym}</text><text x="${xx}" y="${H-3}" text-anchor="middle" fill="rgba(94,114,140,.75)" font-size="6.5">${p.e.z}</text>`;
+    });
+    trendSvg.innerHTML=svg;
+    const noteMap={
+      radius:{period3:"同周期从左到右，原子半径总体逐渐减小（稀有气体除外）。",group1:"同主族从上到下，原子半径逐渐增大。",group17:"同主族从上到下，原子半径逐渐增大。"},
+      en:{period3:"同周期从左到右，电负性总体逐渐增大。",group1:"同主族从上到下，电负性逐渐减小。",group17:"同主族从上到下，电负性逐渐减小。"},
+      ie:{period3:"同周期从左到右，第一电离能总体增大，但存在个别起伏。",group1:"同主族从上到下，第一电离能逐渐减小。",group17:"同主族从上到下，第一电离能逐渐减小。"},
+      melt:{period3:"熔点受晶体结构和微粒间作用力影响，不呈简单单调变化。",group1:"碱金属熔点从上到下总体降低。",group17:"卤素熔点从上到下总体升高。"},
+      density:{period3:"密度与晶体结构、原子半径有关，不是简单单调变化。",group1:"碱金属密度总体较小，从上到下变化不规律。",group17:"卤素密度从上到下总体增大。"}
+    };
+    const extra=!meta.numeric?"当前为类别/化合价着色，趋势图暂显示原子半径。":"";
+    trendNote.textContent=(noteMap[prop]?.[currentSeries]||"")+(extra?" "+extra:"");
+  }
+
+  propertySelect.addEventListener("change",()=>{currentProperty=propertySelect.value;applyProperty();});
+  searchInput.addEventListener("input",()=>{query=searchInput.value;applySearch();});
+  searchInput.addEventListener("keydown",e=>{if(e.key==="Enter"){const first=document.querySelector(".el.match");if(first)selectElement(+first.dataset.z);}});
+  resetBtn.addEventListener("click",()=>{propertySelect.value="category";currentProperty="category";searchInput.value="";query="";clearSearchHighlight();selectedZ=null;detailEmpty.hidden=false;detailCard.hidden=true;document.querySelectorAll(".el.selected").forEach(b=>b.classList.remove("selected"));applyProperty();});
+  for(const tab of trendTabs)tab.addEventListener("click",()=>{currentSeries=tab.dataset.series;renderTrend();});
+
+  propertySelect.value=currentProperty;
+  renderTable();
+  applyProperty();
+  const initialZ=Number.parseInt(params.get("element")||"6",10);
+  selectElement(byZ[initialZ]?initialZ:6);
+})();
+</script>
+</body>
+</html>
