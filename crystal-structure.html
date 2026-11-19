@@ -457,43 +457,65 @@
       descript:"石墨是混合型晶体：层内是共价网络，层间是分子间作用力。" };
   }
 
+  function fccBasePoints(){
+    const pts=[];
+    for(const x of [-1,1])for(const y of [-1,1])for(const z of [-1,1])pts.push([x,y,z]);
+    pts.push([1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]);
+    return pts;
+  }
+  function fccNeighbourVectors(){
+    const out=[];
+    for(const x of [-1,0,1])for(const y of [-1,0,1])for(const z of [-1,0,1]){
+      const nz=[x,y,z].filter(v=>v!==0).length;
+      if(nz===2)out.push([x,y,z]);
+    }
+    return out;
+  }
+  function fccGhostPoints(){
+    const base=fccBasePoints(),baseKeys=new Set(base.map(p=>p.join(",")));
+    const seen=new Set(),out=[];
+    for(const p of base)for(const v of fccNeighbourVectors()){
+      const q=[p[0]+v[0],p[1]+v[1],p[2]+v[2]],k=q.join(",");
+      if(baseKeys.has(k)||seen.has(k))continue;
+      seen.add(k);out.push(q);
+    }
+    return {base,ghosts:out};
+  }
+
   function buildDryIce() {
-    const centers=[[0,0,0]];
-    for(const x of [-1,1]) for(const y of [-1,1]) centers.push([x*.8,y*.8,0]);
-    for(const x of [-1,1]) for(const z of [-1,1]) centers.push([x*.8,0,z*.8]);
-    for(const y of [-1,1]) for(const z of [-1,1]) centers.push([0,y*.8,z*.8]);
-    const dirs=[[0,1,0],[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]];
+    const {base,ghosts}=fccGhostPoints();
     const atoms=[],bonds=[];
-    centers.forEach((c,g)=>{
-      const d=norm(dirs[g%dirs.length]);
-      const ci=atoms.length;
-      atoms.push(makeAtom(c,"#cbd5e1",.14,"C","C",{group:g,labelColor:"#0f172a"}));
-      const o1=[c[0]+d[0]*.52,c[1]+d[1]*.52,c[2]+d[2]*.52];
-      const o2=[c[0]-d[0]*.52,c[1]-d[1]*.52,c[2]-d[2]*.52];
-      atoms.push(makeAtom(o1,"#fca5a5",.12,"O","O",{group:g,labelColor:"#450a0a"}));
-      atoms.push(makeAtom(o2,"#fca5a5",.12,"O","O",{group:g,labelColor:"#450a0a"}));
-      addBond(bonds,ci,ci+1,"rgba(252,165,165,.42)",1.2);addBond(bonds,ci,ci+2,"rgba(252,165,165,.42)",1.2);
-    });
-    return { atoms,bonds,cellLines:cubeLines(1.35),camera:{yaw:.7,pitch:.26,distance:8.8},
+    const dirs=[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1],[1,1,-1],[-1,1,1],[1,-1,1],[-1,-1,1]].map(norm);
+    let group=0;
+    function addMolecule(c,ghost,dir){
+      const g=group++,d=dir||dirs[g%dirs.length],ci=atoms.length;
+      atoms.push(makeAtom(c,"#cbd5e1",ghost?.06:.085,"C","C",{group:g,ghost,labelColor:"#0f172a"}));
+      for(const s of [-1,1]){
+        const o=[c[0]+d[0]*s*.32,c[1]+d[1]*s*.32,c[2]+d[2]*s*.32];
+        atoms.push(makeAtom(o,"#fca5a5",ghost?.055:.075,"O","O",{group:g,ghost,labelColor:"#450a0a"}));
+        addBond(bonds,ci,atoms.length-1,"rgba(252,165,165,.42)",1.1);
+      }
+    }
+    for(const c of base)addMolecule(c,false);
+    for(const c of ghosts)addMolecule(c,true);
+    return { atoms,bonds,cellLines:cubeLines(1),camera:{yaw:.7,pitch:.26,distance:8.8},
       legend:[["C 原子","#cbd5e1"],["O 原子","#fca5a5"]], cellType:"面心立方（分子晶体）", coord:"12", coordMode:"molecule", coordCutoff:1.5, coordShape:"面心立方最密堆积",
-      status:"分子晶体 · 每个 CO₂ 周围 12 个 CO₂", foot:"分子间作用力 · 易升华", formula:"CO₂", type:"分子晶体", name:"干冰 · 分子晶体",
+      status:"分子晶体 · 每个 CO₂ 周围 12 个 CO₂", foot:"分子间作用力 · 易升华", formula:"CO₂", type:"分子晶体", name:"干冰 · 面心立方分子晶体",
       particles:"CO₂ 分子", force:"分子间作用力", melting:"−78.5 ℃ 升华", examples:"干冰、碘",
-      note:"CO₂ 分子按面心立方方式排列；本视图显示中心 CO₂ 与 12 个紧邻分子，晶胞网格用于辅助观察。",
-      descript:"干冰是分子晶体，分子间作用力较弱，容易升华。" };
+      note:"CO₂ 分子位于面心立方点阵的顶点和面心；分子画小以露出晶胞网格。每个 CO₂ 周围有 12 个紧邻 CO₂，点击「配位」可显示相邻晶胞中的分子。",
+      descript:"干冰是分子晶体，CO₂ 分子按面心立方方式排列，分子间作用力较弱，容易升华。" };
   }
 
   function buildCopper() {
-    const atoms=[makeAtom([0,0,0],"#fb923c",.21,"Cu","Cu",{labelColor:"#431407"})];
-    const pts=[];
-    for(const x of [-1,1])for(const y of [-1,1])pts.push([x*.8,y*.8,0]);
-    for(const x of [-1,1])for(const z of [-1,1])pts.push([x*.8,0,z*.8]);
-    for(const y of [-1,1])for(const z of [-1,1])pts.push([0,y*.8,z*.8]);
-    for(const p of pts)atoms.push(makeAtom(p,"#fb923c",.21,"Cu","Cu",{labelColor:"#431407"}));
-    return { atoms,bonds:[],cellLines:cubeLines(.8),camera:{yaw:.7,pitch:.3,distance:7.8},
-      legend:[["Cu 原子","#fb923c"]], cellType:"面心立方最密堆积", coord:"12", coordMode:"same", coordCutoff:1.2, coordShape:"最密堆积",
-      status:"面心立方最密堆积 · 配位数 12", foot:"金属键 · 导电导热", formula:"Cu", type:"金属晶体", name:"铜 · 面心立方最密堆积（配位簇）",
+    const {base,ghosts}=fccGhostPoints();
+    const atoms=[];
+    for(const p of base)atoms.push(makeAtom(p,"#fb923c",.18,"Cu","Cu",{labelColor:"#431407"}));
+    for(const p of ghosts)atoms.push(makeAtom(p,"#fb923c",.16,"Cu","Cu",{ghost:true,labelColor:"#431407"}));
+    return { atoms,bonds:[],cellLines:cubeLines(1),camera:{yaw:.7,pitch:.3,distance:8.0},
+      legend:[["Cu 原子","#fb923c"]], cellType:"面心立方最密堆积", coord:"12", coordMode:"same", coordCutoff:1.5, coordShape:"最密堆积",
+      status:"面心立方最密堆积 · 配位数 12", foot:"金属键 · 导电导热", formula:"Cu", type:"金属晶体", name:"铜 · 面心立方晶胞",
       particles:"Cu 原子", force:"金属键", melting:"1085 ℃", examples:"Cu、Ag、Au",
-      note:"铜采用面心立方最密堆积；本视图显示中心 Cu 与 12 个最近邻原子。",
+      note:"铜采用面心立方最密堆积：顶点 + 面心共 14 个原子；点击「配位」后会显示相邻晶胞中的 12 个最近邻。",
       descript:"铜是金属晶体，金属阳离子与自由电子通过金属键结合，具有导电、导热和延展性。" };
   }
 
@@ -614,6 +636,7 @@
     const r=Math.max(6,a.radius*p.scale*.95);
     screenAtoms.push({index,x:p.x,y:p.y,r:r+7});
     ctx.save();
+    if (opts.ghost) ctx.globalAlpha=.62;
     if (opts.dim) ctx.globalAlpha=.16;
     if (opts.selected||opts.neighbor) {
       ctx.beginPath();ctx.arc(p.x,p.y,r+5,0,TAU);ctx.strokeStyle=opts.selected?"rgba(244,114,182,.95)":"rgba(103,232,249,.8)";ctx.lineWidth=opts.selected?2.4:1.6;ctx.setLineDash(opts.selected?[]:[3,3]);ctx.stroke();ctx.setLineDash([]);
@@ -637,13 +660,23 @@
 
   function neighborsOf(model,index){
     const a=model.atoms[index]; if(!a)return [];
+    if(model.coordMode==="molecule"){
+      const centers=[];
+      model.atoms.forEach((b,j)=>{if(b.group!==undefined&&b.label==="C")centers.push({group:b.group,pos:b.pos,index:j});});
+      const self=centers.find(c=>c.group===a.group);
+      if(!self)return [];
+      const groups=new Set();
+      for(const c of centers){if(c.group===self.group)continue;if(dist(self.pos,c.pos)<=(model.coordCutoff||1.5))groups.add(c.group);}
+      const out=[];
+      model.atoms.forEach((b,j)=>{if(b.group!==undefined&&groups.has(b.group))out.push(j);});
+      return out;
+    }
     const out=[];
     model.atoms.forEach((b,j)=>{
       if(j===index)return;
       const d=dist(a.pos,b.pos);
       if(d>(model.coordCutoff||1.1))return;
       if(model.coordMode==="opposite" && b.species===a.species)return;
-      if(model.coordMode==="molecule" && b.group===a.group)return;
       out.push({index:j,d});
     });
     out.sort((x,y)=>x.d-y.d);
@@ -654,9 +687,12 @@
     selectedAtom=index;neighborIndices=neighborsOf(model,index);
     const a=model.atoms[index]; if(!a||!coordResult)return;
     const molecule=model.coordMode==="molecule";
+    const count=molecule?new Set(neighborIndices.map(i=>model.atoms[i].group)).size:neighborIndices.length;
     const labels=[...new Set(neighborIndices.map(i=>molecule?"CO₂ 分子":model.atoms[i].label))];
     const subject=molecule?"CO₂ 分子":a.label;
-    const text=neighborIndices.length?`<b>${subject}</b> 周围有 <b>${neighborIndices.length}</b> 个 ${labels.join(" / ")} · ${model.coordShape}`:`<b>${subject}</b> 在当前视图中没有找到最近邻，换一个原子试试`;
+    const ghostCount=molecule?new Set(neighborIndices.filter(i=>model.atoms[i].ghost).map(i=>model.atoms[i].group)).size:neighborIndices.filter(i=>model.atoms[i].ghost).length;
+    let text=count?`<b>${subject}</b> 周围有 <b>${count}</b> 个 ${labels.join(" / ")} · ${model.coordShape}`:`<b>${subject}</b> 在当前视图中没有找到最近邻，换一个原子试试`;
+    if(ghostCount)text+=`<span style="display:block;margin-top:3px;color:rgba(148,163,184,.75);font-size:8px">半透明原子来自相邻晶胞（${ghostCount} 个）</span>`;
     coordResult.innerHTML=text;
   }
 
@@ -679,7 +715,10 @@
 
     const activeSet = selectedAtom!==null ? new Set([selectedAtom,...neighborIndices]) : null;
     for (const [i,j,color,width] of model.bonds) {
-      if(model.atoms[i].ghost||model.atoms[j].ghost)continue;
+      const ghostBond=model.atoms[i].ghost||model.atoms[j].ghost;
+      if(ghostBond){
+        if(!(inspectMode&&selectedAtom!==null&&activeSet&&activeSet.has(i)&&activeSet.has(j)))continue;
+      }
       const a=project(model.atoms[i].pos), b=project(model.atoms[j].pos);
       if(!a||!b)continue;
       const active=!activeSet||activeSet.has(i)&&activeSet.has(j);
@@ -699,11 +738,13 @@
 
     const atoms=model.atoms.map((a,index)=>({a,index,depth:project(a.pos)?.depth||0})).sort((x,y)=>y.depth-x.depth);
     for (const item of atoms) {
-      if(item.a.ghost)continue;
+      const ghostVisible=inspectMode&&selectedAtom!==null&&activeSet&&activeSet.has(item.index);
+      if(item.a.ghost&&!ghostVisible)continue;
       atom(item.a,item.index,{
         selected:item.index===selectedAtom,
         neighbor:activeSet?activeSet.has(item.index)&&item.index!==selectedAtom:false,
-        dim:activeSet?!activeSet.has(item.index):false
+        dim:activeSet?!activeSet.has(item.index):false,
+        ghost:item.a.ghost
       });
     }
   }
