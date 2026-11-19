@@ -21,7 +21,7 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 | 电子云杂化实验室 | sp / sp² / sp³ 杂化过程、C–C 成键阶段、键角、空间构型 | `electron-cloud.html` |
 | 分子空间构型 | VSEPR、孤对电子、直线形/平面三角形/四面体/三角锥/V 形 | `molecular-geometry.html` |
 | C–C 成键过程 | 乙烷/乙烯/乙炔的 σ 键与 π 键形成过程 | `bond-formation.html` |
-| 晶体结构 | NaCl、金刚石、干冰、铜的晶胞、配位数与作用力 | `crystal-structure.html` |
+| 晶体结构 | NaCl、CsCl、CaF₂、ZnS、SiO₂、金刚石、石墨、干冰、铜的晶胞、配位数与作用力 | `crystal-structure.html` |
 | 反应机理 | 取代、加成、消去反应与能量曲线 | `reaction-mechanism.html` |
 | 元素周期表 | 118 种元素、性质热力图、元素详情、周期律趋势 | `periodic-table.html` |
 | 化学实验装置 | O₂、CO₂、Cl₂、NH₃ 的发生、除杂、干燥、收集、尾气与纠错 | `experiment-apparatus.html` |
@@ -59,10 +59,13 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 
 ### 晶体结构
 
-- 四种晶体：NaCl（离子晶体）、金刚石（原子晶体）、干冰（分子晶体）、铜（金属晶体）。
-- 可旋转 3D 晶胞，查看粒子排布和晶胞框。
-- 同步显示配位数、构成微粒、作用力和熔点。
-- 支持 `?crystal=nacl|diamond|dryice|copper` 参数。
+- 九种结构：NaCl、CsCl、CaF₂、ZnS、SiO₂、金刚石、石墨、干冰、铜。
+- 可旋转 3D 结构，查看粒子排布和晶胞框。
+- Na⁺ 与 Cl⁻ 使用明显不同半径：Na⁺ 小、Cl⁻ 大。
+- 「配位」按钮 + 点击原子：NaCl 为 6:6，CsCl 为 8:8，CaF₂ 为 Ca 8 / F 4，ZnS 为 4:4，金刚石为 4。
+- 金刚石补全晶胞边界的四面体，并提供「沿 (111) 看」按钮查看三层六元环切片。
+- 石墨用于展示六方层状结构；SiO₂ 用于展示空间网状结构。
+- 支持 `?crystal=nacl|cscl|caf2|zns|sio2|diamond|graphite|diamond111|dryice|copper` 参数。
 
 ### 反应机理
 

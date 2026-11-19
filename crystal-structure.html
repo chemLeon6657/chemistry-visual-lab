@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#04070f" />
 <title>晶体结构 · 晶胞与配位数 · 高中化学可视化平台</title>
-<meta name="description" content="交互式晶体结构演示：NaCl 离子晶体、金刚石原子晶体、干冰分子晶体和铜金属晶体的晶胞、配位数与作用力。" />
+<meta name="description" content="交互式晶体结构演示：NaCl、CsCl、CaF₂、ZnS、金刚石、石墨、SiO₂、干冰和铜的晶胞、配位数、作用力与三维结构。" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
 <style>
   :root {
@@ -111,6 +111,14 @@
   @media(max-width:1120px){.shell{padding-left:20px;padding-right:20px}.main{grid-template-columns:278px minmax(0,1fr)}.stage-head{padding-left:16px;padding-right:16px}.stage-foot{padding-left:16px;padding-right:16px}.type-btn{padding:0 8px}}
   @media(max-width:980px){.shell{padding:18px 16px 14px}.main{grid-template-columns:1fr;grid-template-areas:"stage" "sidebar";min-height:0}.stage-card{min-height:620px}.sidebar{display:grid;grid-template-columns:1fr 1fr;overflow:visible}.sidebar .card:nth-child(1){grid-column:1/-1}.sidebar .card:nth-child(2){grid-column:1}.sidebar .card:nth-child(3){grid-column:2;align-self:start}.steps{grid-template-columns:1fr 1fr}.step:nth-child(2)::after{display:none}.site-header{padding-bottom:14px}}
   @media(max-width:680px){.shell{padding:14px 12px 10px}.brand{gap:11px}.brand-mark{width:44px;height:44px;border-radius:13px}.brand-mark svg{width:34px;height:34px}.brand h1{font-size:clamp(23px,7vw,31px)}.brand p{display:none}.kicker{font-size:8.5px;letter-spacing:.14em}.header-meta{display:none}.stage-card{min-height:0}.stage-head{flex-direction:column;align-items:stretch;gap:11px;padding:15px 13px 0}.stage-controls{justify-content:flex-start;padding-top:0;width:100%}.type-tabs{flex:1;min-width:0}.type-btn{flex:1;padding:0 5px}.cell-btn{padding:0 8px}.icon-btn{width:33px}.stage-view{min-height:345px}.stage-foot{padding:9px 13px;gap:9px;font-size:8.5px}.foot-spacer{margin-left:0}.stage-legend{left:9px;bottom:8px;gap:7px;font-size:8px;padding:5px 7px}.view-hint{right:8px;bottom:8px;font-size:8px;height:23px}.sidebar{grid-template-columns:1fr}.sidebar .card:nth-child(2),.sidebar .card:nth-child(3){grid-column:1}.steps{grid-template-columns:1fr;margin-top:13px}.step:not(:last-child)::after{display:none}.site-footer{flex-direction:column;gap:5px}}
+
+  .hidden{display:none!important}
+  .type-tabs{flex-wrap:wrap;overflow:visible}
+  .coord-result{position:absolute;left:50%;bottom:47px;z-index:5;transform:translate(-50%,6px);max-width:min(92%,560px);padding:7px 11px;border:1px solid rgba(103,232,249,.2);border-radius:9px;background:rgba(4,10,20,.72);color:rgba(190,225,240,.86);font-size:9.5px;line-height:1.5;backdrop-filter:blur(9px);opacity:0;pointer-events:none;transition:.2s;text-align:center}
+  .stage-view.inspect{cursor:crosshair}
+  .stage-view.inspect .coord-result{opacity:1;transform:translate(-50%,0)}
+  .coord-result b{color:#bdfbff;font-weight:650}
+  @media(max-width:680px){.type-tabs{flex-wrap:nowrap;overflow-x:auto}.stage-view .coord-result{bottom:43px;font-size:8.5px;white-space:normal}.cell-btn{padding:0 7px}}
   @media(max-width:420px){.stage-view{min-height:310px}.type-btn{font-size:9px}}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 </style>
@@ -144,10 +152,17 @@
         <div class="stage-controls">
           <div class="type-tabs" role="group" aria-label="选择晶体类型">
             <button class="type-btn active" type="button" data-crystal="nacl">NaCl</button>
+            <button class="type-btn" type="button" data-crystal="cscl">CsCl</button>
+            <button class="type-btn" type="button" data-crystal="caf2">CaF₂</button>
+            <button class="type-btn" type="button" data-crystal="zns">ZnS</button>
+            <button class="type-btn" type="button" data-crystal="sio2">SiO₂</button>
             <button class="type-btn" type="button" data-crystal="diamond">金刚石</button>
+            <button class="type-btn" type="button" data-crystal="graphite">石墨</button>
             <button class="type-btn" type="button" data-crystal="dryice">干冰</button>
             <button class="type-btn" type="button" data-crystal="copper">铜</button>
           </div>
+          <button class="cell-btn" id="coordBtn" type="button" aria-pressed="false" title="点击原子查看配位环境">配位</button>
+          <button class="cell-btn hidden" id="view111Btn" type="button" title="切换金刚石 (111) 方向视图">沿 (111) 看</button>
           <button class="cell-btn" id="cellToggle" type="button" aria-pressed="true" title="显示或隐藏晶胞框">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7 12 3l8 4v10l-8 4-8-4V7Z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>
             晶胞
@@ -160,6 +175,7 @@
         <div class="stage-glow" aria-hidden="true"></div>
         <canvas id="scene" aria-hidden="true"></canvas>
         <div class="stage-legend" id="stageLegend" aria-hidden="true"></div>
+        <div class="coord-result" id="coordResult" aria-live="polite">配位模式：点击任意原子查看最近邻</div>
         <div class="view-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="18" rx="5"/><path d="M12 6v4"/></svg>拖动旋转 · 滚轮缩放</div>
       </div>
       <div class="stage-foot">
@@ -209,7 +225,7 @@
     <div class="step"><span class="step-num">04</span><h4>推性质</h4><p>作用力越强，通常熔点越高、硬度越大。</p></div>
   </section>
 
-  <footer class="site-footer"><p>科学说明：晶胞与粒子排布为教学示意，实际晶体中微粒半径、晶胞参数和缺陷会有所不同。NaCl、金刚石、干冰和铜的配位数按常见晶体结构标注。</p><span class="footer-tag">高中化学可视化平台 · 晶体结构</span></footer>
+  <footer class="site-footer"><p>科学说明：晶胞与粒子排布为教学示意，实际晶体半径、晶胞参数和缺陷会有所不同。本页补充 NaCl、CsCl、CaF₂、ZnS、SiO₂、金刚石、石墨、干冰和铜；Na⁺ 与 Cl⁻ 半径按相对大小区分，金刚石提供完整晶胞和 (111) 方向切片。</p><span class="footer-tag">高中化学可视化平台 · 晶体结构</span></footer>
 </div>
 
 <script>
@@ -235,91 +251,246 @@
     return out;
   }
 
+
+  function cubeLines(scale) {
+    return CUBE_EDGES.map(([i,j]) => [CUBE[i].map(v=>v*scale), CUBE[j].map(v=>v*scale)]);
+  }
+  function makeAtom(pos,color,radius,label,species,extra={}) {
+    return Object.assign({pos,color,radius,label,species,labelColor:"#06111f"},extra);
+  }
+  function addBond(bonds,i,j,color,width) { bonds.push([i,j,color,width]); }
+
   function buildNaCl() {
     const atoms=[], bonds=[];
     for (const x of [-1,0,1]) for (const y of [-1,0,1]) for (const z of [-1,0,1]) {
-      const parity = ((x+2)+(y+2)+(z+2))%2;
-      atoms.push({ pos:[x*1.05,y*1.05,z*1.05], color: parity===0?"#a78bfa":"#86efac", radius:.17, label:parity===0?"Na⁺":"Cl⁻", labelColor: parity===0?"#f5f3ff":"#052e16" });
+      const parity=((x+1)+(y+1)+(z+1))%2;
+      const isNa=parity===0;
+      atoms.push(makeAtom([x,y,z],isNa?"#a78bfa":"#86efac",isNa?.105:.195,isNa?"Na⁺":"Cl⁻",isNa?"Na":"Cl",{labelColor:isNa?"#2e1065":"#052e16"}));
     }
-    for (let i=0;i<atoms.length;i++) for (let j=i+1;j<atoms.length;j++) {
-      const d=dist(atoms[i].pos,atoms[j].pos);
-      if (d < 1.12) bonds.push([i,j,"rgba(148,163,184,.12)",1]);
-    }
-    return {
-      atoms,bonds,cell:CUBE,cellScale:1.06,scale:1,radius:.17,
-      camera:{yaw:.65,pitch:.28,distance:8.6},
-      legend:[["Na⁺","#a78bfa"],["Cl⁻","#86efac"]],
-      cellType:"面心立方", coord:"6", status:"面心立方晶胞 · 配位数 6",
-      foot:"离子键 · 高熔点", formula:"NaCl", type:"离子晶体", name:"氯化钠 · 面心立方晶胞",
-      particles:"Na⁺、Cl⁻", force:"离子键", melting:"801 ℃", examples:"NaCl、CsCl",
-      note:"Na⁺ 与 Cl⁻ 交替排列，每个离子周围有 6 个异种离子。", descript:"NaCl 是典型的离子晶体，离子间通过较强的离子键结合，熔点较高。"
-    };
+    return { atoms,bonds,cellLines:cubeLines(1),camera:{yaw:.65,pitch:.28,distance:7.8},
+      legend:[["Na⁺（小）","#a78bfa"],["Cl⁻（大）","#86efac"]], cellType:"面心立方（NaCl 型）", coord:"6", coordMode:"opposite", coordCutoff:1.12, coordShape:"八面体",
+      status:"NaCl 型 · 配位数 6:6", foot:"离子键 · 高熔点", formula:"NaCl", type:"离子晶体", name:"氯化钠 · 面心立方晶胞",
+      particles:"Na⁺、Cl⁻", force:"离子键", melting:"801 ℃", examples:"NaCl、KCl",
+      note:"Na⁺ 半径明显小于 Cl⁻；每个 Na⁺ 周围有 6 个 Cl⁻，每个 Cl⁻ 周围有 6 个 Na⁺。",
+      descript:"NaCl 是典型的离子晶体，Na⁺ 与 Cl⁻ 交替排列，配位数为 6:6。" };
   }
 
-  function buildDiamond() {
-    const raw = [[0,0,0],[0,.5,.5],[.5,0,.5],[.5,.5,0],[.25,.25,.25],[.25,.75,.75],[.75,.25,.75],[.75,.75,.25]];
-    const atoms = raw.map(p=>({pos:[(p[0]-.5)*2.15,(p[1]-.5)*2.15,(p[2]-.5)*2.15],color:"#cbd5e1",radius:.18,label:"C",labelColor:"#0f172a"}));
-    const bonds=[];
-    for (let i=0;i<atoms.length;i++) for (let j=i+1;j<atoms.length;j++) {
-      if (dist(atoms[i].pos,atoms[j].pos) < .95) bonds.push([i,j,"rgba(103,232,249,.28)",1.2]);
+  function buildCsCl() {
+    const atoms=[], bonds=[];
+    for (const x of [-1,0,1]) for (const y of [-1,0,1]) for (const z of [-1,0,1]) {
+      atoms.push(makeAtom([x*1.6,y*1.6,z*1.6],"#c4b5fd",.17,"Cs⁺","Cs",{labelColor:"#2e1065"}));
     }
-    return {
-      atoms,bonds,cell:CUBE,cellScale:1.08,scale:1,radius:.18,
-      camera:{yaw:.82,pitch:.34,distance:8.4},
-      legend:[["C 原子","#cbd5e1"]], cellType:"面心立方", coord:"4", status:"面心立方晶胞 · 配位数 4",
-      foot:"共价键 · 熔点极高", formula:"C", type:"原子晶体", name:"金刚石 · 空间网状结构",
+    for (const x of [-.8,.8]) for (const y of [-.8,.8]) for (const z of [-.8,.8]) {
+      atoms.push(makeAtom([x,y,z],"#86efac",.19,"Cl⁻","Cl",{labelColor:"#052e16"}));
+    }
+    return { atoms,bonds,cellLines:cubeLines(.8),camera:{yaw:.65,pitch:.26,distance:7.8},
+      legend:[["Cs⁺","#c4b5fd"],["Cl⁻","#86efac"]], cellType:"简单立方（CsCl 型）", coord:"8", coordMode:"opposite", coordCutoff:1.45, coordShape:"立方体",
+      status:"CsCl 型 · 配位数 8:8", foot:"离子键 · 熔点较高", formula:"CsCl", type:"离子晶体", name:"氯化铯 · 体心立方型离子晶体",
+      particles:"Cs⁺、Cl⁻", force:"离子键", melting:"645 ℃", examples:"CsCl、CsBr",
+      note:"Cl⁻ 位于立方体顶点、Cs⁺ 位于体心；每个 Cs⁺ 周围有 8 个 Cl⁻，每个 Cl⁻ 周围有 8 个 Cs⁺。",
+      descript:"CsCl 是离子晶体，配位数 8:8；注意它不是面心立方，而是两套简单立方互相穿插。" };
+  }
+
+  function buildCaF2() {
+    const atoms=[], bonds=[];
+    atoms.push(makeAtom([0,0,0],"#60a5fa",.13,"Ca²⁺","Ca",{labelColor:"#082f49"}));
+    for (const x of [-.5,.5]) for (const y of [-.5,.5]) for (const z of [-.5,.5]) {
+      atoms.push(makeAtom([x,y,z],"#fbbf24",.16,"F⁻","F",{labelColor:"#451a03"}));
+    }
+    for (const p of [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]]) {
+      atoms.push(makeAtom(p,"#60a5fa",.13,"Ca²⁺","Ca",{labelColor:"#082f49"}));
+    }
+    return { atoms,bonds,cellLines:cubeLines(.55),camera:{yaw:.7,pitch:.25,distance:7.6},
+      legend:[["Ca²⁺","#60a5fa"],["F⁻","#fbbf24"]], cellType:"CaF₂ 型（萤石型）", coord:"8 / 4", coordMode:"opposite", coordCutoff:.95, coordShape:"立方体 / 四面体",
+      status:"萤石型 · Ca 8、F 4", foot:"离子键 · 高熔点", formula:"CaF₂", type:"离子晶体", name:"氟化钙 · 萤石型结构",
+      particles:"Ca²⁺、F⁻", force:"离子键", melting:"1418 ℃", examples:"CaF₂、萤石",
+      note:"Ca²⁺ 周围有 8 个 F⁻；F⁻ 周围有 4 个 Ca²⁺。本视图展示一个配位片段，便于数配位。",
+      descript:"CaF₂ 是萤石型离子晶体，Ca²⁺ 与 F⁻ 的配位数不同：Ca 为 8，F 为 4。" };
+  }
+
+  function diamondLike(kind) {
+    const raw=[[0,0,0],[0,.5,.5],[.5,0,.5],[.5,.5,0],[.25,.25,.25],[.25,.75,.75],[.75,.25,.75],[.75,.75,.25]];
+    const NV=[[.25,.25,.25],[.25,-.25,-.25],[-.25,.25,-.25],[-.25,-.25,.25]];
+    const scale=2.2, keys=new Map(), atoms=[], bonds=[];
+    function key(p){return p.map(v=>Math.round(v*100)).join(",");}
+    function speciesFor(baseIndex){ return kind==="zns" ? (baseIndex<4?"S":"Zn") : "C"; }
+    const colors={C:"#cbd5e1",S:"#fbbf24",Zn:"#60a5fa"};
+    const radii={C:.18,S:.20,Zn:.12};
+    function add(frac,species,ghost=false){
+      const k=key(frac); if(keys.has(k))return keys.get(k);
+      const pos=[(frac[0]-.5)*scale,(frac[1]-.5)*scale,(frac[2]-.5)*scale];
+      const idx=atoms.length;
+      atoms.push(makeAtom(pos,ghost?"#8ea4c0":colors[species],ghost?.15:radii[species],species,species,{ghost,labelColor:species==="Zn"?"#082f49":species==="S"?"#451a03":"#0f172a"}));
+      keys.set(k,idx); return idx;
+    }
+    const base=[];
+    raw.forEach((p,i)=>base.push(add(p,speciesFor(i))));
+    const neighbourKeys=new Set();
+    for(let b=0;b<8;b++){
+      const p=raw[b];
+      for(const nv of NV){
+        const frac=[p[0]+nv[0],p[1]+nv[1],p[2]+nv[2]];
+        const other=add(frac,speciesFor(b),!keys.has(key(frac)));
+        const bk=[Math.min(base[b],other),Math.max(base[b],other)].join("-");
+        if(!neighbourKeys.has(bk)){neighbourKeys.add(bk);addBond(bonds,base[b],other,"rgba(148,163,184,.42)",1.25);}
+      }
+    }
+    const isZnS=kind==="zns";
+    return { atoms,bonds,cellLines:cubeLines(1.1),camera:{yaw:.82,pitch:.3,distance:8.2},
+      legend:isZnS?[["S²⁻","#fbbf24"],["Zn²⁺","#60a5fa"],["相邻晶胞原子","#8ea4c0"]]:[["晶胞内 C","#cbd5e1"],["相邻晶胞 C","#8ea4c0"]],
+      cellType:isZnS?"立方 ZnS 型（闪锌矿）":"金刚石型（面心立方 + 四面体）", coord:"4", coordMode:isZnS?"opposite":"same", coordCutoff:1.05, coordShape:"正四面体",
+      status:isZnS?"立方 ZnS 型 · 配位数 4:4":"金刚石型 · 每个 C 连 4 个 C",
+      foot:isZnS?"共价键 · 熔点高":"共价键 · 熔点极高", formula:isZnS?"ZnS":"C", type:isZnS?"离子晶体（共价性明显）":"原子晶体",
+      name:isZnS?"硫化锌 · 立方 ZnS 型":"金刚石 · 完整晶胞",
+      particles:isZnS?"Zn²⁺、S²⁻":"C 原子", force:isZnS?"共价键（极性）":"共价键", melting:isZnS?"1700 ℃":"≈ 3550 ℃", examples:isZnS?"ZnS、闪锌矿":"金刚石、晶体硅",
+      note:isZnS?"S²⁻ 作面心立方排列，Zn²⁺ 填入一半四面体空隙；每个离子周围有 4 个异种离子。":"每个 C 与周围 4 个 C 以共价键相连；灰色小球是相邻晶胞的碳，用来补全晶胞边界上的四面体。",
+      descript:isZnS?"ZnS 是立方 ZnS 型结构，配位数 4:4，属于共价性明显的离子晶体。":"金刚石是原子晶体，碳原子通过 sp³ 共价键形成空间网状结构，配位数为 4。" };
+  }
+
+
+  function tetraAround(u){
+    u=norm(u);const ref=Math.abs(u[2])<.9?[0,0,1]:[1,0,0];
+    const v=norm(cross(u,ref)),w=cross(u,v),out=[u];
+    for(let k=0;k<3;k++){
+      const a=2*Math.PI*k/3;
+      const d=addV(mulV(u,-1/3),mulV(addV(mulV(v,Math.cos(a)),mulV(w,Math.sin(a))),Math.sqrt(8/9)));
+      out.push(norm(d));
+    }
+    return out;
+  }
+  function addV(a,b){return [a[0]+b[0],a[1]+b[1],a[2]+b[2]];}
+  function mulV(a,s){return [a[0]*s,a[1]*s,a[2]*s];}
+
+  function buildSiO2() {
+    const atoms=[],bonds=[];
+    const dirs=[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]].map(norm);
+    const si0=atoms.length;
+    atoms.push(makeAtom([0,0,0],"#60a5fa",.16,"Si","Si",{labelColor:"#082f49"}));
+    for(const d of dirs){
+      const oPos=mulV(d,1.2);
+      const oi=atoms.length;atoms.push(makeAtom(oPos,"#fb7185",.14,"O","O",{labelColor:"#450a0a"}));
+      addBond(bonds,si0,oi,"rgba(148,163,184,.42)",1.4);
+      const outer=mulV(d,2.4);
+      const si=atoms.length;atoms.push(makeAtom(outer,"#60a5fa",.16,"Si","Si",{labelColor:"#082f49"}));
+      addBond(bonds,oi,si,"rgba(148,163,184,.42)",1.4);
+      for(const d2 of tetraAround(mulV(d,-1)).slice(1)){
+        const p=addV(outer,mulV(d2,1.2));
+        const oi2=atoms.length;atoms.push(makeAtom(p,"#fb7185",.14,"O","O",{labelColor:"#450a0a"}));
+        addBond(bonds,si,oi2,"rgba(148,163,184,.32)",1.2);
+      }
+    }
+    return { atoms,bonds,cellLines:[],camera:{yaw:.65,pitch:.32,distance:9.0},
+      legend:[["Si 原子","#60a5fa"],["O 原子","#fb7185"]], cellType:"空间网状（SiO₂ 片段）", coord:"4 / 2", coordMode:"opposite", coordCutoff:1.3, coordShape:"四面体 / 桥连",
+      status:"空间网状 · Si 4 配位、O 2 配位", foot:"共价键 · 高熔点", formula:"SiO₂", type:"共价晶体", name:"二氧化硅 · 空间网状结构",
+      particles:"Si 原子、O 原子", force:"共价键", melting:"≈ 1710 ℃", examples:"SiO₂、水晶",
+      note:"每个 Si 与 4 个 O 形成四面体，每个 O 连接 2 个 Si；本图展示一个空间网络片段。",
+      descript:"SiO₂ 是共价晶体，Si—O 四面体通过桥氧连接成空间网状结构。" };
+  }
+
+  function buildDiamond111() {
+    const data=buildHoneycomb(3,1.05,true);
+    return { atoms:data.atoms,bonds:data.bonds,cellLines:[],camera:{yaw:.62,pitch:.46,distance:13.0},
+      legend:[["C 原子","#cbd5e1"]], cellType:"(111) 方向切片", coord:"4", coordMode:"same", coordCutoff:1.08, coordShape:"四面体（切片）",
+      status:"沿 [111] 方向 · 三层六元环", foot:"共价键 · 空间网状", formula:"C", type:"原子晶体", name:"金刚石 · (111) 方向",
       particles:"C 原子", force:"共价键", melting:"≈ 3550 ℃", examples:"金刚石、晶体硅",
-      note:"每个碳原子与周围 4 个碳原子形成共价键，构成空间网状结构。", descript:"金刚石是原子晶体，碳原子之间通过共价键形成三维网络，硬度大、熔点极高。"
-    };
+      note:"沿 [111] 方向观察金刚石，会看到层状的六元环排列；本图用三层碳网作教学示意，仍可拖动旋转。",
+      descript:"(111) 切片用来观察金刚石的层状六元环排列，不代表真实晶胞边界。" };
+  }
+
+  function buildHoneycomb(layers,zGap,vertical) {
+    const atoms=[],bonds=[],map=new Map();
+    const R=1;
+    function key(p){return p.map(v=>Math.round(v*100)).join(",");}
+    function add(p,layer){
+      const k=key(p); if(map.has(k))return map.get(k);
+      const idx=atoms.length;atoms.push(makeAtom(p,"#cbd5e1",.15,"C","C",{layer,labelColor:"#0f172a"}));map.set(k,idx);return idx;
+    }
+    for(let l=0;l<layers;l++){
+      const z=(l-(layers-1)/2)*zGap;
+      const ox=(l%2)*.75,oy=(l%2)*.433;
+      for(let i=-1;i<=1;i++) for(let j=-1;j<=1;j++){
+        const cx=1.5*i+ox,cy=Math.sqrt(3)*(j+i/2)+oy,ids=[];
+        for(let k=0;k<6;k++){const a=Math.PI/3*k;ids.push(add([cx+R*Math.cos(a),cy+R*Math.sin(a),z],l));}
+        for(let k=0;k<6;k++){const a=ids[k],b=ids[(k+1)%6];if(a!==b)bonds.push([a,b,"rgba(148,163,184,.35)",1.1]);}
+      }
+    }
+    if(vertical){
+      const seen=new Set();
+      for(let i=0;i<atoms.length;i++){
+        const a=atoms[i];if(a.layer===layers-1)continue;
+        for(let j=0;j<atoms.length;j++){
+          const b=atoms[j];if(b.layer!==a.layer+1)continue;
+          if(dist(a.pos,b.pos)<1.35){
+            const k=[Math.min(i,j),Math.max(i,j)].join("-");if(!seen.has(k)){seen.add(k);bonds.push([i,j,"rgba(103,232,249,.32)",1.1]);}
+          }
+        }
+      }
+    }
+    return {atoms,bonds};
+  }
+
+  function buildGraphite() {
+    const data=buildHoneycomb(3,2.5,false);
+    return { atoms:data.atoms,bonds:data.bonds,cellLines:[],camera:{yaw:.7,pitch:.38,distance:13.0},
+      legend:[["C 原子","#cbd5e1"]], cellType:"六方层状（混合型）", coord:"3", coordMode:"same", coordCutoff:1.08, coordShape:"平面三角形",
+      status:"层内 3 配位 · 层间范德华力", foot:"共价键 + 分子间作用力", formula:"C", type:"混合型晶体", name:"石墨 · 层状结构",
+      particles:"C 原子", force:"共价键 + 分子间作用力", melting:"≈ 3652 ℃ 升华", examples:"石墨、石墨烯",
+      note:"同层每个 C 与 3 个 C 形成共价键，层与层之间靠较弱的分子间作用力；因此石墨能导电、可作润滑剂。",
+      descript:"石墨是混合型晶体：层内是共价网络，层间是分子间作用力。" };
   }
 
   function buildDryIce() {
-    const centers = [
-      {p:[0,0,0], d:[1,1,1]}, {p:[0,1,1], d:[1,-1,-1]}, {p:[1,0,1], d:[-1,1,-1]}, {p:[1,1,0], d:[-1,-1,1]}
-    ];
-    const atoms=[], bonds=[];
-    for (const item of centers) {
-      const c = [ (item.p[0]-.5)*2.3, (item.p[1]-.5)*2.3, (item.p[2]-.5)*2.3 ];
-      const d = norm(item.d);
-      const o1 = [c[0]+d[0]*.48,c[1]+d[1]*.48,c[2]+d[2]*.48];
-      const o2 = [c[0]-d[0]*.48,c[1]-d[1]*.48,c[2]-d[2]*.48];
-      const ci = atoms.length;
-      atoms.push({pos:c,color:"#cbd5e1",radius:.15,label:"C",labelColor:"#0f172a"});
-      atoms.push({pos:o1,color:"#fca5a5",radius:.13,label:"O",labelColor:"#450a0a"});
-      atoms.push({pos:o2,color:"#fca5a5",radius:.13,label:"O",labelColor:"#450a0a"});
-      bonds.push([ci,ci+1,"rgba(252,165,165,.4)",1.2]);
-      bonds.push([ci,ci+2,"rgba(252,165,165,.4)",1.2]);
-    }
-    return {
-      atoms,bonds,cell:CUBE,cellScale:1.16,scale:1,radius:.14,
-      camera:{yaw:.7,pitch:.26,distance:8.6},
-      legend:[["C 原子","#cbd5e1"],["O 原子","#fca5a5"]], cellType:"面心立方", coord:"12", status:"分子晶体 · 每个 CO₂ 周围 12 个",
-      foot:"分子间作用力 · 易升华", formula:"CO₂", type:"分子晶体", name:"干冰 · 分子晶体",
+    const centers=[[0,0,0]];
+    for(const x of [-1,1]) for(const y of [-1,1]) centers.push([x*.8,y*.8,0]);
+    for(const x of [-1,1]) for(const z of [-1,1]) centers.push([x*.8,0,z*.8]);
+    for(const y of [-1,1]) for(const z of [-1,1]) centers.push([0,y*.8,z*.8]);
+    const dirs=[[0,1,0],[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]];
+    const atoms=[],bonds=[];
+    centers.forEach((c,g)=>{
+      const d=norm(dirs[g%dirs.length]);
+      const ci=atoms.length;
+      atoms.push(makeAtom(c,"#cbd5e1",.14,"C","C",{group:g,labelColor:"#0f172a"}));
+      const o1=[c[0]+d[0]*.52,c[1]+d[1]*.52,c[2]+d[2]*.52];
+      const o2=[c[0]-d[0]*.52,c[1]-d[1]*.52,c[2]-d[2]*.52];
+      atoms.push(makeAtom(o1,"#fca5a5",.12,"O","O",{group:g,labelColor:"#450a0a"}));
+      atoms.push(makeAtom(o2,"#fca5a5",.12,"O","O",{group:g,labelColor:"#450a0a"}));
+      addBond(bonds,ci,ci+1,"rgba(252,165,165,.42)",1.2);addBond(bonds,ci,ci+2,"rgba(252,165,165,.42)",1.2);
+    });
+    return { atoms,bonds,cellLines:[],camera:{yaw:.7,pitch:.26,distance:8.8},
+      legend:[["C 原子","#cbd5e1"],["O 原子","#fca5a5"]], cellType:"面心立方（分子晶体）", coord:"12", coordMode:"molecule", coordCutoff:1.5, coordShape:"面心立方最密堆积",
+      status:"分子晶体 · 每个 CO₂ 周围 12 个 CO₂", foot:"分子间作用力 · 易升华", formula:"CO₂", type:"分子晶体", name:"干冰 · 分子晶体",
       particles:"CO₂ 分子", force:"分子间作用力", melting:"−78.5 ℃ 升华", examples:"干冰、碘",
-      note:"CO₂ 分子占据面心立方位置，分子之间只存在较弱的分子间作用力。", descript:"干冰是分子晶体，CO₂ 分子按一定方式排列，分子间作用力较弱，容易升华。"
-    };
+      note:"CO₂ 分子按面心立方方式排列；每个 CO₂ 周围有 12 个紧邻的 CO₂ 分子。",
+      descript:"干冰是分子晶体，分子间作用力较弱，容易升华。" };
   }
 
   function buildCopper() {
-    const pts = [];
-    for (const x of [-1,1]) for (const y of [-1,1]) for (const z of [-1,1]) pts.push([x,y,z]);
-    for (const p of [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]]) pts.push(p);
-    const atoms = pts.map(p=>({pos:[p[0]*1.2,p[1]*1.2,p[2]*1.2],color:"#fb923c",radius:.22,label:"Cu",labelColor:"#431407"}));
-    const bonds=[];
-    for (let i=0;i<atoms.length;i++) for (let j=i+1;j<atoms.length;j++) {
-      if (dist(atoms[i].pos,atoms[j].pos) < 1.75) bonds.push([i,j,"rgba(251,146,60,.17)",1]);
-    }
-    return {
-      atoms,bonds,cell:CUBE,cellScale:1.22,scale:1,radius:.22,
-      camera:{yaw:.7,pitch:.3,distance:8.5},
-      legend:[["Cu 原子","#fb923c"]], cellType:"面心立方", coord:"12", status:"面心立方晶胞 · 配位数 12",
-      foot:"金属键 · 导电导热", formula:"Cu", type:"金属晶体", name:"铜 · 面心立方最密堆积",
+    const atoms=[makeAtom([0,0,0],"#fb923c",.21,"Cu","Cu",{labelColor:"#431407"})];
+    const pts=[];
+    for(const x of [-1,1])for(const y of [-1,1])pts.push([x*.8,y*.8,0]);
+    for(const x of [-1,1])for(const z of [-1,1])pts.push([x*.8,0,z*.8]);
+    for(const y of [-1,1])for(const z of [-1,1])pts.push([0,y*.8,z*.8]);
+    for(const p of pts)atoms.push(makeAtom(p,"#fb923c",.21,"Cu","Cu",{labelColor:"#431407"}));
+    return { atoms,bonds:[],cellLines:cubeLines(.8),camera:{yaw:.7,pitch:.3,distance:7.8},
+      legend:[["Cu 原子","#fb923c"]], cellType:"面心立方最密堆积", coord:"12", coordMode:"same", coordCutoff:1.2, coordShape:"最密堆积",
+      status:"面心立方最密堆积 · 配位数 12", foot:"金属键 · 导电导热", formula:"Cu", type:"金属晶体", name:"铜 · 面心立方最密堆积",
       particles:"Cu 原子", force:"金属键", melting:"1085 ℃", examples:"Cu、Ag、Au",
-      note:"铜采用面心立方最密堆积，每个铜原子周围有 12 个最近邻原子。", descript:"铜是金属晶体，金属阳离子与自由电子通过金属键结合，具有导电、导热和延展性。"
-    };
+      note:"铜采用面心立方最密堆积，每个铜原子周围有 12 个最近邻原子。",
+      descript:"铜是金属晶体，金属阳离子与自由电子通过金属键结合，具有导电、导热和延展性。" };
   }
 
-  const MODELS = { nacl:buildNaCl(), diamond:buildDiamond(), dryice:buildDryIce(), copper:buildCopper() };
+  const MODELS = {
+    nacl:buildNaCl(),
+    cscl:buildCsCl(),
+    caf2:buildCaF2(),
+    zns:diamondLike("zns"),
+    sio2:buildSiO2(),
+    diamond:diamondLike("diamond"),
+    diamond111:buildDiamond111(),
+    graphite:buildGraphite(),
+    dryice:buildDryIce(),
+    copper:buildCopper()
+  };
   const params = new URLSearchParams(location.search);
   const initial = MODELS[params.get("crystal")] ? params.get("crystal") : "nacl";
   let current = initial;
@@ -348,6 +519,9 @@
   const legend = document.getElementById("legend");
   const stageLegend = document.getElementById("stageLegend");
   const cellToggle = document.getElementById("cellToggle");
+  const coordBtn = document.getElementById("coordBtn");
+  const view111Btn = document.getElementById("view111Btn");
+  const coordResult = document.getElementById("coordResult");
   const resetViewBtn = document.getElementById("resetViewBtn");
   const fullscreenBtn = document.getElementById("fullscreenBtn");
   const typeButtons = Array.from(document.querySelectorAll(".type-btn"));
@@ -357,6 +531,8 @@
   let yawTarget=yaw,pitchTarget=pitch,distanceTarget=distance;
   let dragging=false,lastX=0,lastY=0,lastFrame=performance.now();
   let viewMat=null,projMat=null;
+  let screenAtoms=[], selectedAtom=null, neighborIndices=[], inspectMode=false;
+  let dragStartX=0, dragStartY=0, dragMoved=false;
 
   function syncUI() {
     formulaEl.textContent = model.formula;
@@ -375,18 +551,26 @@
     factExamples.textContent = model.examples;
     sideNote.textContent = model.note;
     legend.innerHTML = model.legend.map(([label,color]) => `<span class="legend-item"><i class="legend-dot" style="background:${color};box-shadow:0 0 9px ${color}88"></i>${label}</span>`).join("");
-    stageLegend.innerHTML = legend.innerHTML + '<span class="legend-item"><i class="legend-dot" style="background:transparent;border:1px solid rgba(103,232,249,.4)"></i>晶胞框</span>';
-    cellToggle.setAttribute("aria-pressed", showCell ? "true" : "false");
+    stageLegend.innerHTML = legend.innerHTML + (model.cellLines?.length ? '<span class="legend-item"><i class="legend-dot" style="background:transparent;border:1px solid rgba(103,232,249,.4)"></i>晶胞框</span>' : '');
+    const hasCell=!!(model.cellLines&&model.cellLines.length);
+    cellToggle.disabled=!hasCell; cellToggle.style.opacity=hasCell?"1":".38";
+    cellToggle.setAttribute("aria-pressed", showCell&&hasCell ? "true" : "false");
+    coordBtn.setAttribute("aria-pressed",inspectMode?"true":"false");
+    view111Btn.classList.toggle("hidden",!(current==="diamond"||current==="diamond111"));
+    view111Btn.textContent=current==="diamond111"?"返回晶胞":"沿 (111) 看";
     for (const btn of typeButtons) {
-      const on=btn.dataset.crystal===current;
+      const on=btn.dataset.crystal===current || (btn.dataset.crystal==="diamond"&&current==="diamond111");
       btn.classList.toggle("active",on);
       btn.setAttribute("aria-pressed",on?"true":"false");
     }
+    if(coordResult)coordResult.innerHTML=selectedAtom!==null?"":(inspectMode?"配位模式：点击任意原子查看最近邻":"配位模式：点击任意原子查看最近邻");
   }
 
   function setModel(key) {
     if (!MODELS[key] || key===current) return;
     current=key; model=MODELS[key];
+    selectedAtom=null;neighborIndices=[];
+    if(coordResult)coordResult.innerHTML=inspectMode?"配位模式：点击任意原子查看最近邻":"";
     yawTarget=model.camera.yaw; pitchTarget=model.camera.pitch; distanceTarget=model.camera.distance;
     syncUI();
     stageCard.classList.remove("is-switching");
@@ -411,22 +595,55 @@
   function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
   function lighten(hex,f){const n=parseInt(hex.slice(1),16);return `rgb(${Math.round(((n>>16)&255)+(255-((n>>16)&255))*f)},${Math.round(((n>>8)&255)+(255-((n>>8)&255))*f)},${Math.round((n&255)+(255-(n&255))*f)})`;}
   function darken(hex,f){const n=parseInt(hex.slice(1),16);return `rgb(${Math.round(((n>>16)&255)*(1-f))},${Math.round(((n>>8)&255)*(1-f))},${Math.round((n&255)*(1-f))})`;}
-  function atom(a) {
+  function atom(a,index,opts={}) {
     const p=project(a.pos); if(!p)return;
-    const r=Math.max(7,a.radius*p.scale*.95);
-    ctx.save(); ctx.globalCompositeOperation="lighter";
+    const r=Math.max(6,a.radius*p.scale*.95);
+    screenAtoms.push({index,x:p.x,y:p.y,r:r+7});
+    ctx.save();
+    if (opts.dim) ctx.globalAlpha=.16;
+    if (opts.selected||opts.neighbor) {
+      ctx.beginPath();ctx.arc(p.x,p.y,r+5,0,TAU);ctx.strokeStyle=opts.selected?"rgba(244,114,182,.95)":"rgba(103,232,249,.8)";ctx.lineWidth=opts.selected?2.4:1.6;ctx.setLineDash(opts.selected?[]:[3,3]);ctx.stroke();ctx.setLineDash([]);
+    }
+    ctx.globalCompositeOperation="lighter";
     const halo=ctx.createRadialGradient(p.x,p.y,r*.2,p.x,p.y,r*2.2);
-    halo.addColorStop(0,hexA(a.color,.2)); halo.addColorStop(1,hexA(a.color,0));
-    ctx.fillStyle=halo; ctx.beginPath(); ctx.arc(p.x,p.y,r*2.2,0,TAU); ctx.fill(); ctx.restore();
+    halo.addColorStop(0,hexA(a.color,.22)); halo.addColorStop(1,hexA(a.color,0));
+    ctx.fillStyle=halo; ctx.beginPath(); ctx.arc(p.x,p.y,r*2.2,0,TAU); ctx.fill();
+    ctx.globalCompositeOperation="source-over";
     const g=ctx.createRadialGradient(p.x-r*.3,p.y-r*.35,r*.1,p.x,p.y,r);
     g.addColorStop(0,lighten(a.color,.55)); g.addColorStop(.45,a.color); g.addColorStop(1,darken(a.color,.45));
     ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,r,0,TAU); ctx.fill();
     ctx.strokeStyle="rgba(255,255,255,.26)"; ctx.lineWidth=1; ctx.stroke();
     if (a.label && r > 10) {
       ctx.fillStyle=a.labelColor||"#08111e";
-      ctx.font=`600 ${Math.max(8,r*.72)}px "Segoe UI","Microsoft YaHei",sans-serif`;
+      ctx.font=`600 ${Math.max(7,r*.68)}px "Segoe UI","Microsoft YaHei",sans-serif`;
       ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(a.label,p.x,p.y+.5);
     }
+    ctx.restore();
+  }
+
+  function neighborsOf(model,index){
+    const a=model.atoms[index]; if(!a)return [];
+    const out=[];
+    model.atoms.forEach((b,j)=>{
+      if(j===index)return;
+      const d=dist(a.pos,b.pos);
+      if(d>(model.coordCutoff||1.1))return;
+      if(model.coordMode==="opposite" && b.species===a.species)return;
+      if(model.coordMode==="molecule" && b.group===a.group)return;
+      out.push({index:j,d});
+    });
+    out.sort((x,y)=>x.d-y.d);
+    return out.map(x=>x.index);
+  }
+
+  function selectAtom(index){
+    selectedAtom=index;neighborIndices=neighborsOf(model,index);
+    const a=model.atoms[index]; if(!a||!coordResult)return;
+    const molecule=model.coordMode==="molecule";
+    const labels=[...new Set(neighborIndices.map(i=>molecule?"CO₂ 分子":model.atoms[i].label))];
+    const subject=molecule?"CO₂ 分子":a.label;
+    const text=neighborIndices.length?`<b>${subject}</b> 周围有 <b>${neighborIndices.length}</b> 个 ${labels.join(" / ")} · ${model.coordShape}`:`<b>${subject}</b> 在当前视图中没有找到最近邻，换一个原子试试`;
+    coordResult.innerHTML=text;
   }
 
   function render() {
@@ -435,25 +652,44 @@
     const eye=[d*Math.cos(pitch)*Math.sin(yaw),d*Math.sin(pitch),d*Math.cos(pitch)*Math.cos(yaw)];
     viewMat=lookAt(eye,[0,0,0],[0,1,0]); projMat=perspective(FOV,aspect,.1,100);
     ctx.clearRect(0,0,vw,vh);
+    screenAtoms=[];
 
-    if (showCell) {
-      const s=model.cellScale || 1;
-      for (const [i,j] of CUBE_EDGES) {
-        const a=project(CUBE[i].map(v=>v*s)), b=project(CUBE[j].map(v=>v*s));
+    if (showCell && model.cellLines) {
+      for (const [p1,p2] of model.cellLines) {
+        const a=project(p1), b=project(p2);
         if(!a||!b)continue;
         ctx.save(); ctx.strokeStyle="rgba(103,232,249,.28)"; ctx.lineWidth=1.1; ctx.setLineDash([5,5]);
         ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.restore();
       }
     }
 
+    const activeSet = selectedAtom!==null ? new Set([selectedAtom,...neighborIndices]) : null;
     for (const [i,j,color,width] of model.bonds) {
       const a=project(model.atoms[i].pos), b=project(model.atoms[j].pos);
       if(!a||!b)continue;
-      ctx.strokeStyle=color; ctx.lineWidth=width; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+      const active=!activeSet||activeSet.has(i)&&activeSet.has(j);
+      ctx.save();ctx.globalAlpha=active?1:.12;
+      ctx.strokeStyle=color; ctx.lineWidth=width; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();ctx.restore();
+    }
+
+    if (selectedAtom!==null) {
+      const s=project(model.atoms[selectedAtom].pos);
+      if (s) {
+        for (const ni of neighborIndices) {
+          const p=project(model.atoms[ni].pos); if(!p)continue;
+          ctx.save();ctx.strokeStyle="rgba(103,232,249,.82)";ctx.lineWidth=1.35;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(p.x,p.y);ctx.stroke();ctx.restore();
+        }
+      }
     }
 
     const atoms=model.atoms.map((a,index)=>({a,index,depth:project(a.pos)?.depth||0})).sort((x,y)=>y.depth-x.depth);
-    for (const item of atoms) atom(item.a);
+    for (const item of atoms) {
+      atom(item.a,item.index,{
+        selected:item.index===selectedAtom,
+        neighbor:activeSet?activeSet.has(item.index)&&item.index!==selectedAtom:false,
+        dim:activeSet?!activeSet.has(item.index):false
+      });
+    }
   }
 
   function resize(){
@@ -472,13 +708,29 @@
   }
 
   for(const btn of typeButtons) btn.addEventListener("click",()=>setModel(btn.dataset.crystal));
-  cellToggle.addEventListener("click",()=>{ showCell=!showCell; syncUI(); });
+  cellToggle.addEventListener("click",()=>{ if(!model.cellLines?.length)return; showCell=!showCell; syncUI(); });
+  coordBtn.addEventListener("click",()=>{
+    inspectMode=!inspectMode;selectedAtom=null;neighborIndices=[];
+    stageView.classList.toggle("inspect",inspectMode);
+    if(coordResult)coordResult.innerHTML=inspectMode?"配位模式：点击任意原子查看最近邻":"";
+    syncUI();
+  });
+  view111Btn.addEventListener("click",()=>{ setModel(current==="diamond111"?"diamond":"diamond111"); });
   resetViewBtn.addEventListener("click",()=>{ yawTarget=model.camera.yaw; pitchTarget=model.camera.pitch; distanceTarget=model.camera.distance; });
   fullscreenBtn.addEventListener("click",async()=>{ try{ if(!document.fullscreenElement) await stageCard.requestFullscreen(); else await document.exitFullscreen(); }catch(e){} });
   document.addEventListener("fullscreenchange",()=>{ fullscreenBtn.title=document.fullscreenElement?"退出全屏":"全屏观察"; setTimeout(resize,60); });
-  stageView.addEventListener("pointerdown",e=>{ if(e.button!==undefined&&e.button!==0)return; dragging=true;lastX=e.clientX;lastY=e.clientY;stageView.classList.add("dragging");stageView.setPointerCapture?.(e.pointerId);e.preventDefault(); });
-  stageView.addEventListener("pointermove",e=>{ if(!dragging)return; const dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;yaw-=dx*.006;pitch=clamp(pitch+dy*.006,-1.3,1.3);yawTarget=yaw;pitchTarget=pitch; });
-  function endDrag(e){ if(!dragging)return;dragging=false;stageView.classList.remove("dragging");try{stageView.releasePointerCapture?.(e.pointerId);}catch(err){} }
+  stageView.addEventListener("pointerdown",e=>{ if(e.button!==undefined&&e.button!==0)return; dragging=true;lastX=e.clientX;lastY=e.clientY;dragStartX=e.clientX;dragStartY=e.clientY;dragMoved=false;stageView.classList.add("dragging");stageView.setPointerCapture?.(e.pointerId);e.preventDefault(); });
+  stageView.addEventListener("pointermove",e=>{ if(!dragging)return; const dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;if(Math.hypot(e.clientX-dragStartX,e.clientY-dragStartY)>5)dragMoved=true;yaw-=dx*.006;pitch=clamp(pitch+dy*.006,-1.3,1.3);yawTarget=yaw;pitchTarget=pitch; });
+  function endDrag(e){
+    if(!dragging)return;
+    dragging=false;stageView.classList.remove("dragging");try{stageView.releasePointerCapture?.(e.pointerId);}catch(err){}
+    if(inspectMode&&!dragMoved){
+      const rect=stageView.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;
+      let hit=null,best=1e9;
+      for(const s of screenAtoms){const d=Math.hypot(x-s.x,y-s.y);if(d<s.r&&d<best){best=d;hit=s;}}
+      if(hit)selectAtom(hit.index);
+    }
+  }
   stageView.addEventListener("pointerup",endDrag);stageView.addEventListener("pointercancel",endDrag);stageView.addEventListener("pointerleave",e=>{if(e.buttons===0)endDrag(e);});
   stageView.addEventListener("wheel",e=>{e.preventDefault();distanceTarget=clamp(distanceTarget*Math.exp(e.deltaY*.0012),6.2,14);},{passive:false});
   stageView.addEventListener("dblclick",()=>{yawTarget=model.camera.yaw;pitchTarget=model.camera.pitch;distanceTarget=model.camera.distance;});
