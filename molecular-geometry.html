@@ -257,6 +257,12 @@
   .fact-row strong { color: #d8e9ff; font-size: 10.5px; font-weight: 550; text-align: right; line-height: 1.45; }
   .fact-row strong em { font-style: normal; color: var(--cyan); font-family: var(--mono); }
 
+  .vsepr-calc{margin-top:10px;padding:9px 10px;border:1px solid rgba(103,232,249,.15);border-radius:9px;background:rgba(103,232,249,.035)}
+  .vsepr-calc-head{display:flex;justify-content:space-between;gap:8px;color:rgba(103,232,249,.7);font-size:8.5px;letter-spacing:.06em}
+  .vsepr-calc-head span{color:var(--dim);letter-spacing:0;font-size:7.5px}
+  .vsepr-expr{margin-top:4px;color:rgba(148,163,184,.72);font-size:8px;line-height:1.5}
+  .vsepr-line{margin-top:5px;color:#dffcff;font-family:var(--mono);font-size:10px;line-height:1.45}
+  .vsepr-result{margin-top:3px;color:#bdfbf1;font-size:8.5px;line-height:1.5}
   .equation {
     margin-top: 12px;
     padding: 12px 13px;
@@ -656,13 +662,16 @@
   .must-pitfalls span{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border:1px solid rgba(251,191,36,.13);border-radius:6px;background:rgba(251,191,36,.035);color:rgba(217,201,154,.9);font-size:8.5px}
   .must-pitfalls b{color:#fde68a;font-weight:550}
 
-  .example-bar{position:relative;z-index:6;display:flex;align-items:center;gap:5px;overflow-x:auto;padding:8px 20px 0;scrollbar-width:none}
-  .example-bar::-webkit-scrollbar{display:none}
+  .example-bar{position:relative;z-index:6;display:flex;align-items:center;gap:7px;overflow:hidden;padding:8px 20px 0}
+  .example-list{display:flex;align-items:center;gap:5px;overflow-x:auto;scrollbar-width:none;min-width:0}
+  .example-list::-webkit-scrollbar{display:none}
   .example-label{flex:0 0 auto;color:rgba(94,114,140,.82);font-size:8.5px;letter-spacing:.08em;margin-right:2px}
   .example-chip{display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;height:27px;padding:0 9px;border:1px solid rgba(148,163,184,.12);border-radius:7px;background:rgba(4,10,20,.36);color:#c8e4f5;font-size:9px;white-space:nowrap}
   .example-chip b{color:#e8fbff;font-weight:550;font-family:var(--mono);font-size:9px}
   .example-chip small{color:rgba(103,232,249,.58);font-size:8px}
   .example-chip.ext{border-color:rgba(251,191,36,.16);background:rgba(251,191,36,.035)}.example-chip.ext small{color:rgba(251,191,36,.72)}
+  .example-chip.active{border-color:rgba(103,232,249,.55);background:rgba(103,232,249,.1);box-shadow:0 0 12px rgba(34,211,238,.08)}
+  button.example-chip{cursor:pointer;font-family:inherit}
   @media(max-width:680px){.example-bar{padding:7px 13px 0}.example-chip{height:23px;font-size:7.5px}.example-chip b{font-size:8px}}
 
   @media (max-width: 1120px) {
@@ -797,18 +806,9 @@
       </div>
 
 
-      <div class="example-bar" aria-label="常见分子和离子示例">
+      <div class="example-bar" aria-label="当前构型的常见分子和离子示例">
         <span class="example-label">常见例子</span>
-        <span class="example-chip"><b>CO₂ / N₂O / CS₂ / HCN</b><small>直线形</small></span>
-        <span class="example-chip"><b>BF₃ / CO₃²⁻ / NO₃⁻ / SO₃</b><small>平面三角形</small></span>
-        <span class="example-chip"><b>SO₂ / O₃</b><small>V 形</small></span>
-        <span class="example-chip"><b>CH₄ / CCl₄ / NH₄⁺ / SO₄²⁻</b><small>正四面体</small></span>
-        <span class="example-chip"><b>NH₃ / H₃O⁺ / PCl₃</b><small>三角锥</small></span>
-        <span class="example-chip"><b>H₂O / H₂S</b><small>V 形</small></span>
-        <span class="example-chip"><b>CHCl₃</b><small>四面体 · 极性</small></span>
-        <span class="example-chip ext"><b>PCl₅</b><small>三角双锥</small></span>
-        <span class="example-chip ext"><b>SF₆</b><small>八面体</small></span>
-        <span class="example-chip ext"><b>XeF₄</b><small>平面正方形</small></span>
+        <div class="example-list" id="exampleList"></div>
       </div>
       <div class="stage-view" id="stageView" aria-label="可拖动旋转的分子构型三维视图">
         <div class="stage-glow" aria-hidden="true"></div>
@@ -856,6 +856,12 @@
             <span class="op">+</span>
             <em id="eqLone">0</em><span class="op">孤对</span>
           </div>
+        </div>
+        <div class="vsepr-calc">
+          <div class="vsepr-calc-head">VSEPR 计算 <span>价层电子对数</span></div>
+          <div class="vsepr-expr">n =（中心原子价电子数 + 配体提供电子数 − 电荷）÷ 2</div>
+          <div class="vsepr-line" id="vseprLine">(4 + 4×1 − 0) ÷ 2 = 4</div>
+          <div class="vsepr-result" id="vseprResult">σ键 4 + 孤对 0 = 4 个电子域 → 四面体</div>
         </div>
         <p class="note" id="sideNote">没有孤对电子，电子域构型与分子构型一致。</p>
       </section>
@@ -971,7 +977,9 @@
 
   const MODELS = {
     linear: {
-      key: "linear", name: "直线形", formula: "BeCl₂", molecule: "氯化铍", axe: "AX₂",
+      key: "linear",
+      valence: 2, ligandElectrons: 1, charge: 0,
+      name: "直线形", formula: "BeCl₂", molecule: "氯化铍", axe: "AX₂",
       center: "Be", ligand: "Cl", centerColor: "#fbbf24", ligandColor: "#86efac",
       dirs: [[1, 0, 0], [-1, 0, 0]], loneDirs: [], lone: 0,
       electronGeometry: "直线形", molecularGeometry: "直线形",
@@ -982,7 +990,9 @@
       note: "没有孤对电子，电子域构型与分子构型一致。"
     },
     planar: {
-      key: "planar", name: "平面三角形", formula: "BF₃", molecule: "三氟化硼", axe: "AX₃",
+      key: "planar",
+      valence: 3, ligandElectrons: 1, charge: 0,
+      name: "平面三角形", formula: "BF₃", molecule: "三氟化硼", axe: "AX₃",
       center: "B", ligand: "F", centerColor: "#fbbf24", ligandColor: "#a5f3fc",
       dirs: [[1, 0, 0], [-.5, 0, Math.sqrt(3) / 2], [-.5, 0, -Math.sqrt(3) / 2]],
       loneDirs: [], lone: 0,
@@ -994,7 +1004,9 @@
       note: "没有孤对电子，三个 B—F 键完全等价。"
     },
     tetra: {
-      key: "tetra", name: "正四面体形", formula: "CH₄", molecule: "甲烷", axe: "AX₄",
+      key: "tetra",
+      valence: 4, ligandElectrons: 1, charge: 0,
+      name: "正四面体形", formula: "CH₄", molecule: "甲烷", axe: "AX₄",
       center: "C", ligand: "H", centerColor: "#cbd5e1", ligandColor: "#f8fafc",
       dirs: TETRA, loneDirs: [], lone: 0,
       electronGeometry: "四面体", molecularGeometry: "正四面体形",
@@ -1005,7 +1017,9 @@
       note: "没有孤对电子，四个 C—H 键完全等价，分子构型就是正四面体。"
     },
     pyramidal: {
-      key: "pyramidal", name: "三角锥形", formula: "NH₃", molecule: "氨", axe: "AX₃E",
+      key: "pyramidal",
+      valence: 5, ligandElectrons: 1, charge: 0,
+      name: "三角锥形", formula: "NH₃", molecule: "氨", axe: "AX₃E",
       center: "N", ligand: "H", centerColor: "#93c5fd", ligandColor: "#f8fafc",
       dirs: NH3_BONDS, loneDirs: [[0, 1, 0]], lone: 1,
       electronGeometry: "四面体", molecularGeometry: "三角锥形",
@@ -1016,7 +1030,9 @@
       note: "孤对电子斥力更大，把三个 N—H 键压缩到约 107°；分子骨架是三角锥。"
     },
     bent: {
-      key: "bent", name: "V 形", formula: "H₂O", molecule: "水", axe: "AX₂E₂",
+      key: "bent",
+      valence: 6, ligandElectrons: 1, charge: 0,
+      name: "V 形", formula: "H₂O", molecule: "水", axe: "AX₂E₂",
       center: "O", ligand: "H", centerColor: "#fca5a5", ligandColor: "#f8fafc",
       dirs: H2O_BONDS, loneDirs: [[0, .6, .8], [0, .6, -.8]], lone: 2,
       electronGeometry: "四面体", molecularGeometry: "V 形",
@@ -1027,7 +1043,9 @@
       note: "两对孤对电子的斥力更强，把 H—O—H 键角压缩到约 104.5°，形成 V 形。"
     },
     bipyramidal: {
-      key: "bipyramidal", name: "三角双锥形", formula: "PCl₅", molecule: "五氯化磷", axe: "AX₅",
+      key: "bipyramidal",
+      valence: 5, ligandElectrons: 1, charge: 0,
+      name: "三角双锥形", formula: "PCl₅", molecule: "五氯化磷", axe: "AX₅",
       center: "P", ligand: "Cl", centerColor: "#fbbf24", ligandColor: "#86efac",
       dirs: [[0,1,0],[0,-1,0],[1,0,0],[-.5,0,Math.sqrt(3)/2],[-.5,0,-Math.sqrt(3)/2]], loneDirs: [], lone: 0,
       electronGeometry: "三角双锥", molecularGeometry: "三角双锥形",
@@ -1038,7 +1056,9 @@
       note: "PCl₅ 是三角双锥形；轴向与赤道方向键角为 90°，三个赤道方向之间为 120°。属于拓展内容。"
     },
     octahedral: {
-      key: "octahedral", name: "八面体形", formula: "SF₆", molecule: "六氟化硫", axe: "AX₆",
+      key: "octahedral",
+      valence: 6, ligandElectrons: 1, charge: 0,
+      name: "八面体形", formula: "SF₆", molecule: "六氟化硫", axe: "AX₆",
       center: "S", ligand: "F", centerColor: "#fbbf24", ligandColor: "#a5f3fc",
       dirs: [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]], loneDirs: [], lone: 0,
       electronGeometry: "八面体", molecularGeometry: "八面体形",
@@ -1047,10 +1067,44 @@
       view: { yaw: .78, pitch: .3, distance: 8.4 },
       desc: "六个电子域沿三个坐标轴的正负方向伸展，形成八面体。",
       note: "SF₆ 是八面体形；相邻键角 90°，相对方向 180°。属于拓展内容。"
+    },
+    xef4: {
+      key: "squarePlanar", tabKey: "octahedral", exampleGroup: "octahedral",
+      name: "平面正方形", formula: "XeF₄", molecule: "四氟化氙", axe: "AX₄E₂",
+      center: "Xe", ligand: "F", centerColor: "#c4b5fd", ligandColor: "#a5f3fc",
+      dirs: [[1,0,0],[-1,0,0],[0,0,1],[0,0,-1]],
+      loneDirs: [[0,1,0],[0,-1,0]], lone: 2,
+      electronGeometry: "八面体", molecularGeometry: "平面正方形",
+      hybrid: "sp³d²", polarity: "非极性分子",
+      angle: "90°", ideal: "90°", example: "XeF₄",
+      valence: 8, ligandElectrons: 1, charge: 0,
+      view: { yaw: .72, pitch: .42, distance: 8.2 },
+      desc: "XeF₄ 的 6 个电子域中，4 个成键电子对在平面内，2 对孤对在轴向；去掉孤对后是平面正方形。",
+      note: "XeF₄ 是八面体电子域的特例：4 个成键电子对 + 2 对孤对，分子构型为平面正方形，键角 90°，非极性。"
     }
   };
 
-  const MODEL_ORDER = ["linear", "planar", "tetra", "pyramidal", "bent", "bipyramidal", "octahedral"];
+
+  const EXAMPLES = {
+    linear: [{ text: "CO₂ / N₂O / CS₂ / HCN", tag: "直线形" }],
+    planar: [{ text: "BF₃ / SO₃ / CO₃²⁻ / NO₃⁻", tag: "平面三角形" }],
+    tetra: [
+      { text: "CH₄ / CCl₄ / NH₄⁺ / SO₄²⁻", tag: "正四面体" },
+      { text: "CHCl₃", tag: "四面体 · 极性" }
+    ],
+    pyramidal: [{ text: "NH₃ / H₃O⁺ / PCl₃", tag: "三角锥" }],
+    bent: [
+      { text: "H₂O / H₂S", tag: "V 形" },
+      { text: "SO₂ / O₃", tag: "V 形 · 3 电子域" }
+    ],
+    bipyramidal: [{ text: "PCl₅", tag: "三角双锥" }],
+    octahedral: [
+      { text: "SF₆", tag: "八面体" },
+      { text: "XeF₄", tag: "平面正方形 · 八面体特例", ext: true, model: "xef4" }
+    ]
+  };
+
+  const MODEL_ORDER = ["linear", "planar", "tetra", "pyramidal", "bent", "bipyramidal", "octahedral", "xef4"];
   const initialFromQuery = new URLSearchParams(window.location.search).get("model");
   let current = MODELS[initialFromQuery] ? initialFromQuery : "tetra";
   let model = MODELS[current];
@@ -1077,6 +1131,9 @@
   const factMolecularGeom = document.getElementById("factMolecularGeom");
   const factHybrid = document.getElementById("factHybrid");
   const factPolarity = document.getElementById("factPolarity");
+  const exampleList = document.getElementById("exampleList");
+  const vseprLine = document.getElementById("vseprLine");
+  const vseprResult = document.getElementById("vseprResult");
   const factExample = document.getElementById("factExample");
   const eqTotal = document.getElementById("eqTotal");
   const eqBonds = document.getElementById("eqBonds");
@@ -1123,6 +1180,18 @@
     factMolecularGeom.textContent = model.molecularGeometry;
     factHybrid.textContent = model.hybrid;
     factPolarity.textContent = model.polarity;
+    const exampleGroup = model.exampleGroup || model.key;
+    const coreValence = model.valence ?? 4;
+    const ligandElectrons = model.ligandElectrons ?? 1;
+    const charge = model.charge ?? 0;
+    const calcTotal = Math.round((coreValence + model.dirs.length * ligandElectrons - charge) / 2);
+    if(vseprLine)vseprLine.textContent = `(${coreValence} + ${model.dirs.length}×${ligandElectrons} − ${charge}) ÷ 2 = ${calcTotal}`;
+    if(vseprResult)vseprResult.textContent = `σ键 ${model.dirs.length} + 孤对 ${lone} = ${calcTotal} 个电子域 → ${model.electronGeometry}`;
+    exampleList.innerHTML = (EXAMPLES[exampleGroup] || []).map(ex => {
+      const cls = `example-chip${ex.ext ? " ext" : ""}${ex.model && ex.model === current ? " active" : ""}`;
+      if (ex.model) return `<button class="${cls}" type="button" data-example="${ex.model}"><b>${ex.text}</b><small>${ex.tag}</small></button>`;
+      return `<span class="${cls}"><b>${ex.text}</b><small>${ex.tag}</small></span>`;
+    }).join("");
     factExample.textContent = model.example;
     eqTotal.textContent = String(model.dirs.length + lone);
     eqBonds.textContent = String(model.dirs.length);
@@ -1132,7 +1201,7 @@
     loneToggle.setAttribute("aria-pressed", showLone && lone > 0 ? "true" : "false");
     loneToggleText.textContent = lone === 0 ? "无孤对" : (showLone ? "孤对电子" : "已隐藏孤对");
     for (const btn of geomButtons) {
-      const on = btn.dataset.model === current;
+      const on = btn.dataset.model === (model.tabKey || current);
       btn.classList.toggle("active", on);
       btn.setAttribute("aria-pressed", on ? "true" : "false");
     }
@@ -1496,6 +1565,10 @@
   for (const btn of geomButtons) {
     btn.addEventListener("click", () => setModel(btn.dataset.model));
   }
+  exampleList.addEventListener("click", (e) => {
+    const chip = e.target.closest("[data-example]");
+    if (chip) setModel(chip.dataset.example);
+  });
   loneToggle.addEventListener("click", () => {
     if (model.lone === 0) return;
     showLone = !showLone;
