@@ -17,7 +17,7 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 
 | 页面 | 内容 | 文件 |
 | --- | --- | --- |
-| 平台首页 | 平台介绍、八个模块导航、知识地图、鲸鱼娘助教 | `index.html` |
+| 平台首页 | 平台介绍、九个模块导航、知识地图、鲸鱼娘助教 | `index.html` |
 | 电子云杂化实验室 | sp / sp² / sp³ 杂化过程、C–C 成键阶段、键角、空间构型 | `electron-cloud.html` |
 | 分子空间构型 | VSEPR、孤对电子、杂化、极性、键角比较与必背构型表 | `molecular-geometry.html` |
 | C–C 成键过程 | 乙烷/乙烯/乙炔的 σ 键与 π 键形成过程 | `bond-formation.html` |
@@ -27,6 +27,7 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 | 化学实验装置 | O₂、CO₂、Cl₂、NH₃ 的发生、除杂、干燥、收集、尾气与纠错 | `experiment-apparatus.html` |
 | 反应观察台 | H₂O₂、KMnO₄、K₂FeO₄ 的反应、现象与电子转移 | `reaction-gallery.html` |
 | 有机官能团与同分异构 | 官能团图鉴、代表物性质、同分异构体对比 | `organic-groups.html` |
+| 酸碱滴定与 pH | 手动滴定、指示剂、pH 曲线、终点判断 | `acid-base-titration.html` |
 | 版权与使用条款 | 权利归属、允许/禁止行为、授权申请、官方版本说明 | `rights.html` |
 
 ## 已上线模块
@@ -99,6 +100,13 @@ https://chemleon6657.github.io/chemistry-visual-lab/
 - 高锰酸钾酸性/中性/强碱性三介质对比。
 - 高铁酸钾的氯气氧化法、次氯酸盐氧化法、干法及酸性分解/净水。
 - 支持 `?sub=kmno4&id=kmno4-media` 参数。
+
+### 酸碱滴定与 pH
+
+- 强酸–强碱（HCl + NaOH）与弱酸–强碱（CH₃COOH + NaOH）两种体系。
+- 半滴、1 滴、1 mL 和自动滴定，实时更新滴定管读数与锥形瓶颜色。
+- 酚酞 / 甲基橙切换，显示指示剂变色范围与终点状态。
+- 实时 pH 曲线、等当点、当前点；可调 c(酸)、V(酸)、c(NaOH)。
 
 ### 有机官能团与同分异构
 

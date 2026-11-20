@@ -466,7 +466,7 @@
   .modules { margin-bottom: 92px; }
   .module-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
   }
   .module-card {
@@ -958,7 +958,7 @@
           <a class="btn btn-ghost" href="#modules">浏览模块</a>
         </div>
         <div class="hero-stats" aria-label="平台概况">
-          <div><strong>08</strong>已上线模块</div>
+          <div><strong>09</strong>已上线模块</div>
           <div><strong>5</strong>种空间构型</div>
           <div><strong>0</strong>外部依赖</div>
         </div>
@@ -981,7 +981,7 @@
     </section>
 
     <section class="stat-strip" aria-label="平台数据">
-      <div><span>当前版本</span><strong>八模块 · 结构、反应与有机</strong></div>
+      <div><span>当前版本</span><strong>九模块 · 结构、反应与滴定</strong></div>
       <div><span>适配场景</span><strong>课堂演示 / 自主探索</strong></div>
       <div><span>运行方式</span><strong>浏览器直接打开</strong></div>
       <div class="stat-note"><span>维护方式</span><strong>GitHub Pages 长期托管</strong></div>
@@ -993,7 +993,7 @@
           <div class="section-kicker">可视化模块</div>
           <h2 id="modules-title">从一个页面开始</h2>
         </div>
-        <p>八个模块已经上线，覆盖轨道杂化、分子构型、晶体结构、反应机理、元素周期律、实验装置、反应观察和有机官能团。</p>
+        <p>九个模块已经上线，覆盖轨道杂化、分子构型、晶体结构、反应机理、元素周期律、实验装置、反应观察、有机官能团和酸碱滴定。</p>
       </div>
 
       <div class="module-grid">
@@ -1221,6 +1221,33 @@
           </div>
         </a>
 
+
+        <a class="module-card" href="acid-base-titration.html" aria-label="打开酸碱滴定与 pH 模块">
+          <div class="module-art">
+            <div class="module-art-label"><i style="background:#67e8f9;box-shadow:0 0 8px #67e8f9"></i>ACID–BASE / PH</div>
+            <svg class="art-svg" viewBox="0 0 300 180" fill="none" aria-hidden="true">
+              <rect x="150" y="18" width="25" height="88" rx="12" stroke="rgba(198,242,255,.45)"/>
+              <rect x="154" y="24" width="17" height="74" rx="8" fill="rgba(103,232,249,.28)"/>
+              <path d="M145 106h35l-5 16h-25z" stroke="rgba(198,242,255,.38)"/>
+              <path d="M163 122v14" stroke="rgba(198,242,255,.3)" stroke-dasharray="2 4"/>
+              <path d="M154 142 118 172h94l-36-30" stroke="rgba(198,242,255,.42)" stroke-linejoin="round"/>
+              <path d="M126 162h76l-8 10h-60z" fill="rgba(244,114,182,.25)" stroke="rgba(244,114,182,.5)"/>
+              <path d="M36 140c22-8 35 7 54-2s36 7 56-1 43 7 64-4 37 6 54-2" stroke="rgba(103,232,249,.55)" stroke-width="1.4"/>
+              <path d="M38 156h220" stroke="rgba(148,163,184,.18)"/>
+              <text x="36" y="128" fill="rgba(148,163,184,.62)" font-size="7" font-family="Cascadia Code, monospace">pH</text>
+              <text x="216" y="154" fill="rgba(148,163,184,.62)" font-size="7" font-family="Cascadia Code, monospace">V(NaOH)</text>
+            </svg>
+            <div class="coming-label">TITRATE / CURVE / ENDPOINT</div>
+          </div>
+          <div class="module-body">
+            <div class="module-top"><span class="status-pill live">已上线</span><span class="module-num">MODULE 09</span></div>
+            <h3>酸碱滴定与 pH</h3>
+            <p>手动滴加、指示剂变色、pH 曲线与终点判断；强酸强碱和弱酸强碱两种体系。</p>
+            <div class="tag-row"><span class="tag">滴定</span><span class="tag">pH 曲线</span><span class="tag">酚酞</span><span class="tag">终点</span></div>
+            <div class="open-link">打开模块 <span aria-hidden="true">↗</span></div>
+          </div>
+        </a>
+
         <a class="module-card" href="#map" aria-label="查看知识地图">
           <div class="module-art">
             <div class="module-art-label"><i style="background:#5eead4;box-shadow:0 0 8px #5eead4"></i>LEARNING MAP</div>
@@ -1236,12 +1263,12 @@
               <text x="181" y="116" fill="rgba(148,163,184,.6)" font-size="7" font-family="Cascadia Code, monospace">REACTION</text>
               <text x="231" y="92" fill="rgba(148,163,184,.6)" font-size="7" font-family="Cascadia Code, monospace">LAB</text>
             </svg>
-            <div class="coming-label">8 MODULES / ONE PATH</div>
+            <div class="coming-label">9 MODULES / ONE PATH</div>
           </div>
           <div class="module-body">
             <div class="module-top"><span class="status-pill live">导览</span><span class="module-num">LEARNING PATH</span></div>
             <h3>知识地图</h3>
-            <p>从位置到结构，从反应到实验；把八个模块串成一条可以走通的路。</p>
+            <p>从位置到结构，从反应到实验；把九个模块串成一条可以走通的路。</p>
             <div class="tag-row"><span class="tag">路径</span><span class="tag">连接</span><span class="tag">导览</span></div>
             <div class="open-link">查看地图 <span aria-hidden="true">↓</span></div>
           </div>
@@ -1253,16 +1280,16 @@
     <section class="knowledge" id="map" aria-labelledby="map-title">
       <div class="section-head">
         <div><div class="section-kicker">知识地图</div><h2 id="map-title">从位置，<br>一路走到反应。</h2></div>
-        <p>结构决定性质，性质决定反应；八张页面不是孤岛，而是一条可以走通的路。</p>
+        <p>结构决定性质，性质决定反应；九张页面不是孤岛，而是一条可以走通的路。</p>
       </div>
       <div class="knowledge-board">
         <div class="knowledge-canvas">
-          <div class="map-kicker">LEARNING PATH / 8 MODULES</div>
+          <div class="map-kicker">LEARNING PATH / 9 MODULES</div>
           <h3 class="map-title">位置 → 结构 → 性质 → 反应</h3>
           <p class="map-sub">点击节点可以直接进入对应模块。</p>
           <div class="map-flow">
             <div class="map-row"><div class="map-row-label">位置与结构</div><div class="map-chain"><a class="map-node" href="periodic-table.html"><i class="mdot" style="--mc:#5eead4"></i>元素周期表</a><span class="map-arrow">→</span><a class="map-node" href="electron-cloud.html"><i class="mdot" style="--mc:#67e8f9"></i>电子云杂化</a><span class="map-arrow">→</span><a class="map-node" href="molecular-geometry.html"><i class="mdot" style="--mc:#a78bfa"></i>分子构型</a><span class="map-arrow">→</span><a class="map-node" href="crystal-structure.html"><i class="mdot" style="--mc:#fbbf24"></i>晶体结构</a></div></div>
-            <div class="map-row"><div class="map-row-label">变化与反应</div><div class="map-chain"><a class="map-node" href="reaction-gallery.html"><i class="mdot" style="--mc:#f472b6"></i>反应观察台</a><span class="map-arrow">→</span><a class="map-node" href="reaction-mechanism.html"><i class="mdot" style="--mc:#fb923c"></i>反应机理</a></div></div>
+            <div class="map-row"><div class="map-row-label">变化与反应</div><div class="map-chain"><a class="map-node" href="reaction-gallery.html"><i class="mdot" style="--mc:#f472b6"></i>反应观察台</a><span class="map-arrow">→</span><a class="map-node" href="acid-base-titration.html"><i class="mdot" style="--mc:#67e8f9"></i>酸碱滴定</a><span class="map-arrow">→</span><a class="map-node" href="reaction-mechanism.html"><i class="mdot" style="--mc:#fb923c"></i>反应机理</a></div></div>
             <div class="map-row"><div class="map-row-label">有机与实验</div><div class="map-chain"><a class="map-node" href="organic-groups.html"><i class="mdot" style="--mc:#5eead4"></i>有机官能团</a><span class="map-arrow">→</span><a class="map-node" href="experiment-apparatus.html"><i class="mdot" style="--mc:#38bdf8"></i>实验装置</a><span class="map-arrow">→</span><a class="map-node" href="bond-formation.html"><i class="mdot" style="--mc:#c084fc"></i>C–C 成键</a></div></div>
           </div>
           <div class="map-foot"><strong>鲸鱼娘建议：</strong>先看“位置与结构”，再看“反应”，最后用实验验证。</div>
@@ -1299,6 +1326,7 @@
       <a href="experiment-apparatus.html">实验装置</a>
       <a href="reaction-gallery.html">反应观察台</a>
       <a href="organic-groups.html">有机官能团</a>
+      <a href="acid-base-titration.html">酸碱滴定与 pH</a>
     </div>
   </footer>
 </div>

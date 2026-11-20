@@ -15,6 +15,7 @@
     ["experiment-apparatus.html", "化学实验装置", "06"],
     ["reaction-gallery.html", "反应观察台", "07"],
     ["organic-groups.html", "有机官能团", "08"],
+    ["acid-base-titration.html", "酸碱滴定", "09"],
     ["bond-formation.html", "C–C 成键", "↗"]
   ];
 
@@ -27,6 +28,7 @@
     "experiment-apparatus.html": "先想气体性质，再决定除杂、干燥和收集。",
     "reaction-gallery.html": "先看价态变化，再看颜色、气体和沉淀。",
     "organic-groups.html": "官能团决定性质，碳骨架决定同分异构。",
+    "acid-base-titration.html": "先快后慢，最后半滴；颜色保持 30 s 才算终点。",
     "bond-formation.html": "成键时注意 σ 键和 π 键的方向。",
     "index.html": "不知道从哪开始？点“元素周期表”，我带你从位置找规律。"
   };
