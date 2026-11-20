@@ -56,7 +56,8 @@
   .apparatus svg{display:block;width:100%;height:auto}
   .stage-legend{position:absolute;left:12px;bottom:10px;z-index:3;display:flex;align-items:center;gap:10px;padding:5px 8px;border:1px solid rgba(148,163,184,.1);border-radius:7px;background:rgba(4,10,20,.52);color:rgba(157,180,204,.8);font-size:8px;backdrop-filter:blur(8px);pointer-events:none}
   .stage-legend i{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px}
-  .drop{opacity:0}.drop.falling{animation:dropFall .55s cubic-bezier(.3,.7,.4,1) both}
+  .drop{opacity:0;transform-box:fill-box;transform-origin:center}.drop.falling{animation:dropFall .72s cubic-bezier(.3,.7,.4,1) both}
+  .stream{opacity:0;transition:opacity .12s ease}.stream.show{opacity:.86}
   .flask-liquid,.burette-liquid{transition:fill .4s ease}
   .curve-panel{padding:12px 16px 10px}
   .curve-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px}
@@ -95,7 +96,7 @@
   .guide{margin-top:14px;padding:10px 14px;border:1px solid rgba(148,163,184,.1);border-radius:12px;background:rgba(7,15,28,.46);color:var(--dim);font-size:9px;line-height:1.6;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
   .guide b{color:#dffcff;font-weight:550}.guide span{color:rgba(148,163,184,.28)}
   .site-footer{display:flex;justify-content:space-between;gap:20px;padding:14px 4px 0;color:rgba(94,114,140,.9);font-size:9.2px;line-height:1.55}.site-footer p{margin:0;max-width:980px}.footer-tag{flex:0 0 auto;color:rgba(103,232,249,.48);white-space:nowrap}
-  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes breathe{0%,100%{opacity:.65;transform:scale(.9)}50%{opacity:1;transform:scale(1.12)}}@keyframes dropFall{0%{opacity:0;transform:translateY(-6px) scale(.5)}18%{opacity:1;transform:translateY(0) scale(1)}80%{opacity:.9;transform:translateY(44px) scale(.9)}100%{opacity:0;transform:translateY(54px) scale(.55)}}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes breathe{0%,100%{opacity:.65;transform:scale(.9)}50%{opacity:1;transform:scale(1.12)}}@keyframes dropFall{0%{opacity:0;transform:translateY(-2px) scale(.5)}12%{opacity:1;transform:translateY(0) scale(1)}82%{opacity:.95;transform:translateY(88px) scale(.92)}100%{opacity:0;transform:translateY(102px) scale(.5)}}
   @media(max-width:1120px){.shell{padding-left:20px;padding-right:20px}.main{grid-template-columns:minmax(0,1fr) 310px}.stage-title{font-size:19px}}
   @media(max-width:960px){.main{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr 1fr}.sidebar .card:nth-child(3),.sidebar .card:nth-child(4){grid-column:1/-1}.apparatus{min-height:390px}.curve-wrap{height:170px}}
   @media(max-width:650px){.shell{padding:14px 12px 10px}.brand-mark{width:44px;height:44px}.brand h1{font-size:clamp(23px,7vw,31px)}.brand p,.header-meta{display:none}.mode-tab{font-size:9px;padding:0 8px}.mode-bar{padding:4px}.stage-panel{padding:12px}.stage-title{font-size:18px}.ph-badge b{font-size:15px}.sidebar{grid-template-columns:1fr}.sidebar .card:nth-child(3),.sidebar .card:nth-child(4){grid-column:auto}.dose-actions{grid-template-columns:1fr 1fr}.dose-actions .auto{grid-column:1/-1}.site-footer{flex-direction:column;gap:5px}}
@@ -150,7 +151,6 @@
               <circle cx="360" cy="341" r="9" fill="#0b1b2e" stroke="rgba(198,242,255,.45)"/><path d="M360 334v14M353 341h14" stroke="rgba(198,242,255,.45)" stroke-width="1.2"/>
               <path d="M352 355h16l-5 20h-6Z" fill="rgba(5,18,32,.65)" stroke="rgba(198,242,255,.32)" stroke-width="1.2"/>
               <path d="M360 376v20" stroke="rgba(198,242,255,.25)" stroke-width="1.2" stroke-dasharray="3 4"/>
-              <circle id="drop" class="drop" cx="360" cy="388" r="4.2" fill="#9feeff"/>
               <text x="400" y="98" fill="rgba(174,220,240,.84)" font-size="10" font-family="Segoe UI, sans-serif" id="baseLabel">NaOH 标准液</text>
               <text x="400" y="113" fill="rgba(103,232,249,.48)" font-size="7.5" font-family="Cascadia Code, monospace" id="baseConc">c = 0.100 mol/L</text>
               <!-- flask -->
@@ -165,11 +165,16 @@
               <path d="M556 302v80q0 12-12 12h-40" stroke="rgba(148,163,184,.42)" stroke-width="2" fill="none"/>
               <rect x="522" y="286" width="68" height="20" rx="6" fill="rgba(8,20,35,.85)" stroke="rgba(103,232,249,.25)"/>
               <text x="556" y="300" text-anchor="middle" fill="rgba(103,232,249,.8)" font-size="7" font-family="Cascadia Code, monospace">pH PROBE</text>
-              <circle cx="500" cy="392" r="6" fill="rgba(103,232,249,.18)" stroke="rgba(103,232,249,.5)"/>
+              <circle cx="500" cy="392" r="5" fill="none" stroke="rgba(103,232,249,.55)" stroke-width="1.4"/>
               <!-- stirrer -->
               <rect x="254" y="548" width="212" height="7" rx="3" fill="rgba(15,40,60,.7)" stroke="rgba(103,232,249,.14)"/>
               <text x="150" y="366" fill="rgba(148,163,184,.5)" font-size="7" font-family="Cascadia Code, monospace">BURETTE</text>
               <text x="150" y="380" fill="rgba(148,163,184,.32)" font-size="6.5" font-family="Cascadia Code, monospace">50 mL</text>
+              <g aria-hidden="true">
+                <line id="stream" class="stream" x1="360" y1="376" x2="360" y2="414" stroke="#9feeff" stroke-width="2.4" stroke-linecap="round"/>
+                <circle class="drop" cx="360" cy="378" r="3.1" fill="#9feeff" opacity=".7"/>
+                <circle id="drop" class="drop" cx="360" cy="376" r="4.2" fill="#9feeff"/>
+              </g>
             </svg>
             <div class="stage-legend"><span><i style="background:#67e8f9"></i>NaOH 标准液</span><span><i id="legendFlaskDot" style="background:#dffcff;opacity:.55"></i><span id="legendFlask">锥形瓶：HCl + 酚酞</span></span></div>
           </div>
@@ -216,7 +221,8 @@
           <div class="status-grid">
             <div class="status-item"><span>当前 pH</span><strong id="sidePh">1.00</strong></div>
             <div class="status-item"><span>已滴加</span><strong id="sideDose">0.00 mL</strong></div>
-            <div class="status-item"><span>等当点</span><strong id="sideVeq">25.00 mL</strong></div>
+            <div class="status-item"><span>等当点体积</span><strong id="sideVeq">25.00 mL</strong></div>
+            <div class="status-item"><span>等当点 pH</span><strong id="eqPh">7.00</strong></div>
             <div class="status-item"><span>终点状态</span><strong id="sideEndpoint">未到终点</strong></div>
           </div>
           <div class="indicator-state" id="indicatorState">酚酞：酸性/中性，无色。</div>
@@ -231,7 +237,7 @@
       </aside>
     </div>
 
-    <div class="guide"><b>操作建议：</b>先快速加到接近等当点，再半滴半滴加；颜色出现后等 30 s 不褪才算终点。<span>·</span><b>读数：</b>视线与凹液面最低处相平。<span>·</span><b>提示：</b>甲基橙变色点不一定等于等当点。</div>
+    <div class="guide"><b>操作建议：</b>先快速加到接近等当点，再半滴半滴加；颜色出现后等 30 s 不褪才算终点。<span>·</span><b>读数：</b>视线与凹液面最低处相平。<span>·</span><b>强酸 vs 弱酸：</b>强酸无缓冲区，等当点 pH 7.00，突跃陡；弱酸有缓冲区，半等当量 pH≈4.76，等当点 pH≈8.7，突跃较短。<span>·</span><b>提示：</b>甲基橙变色点不一定等于等当点。</div>
   </main>
 
   <footer class="site-footer"><p>科学说明：本页用教学简化模型计算 pH；活度系数、温度、CO₂ 溶解和指示剂个体差异未计入。强酸强碱等当点 pH = 7，弱酸强碱等当点 pH &gt; 7。</p><span class="footer-tag">高中化学可视化平台 · 酸碱滴定与 pH</span></footer>
@@ -253,16 +259,16 @@
     buretteReading:$("buretteReading"), flaskVolume:$("flaskVolume"), endpointFoot:$("endpointFoot"),
     setupTitle:$("setupTitle"), setupNote:$("setupNote"), veqValue:$("veqValue"),
     doseValue:$("doseValue"), remainValue:$("remainValue"), dosePh:$("dosePh"),
-    sidePh:$("sidePh"), sideDose:$("sideDose"), sideVeq:$("sideVeq"), sideEndpoint:$("sideEndpoint"),
+    sidePh:$("sidePh"), sideDose:$("sideDose"), sideVeq:$("sideVeq"), eqPh:$("eqPh"), sideEndpoint:$("sideEndpoint"),
     indicatorState:$("indicatorState"), calcLine:$("calcLine"), calcNote:$("calcNote"),
-    drop:$("drop"), curve:$("curve"),
+    drop:$("drop"), stream:$("stream"), curve:$("curve"),
     caInput:$("caInput"), vaInput:$("vaInput"), cbInput:$("cbInput"),
     autoBtn:$("autoBtn"), stopBtn:$("stopBtn")
   };
 
   const NAMES = {
-    hcl: { title:"HCl + NaOH", sub:"强酸强碱滴定", note:"强酸强碱滴定；等当点 pH = 7。", flask:"HCl" },
-    weak:{ title:"CH₃COOH + NaOH", sub:"弱酸强碱滴定", note:"弱酸强碱滴定；等当点 pH > 7，缓冲区明显。", flask:"CH₃COOH" }
+    hcl: { title:"HCl + NaOH", sub:"强酸强碱滴定", note:"无缓冲区：等当点 pH = 7.00，pH 突跃陡；酚酞终点略过等当点。", flask:"HCl" },
+    weak:{ title:"CH₃COOH + NaOH", sub:"弱酸强碱滴定", note:"有缓冲区：半等当量时 pH≈pKa=4.76；等当点 pH≈8.7，突跃较短。", flask:"CH₃COOH" }
   };
 
   function veq(){ return (state.ca * state.va) / state.cb; }
@@ -332,20 +338,26 @@
     el.setupNote.textContent = acidName.note;
     el.veqValue.textContent = `${veqV.toFixed(2)} mL`;
     el.sideVeq.textContent = `${veqV.toFixed(2)} mL`;
+    const eqP = phAt(veqV);
+    el.eqPh.textContent = eqP.toFixed(2);
     el.doseValue.textContent = state.vb.toFixed(2);
     el.remainValue.textContent = `${Math.max(0,50-state.vb).toFixed(2)} mL`;
     el.dosePh.textContent = p.toFixed(2);
     el.sidePh.textContent = p.toFixed(2);
     el.sideDose.textContent = `${state.vb.toFixed(2)} mL`;
-    el.sideEndpoint.textContent = end ? "已到终点" : "未到终点";
+    el.sideEndpoint.textContent = end ? `已到终点 pH ${p.toFixed(2)}` : "未到终点";
     el.sideEndpoint.style.color = end ? "#bdfbf1" : "#e5faff";
     el.endpointFoot.textContent = end ? "终点已到：颜色保持 30 s" : "终点：等待滴定";
     el.indicatorState.textContent = indicatorText();
     el.indicatorState.style.borderColor = end ? "rgba(244,114,182,.22)" : "rgba(148,163,184,.09)";
     el.calcLine.textContent = `${state.ca.toFixed(3)} × ${state.va.toFixed(1)} ÷ ${state.cb.toFixed(3)} = ${veqV.toFixed(2)} mL`;
-    el.calcNote.textContent = state.acid === "hcl"
-      ? "强酸强碱等当点 pH = 7；酚酞在 pH 8.2–10.0 变色，终点在等当点附近。"
-      : "弱酸强碱等当点 pH > 7；滴定过程中存在缓冲区，酚酞变色点接近等当点。";
+    if (state.indicator === "methylOrange") {
+      el.calcNote.textContent = `等当点 pH = ${eqP.toFixed(2)}；甲基橙在 pH 3.1–4.4 变色，变色点早于等当点，不能把变色点当等当点。`;
+    } else {
+      el.calcNote.textContent = state.acid === "hcl"
+        ? `等当点 pH = 7.00；酚酞变色 8.2–10.0，终点略过等当点（当前 pH ${p.toFixed(2)}）。`
+        : `等当点 pH = ${eqP.toFixed(2)}；半等当量 pH≈4.76；酚酞变色点接近等当点。`;
+    }
     const color = liquidColor();
     el.flaskRect.setAttribute("fill", color);
     el.flaskSurface.setAttribute("fill", color.replace(/[\d.]+\)$/, ".32)"));
@@ -368,8 +380,12 @@
     el.flaskSurface.setAttribute("cy", level.toFixed(1));
     updateCurve();
   }
+  let streamTimer = null;
   function triggerDrop(){
     el.drop.classList.remove("falling"); void el.drop.getBoundingClientRect(); el.drop.classList.add("falling");
+    el.stream.classList.add("show");
+    if (streamTimer) clearTimeout(streamTimer);
+    streamTimer = setTimeout(()=>el.stream.classList.remove("show"), 520);
   }
   function addVolume(amount){
     state.vb = clamp(state.vb + amount, 0, 50);
@@ -421,6 +437,7 @@
       <path d="${path} L${W-right} ${H-bottom} L${left} ${H-bottom} Z" fill="url(#curveFill)"/>
       <path d="${path}" fill="none" stroke="#67e8f9" stroke-width="2.2" stroke-linecap="round"/>
       <line x1="${eqX}" y1="${top}" x2="${eqX}" y2="${H-bottom}" stroke="rgba(251,191,36,.6)" stroke-width="1.1" stroke-dasharray="4 5"/>
+      <circle cx="${eqX}" cy="${y(phAt(veqV))}" r="4" fill="#fbbf24" stroke="#07131f" stroke-width="1.4"/>
       <text x="${eqX+5}" y="${top+10}" fill="rgba(251,191,36,.8)" font-size="7" font-family="Cascadia Code, monospace">等当点 ${veqV.toFixed(1)}</text>
       <line x1="${left}" y1="${H-bottom}" x2="${W-right}" y2="${H-bottom}" stroke="rgba(148,163,184,.25)" stroke-width="1"/>
       <line x1="${left}" y1="${top}" x2="${left}" y2="${H-bottom}" stroke="rgba(148,163,184,.25)" stroke-width="1"/>
