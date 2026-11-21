@@ -696,14 +696,14 @@
     const shells=shellCounts(z);
     const cx=100,cy=100;
     let out=`<defs><radialGradient id="nuc"><stop stop-color="#f4ffff"/><stop offset=".45" stop-color="#67e8f9"/><stop offset="1" stop-color="#0e7490" stop-opacity=".3"/></radialGradient></defs>`;
-    out+=`<circle cx="${cx}" cy="${cy}" r="7" fill="url(#nuc)"/>`;
+    out+=`<circle class="shell-nucleus" cx="${cx}" cy="${cy}" r="7" fill="url(#nuc)"/>`;
     shells.forEach((count,i)=>{
       const r=22+i*11;
-      out+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(103,232,249,${.14+i*.02})" stroke-width=".8"/>`;
+      out+=`<circle class="shell-ring" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(103,232,249,${.14+i*.02})" stroke-width=".8"/>`;
       for(let k=0;k<count;k++){
         const a=(k/count)*Math.PI*2-Math.PI/2;
         const x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
-        out+=`<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="1.7" fill="rgba(165,243,252,.9)"/>`;
+        out+=`<circle class="shell-electron" cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="1.9" fill="rgba(165,243,252,.9)"/>`;
       }
     });
     svg.innerHTML=out;

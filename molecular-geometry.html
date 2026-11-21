@@ -268,14 +268,28 @@
   .vsepr-pop-hint{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding:7px 9px;border:0;border-radius:7px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-size:8.5px;font-weight:650;letter-spacing:.02em;box-shadow:0 5px 14px rgba(79,70,229,.28)}
   .vsepr-pop-hint b{flex:0 0 auto;font-size:11px;font-weight:700;color:#fff}
   .vsepr-placeholder{padding:9px 10px;border:1px dashed rgba(129,140,248,.34);border-radius:9px;color:#a5b4fc;font-size:8px;line-height:1.55;background:rgba(99,102,241,.05)}
-  .vsepr-calc.vsepr-float{position:absolute;z-index:40;width:min(320px,calc(100% - 24px));max-height:calc(100% - 24px);margin:0!important;padding:12px 13px 10px;overflow:auto;border:1px solid rgba(129,140,248,.7);border-radius:14px;background:linear-gradient(155deg,rgba(16,20,45,.98),rgba(8,11,28,.97));box-shadow:0 24px 70px rgba(0,0,0,.58),0 0 0 1px rgba(129,140,248,.14) inset,0 0 30px rgba(79,70,229,.18);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);cursor:grab;user-select:none;touch-action:none;transform:none}
+  .vsepr-calc.vsepr-float{position:absolute;z-index:40;width:min(320px,calc(100% - 24px));max-height:calc(100% - 24px);margin:0!important;padding:12px 13px 10px;overflow:auto;border:1px solid rgba(129,140,248,.7);border-radius:14px;background:linear-gradient(155deg,rgba(16,20,45,.98),rgba(8,11,28,.97));box-shadow:0 24px 70px rgba(0,0,0,.58),0 0 0 1px rgba(129,140,248,.14) inset,0 0 30px rgba(79,70,229,.18);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);cursor:grab;user-select:none;touch-action:none;transform:none;font-size:calc(9.5px * var(--vsepr-scale,1))}
   .vsepr-calc.vsepr-float:hover{transform:none;border-color:rgba(165,180,252,.9)}
   .vsepr-calc.vsepr-float:active{cursor:grabbing}
-  .vsepr-calc.vsepr-float .vsepr-calc-head{font-size:9.5px}
-  .vsepr-calc.vsepr-float .vsepr-expr{font-size:8.5px}
-  .vsepr-calc.vsepr-float .vsepr-line{font-size:10.5px}
-  .vsepr-calc.vsepr-float .vsepr-result{font-size:9px}
-  .vsepr-calc.vsepr-float .vsepr-pop-hint{color:#fff}
+  .vsepr-calc.vsepr-float .vsepr-calc-head{font-size:1em}
+  .vsepr-calc.vsepr-float .vsepr-expr{font-size:.895em}
+  .vsepr-calc.vsepr-float .vsepr-line{font-size:1.105em}
+  .vsepr-calc.vsepr-float .vsepr-result{font-size:.947em}
+  .vsepr-calc.vsepr-float .vsepr-pop-hint{color:#fff;font-size:.895em}
+  .vsepr-calc.vsepr-float .vsepr-pop-hint b{font-size:1.158em}
+  .vsepr-calc.vsepr-float::after{content:"";position:absolute;right:5px;bottom:5px;width:9px;height:9px;border-right:2px solid rgba(165,180,252,.7);border-bottom:2px solid rgba(165,180,252,.7);border-radius:0 0 2px 0;pointer-events:none}
+  .vsepr-resize-handle{position:absolute;z-index:6;display:none;touch-action:none;background:transparent}
+  .vsepr-calc.vsepr-float .vsepr-resize-handle{display:block}
+  .vsepr-resize-handle[data-dir="n"]{left:4px;right:4px;top:0;height:10px;cursor:ns-resize}
+  .vsepr-resize-handle[data-dir="s"]{left:4px;right:4px;bottom:0;height:10px;cursor:ns-resize}
+  .vsepr-resize-handle[data-dir="e"]{top:4px;bottom:4px;right:0;width:10px;cursor:ew-resize}
+  .vsepr-resize-handle[data-dir="w"]{top:4px;bottom:4px;left:0;width:10px;cursor:ew-resize}
+  .vsepr-resize-handle[data-dir="ne"]{top:0;right:0;width:16px;height:16px;cursor:nesw-resize}
+  .vsepr-resize-handle[data-dir="nw"]{top:0;left:0;width:16px;height:16px;cursor:nwse-resize}
+  .vsepr-resize-handle[data-dir="se"]{right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize}
+  .vsepr-resize-handle[data-dir="sw"]{left:0;bottom:0;width:16px;height:16px;cursor:nesw-resize}
+  .vsepr-calc.vsepr-float.is-resizing{cursor:default}
+  .vsepr-calc.vsepr-float.is-resizing .vsepr-resize-handle{cursor:inherit}
   .equation {
     margin-top: 12px;
     padding: 12px 13px;
@@ -1675,9 +1689,10 @@
   let vseprFloating = false;
   let vseprPlaceholder = null;
   let vseprDrag = null;
+  let vseprResize = null;
   let vseprSuppressClick = false;
   const vseprHintIdle = '<span>点击固定到 3D 视图左上角</span><b>↗</b>';
-  const vseprHintFloat = '<span>拖动移动 · 点击面板收回</span><b>↙</b>';
+  const vseprHintFloat = '<span>拖动移动 · 边框缩放 · 点击收回</span><b>↙</b>';
 
   function clampVseprPosition(left, top) {
     const cardW = stageCard.clientWidth;
@@ -1701,6 +1716,96 @@
     vseprCalc.style.top = p.top + "px";
   }
 
+  const VSEPR_HANDLE_DIRS = ["n", "s", "e", "w", "ne", "nw", "se", "sw"];
+  function updateVseprScale(w, h) {
+    const scale = clamp(((w / 320) + (h / 162)) / 2, .8, 1.7);
+    vseprCalc.style.setProperty("--vsepr-scale", scale.toFixed(3));
+  }
+
+  function installVseprHandles() {
+    if (vseprCalc.querySelector(".vsepr-resize-handle")) return;
+    VSEPR_HANDLE_DIRS.forEach((dir) => {
+      const handle = document.createElement("span");
+      handle.className = "vsepr-resize-handle";
+      handle.dataset.dir = dir;
+      handle.setAttribute("aria-hidden", "true");
+      handle.addEventListener("pointerdown", (e) => startVseprResize(e, dir));
+      vseprCalc.appendChild(handle);
+    });
+  }
+
+  function startVseprResize(e, dir) {
+    if (!vseprFloating || (e.button !== undefined && e.button !== 0)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const rect = vseprCalc.getBoundingClientRect();
+    const cardRect = stageCard.getBoundingClientRect();
+    vseprSuppressClick = false;
+    vseprResize = {
+      id: e.pointerId,
+      dir,
+      startX: e.clientX,
+      startY: e.clientY,
+      startLeft: rect.left - cardRect.left,
+      startTop: rect.top - cardRect.top,
+      startW: rect.width,
+      startH: rect.height,
+      cardW: cardRect.width,
+      cardH: cardRect.height,
+      minTop: (stageView.offsetTop || 0) + 8
+    };
+    vseprCalc.classList.add("is-resizing");
+    window.addEventListener("pointermove", moveVseprResize);
+    window.addEventListener("pointerup", endVseprResize);
+    window.addEventListener("pointercancel", endVseprResize);
+  }
+
+  function moveVseprResize(e) {
+    if (!vseprResize || e.pointerId !== vseprResize.id) return;
+    const r = vseprResize;
+    const dx = e.clientX - r.startX;
+    const dy = e.clientY - r.startY;
+    const minW = 240;
+    const minH = 128;
+    const maxW = Math.max(minW, r.cardW - 16);
+    const maxH = Math.max(minH, r.cardH - r.minTop - 8);
+    let left = r.startLeft;
+    let top = r.startTop;
+    let w = r.startW;
+    let h = r.startH;
+
+    if (r.dir.includes("e")) w = clamp(r.startW + dx, minW, maxW);
+    if (r.dir.includes("s")) h = clamp(r.startH + dy, minH, maxH);
+    if (r.dir.includes("w")) {
+      left = clamp(r.startLeft + dx, 8, r.startLeft + r.startW - minW);
+      w = r.startLeft + r.startW - left;
+    }
+    if (r.dir.includes("n")) {
+      const bottom = r.startTop + r.startH;
+      top = clamp(r.startTop + dy, r.minTop, Math.max(r.minTop, bottom - minH));
+      h = bottom - top;
+    }
+
+    left = clamp(left, 8, Math.max(8, r.cardW - w - 8));
+    top = clamp(top, r.minTop, Math.max(r.minTop, r.cardH - h - 8));
+    vseprCalc.style.left = left + "px";
+    vseprCalc.style.top = top + "px";
+    vseprCalc.style.width = w + "px";
+    vseprCalc.style.height = h + "px";
+    updateVseprScale(w, h);
+  }
+
+  function endVseprResize(e) {
+    if (!vseprResize) return;
+    if (e && e.pointerId !== vseprResize.id) return;
+    vseprSuppressClick = true;
+    vseprResize = null;
+    vseprCalc.classList.remove("is-resizing");
+    window.removeEventListener("pointermove", moveVseprResize);
+    window.removeEventListener("pointerup", endVseprResize);
+    window.removeEventListener("pointercancel", endVseprResize);
+  }
+
   function openVseprFloat() {
     if (vseprFloating) return;
     vseprFloating = true;
@@ -1708,22 +1813,39 @@
     vseprPlaceholder.className = "vsepr-placeholder";
     vseprPlaceholder.textContent = "VSEPR 计算已固定到 3D 视图";
     vseprCalc.parentNode.insertBefore(vseprPlaceholder, vseprCalc);
+    installVseprHandles();
     stageCard.appendChild(vseprCalc);
     vseprCalc.classList.add("vsepr-float");
     vseprCalc.style.left = "";
     vseprCalc.style.top = "";
-    vseprCalc.setAttribute("aria-label", "VSEPR 计算悬窗：拖动移动，点击面板收回");
+    vseprCalc.style.width = "";
+    vseprCalc.style.height = "";
+    vseprCalc.setAttribute("aria-label", "VSEPR 计算悬窗：拖动移动，拖动边框缩放，点击面板收回");
     vseprCalc.setAttribute("aria-pressed", "true");
     vseprPopHint.innerHTML = vseprHintFloat;
-    requestAnimationFrame(placeVseprFloat);
+    requestAnimationFrame(() => {
+      if (!vseprFloating) return;
+      const rect = vseprCalc.getBoundingClientRect();
+      vseprCalc.style.width = rect.width + "px";
+      vseprCalc.style.height = rect.height + "px";
+      updateVseprScale(rect.width, rect.height);
+      placeVseprFloat();
+    });
   }
 
   function closeVseprFloat() {
     if (!vseprFloating) return;
     vseprFloating = false;
-    vseprCalc.classList.remove("vsepr-float");
+    vseprResize = null;
+    window.removeEventListener("pointermove", moveVseprResize);
+    window.removeEventListener("pointerup", endVseprResize);
+    window.removeEventListener("pointercancel", endVseprResize);
+    vseprCalc.classList.remove("vsepr-float", "is-resizing");
     vseprCalc.style.left = "";
     vseprCalc.style.top = "";
+    vseprCalc.style.width = "";
+    vseprCalc.style.height = "";
+    vseprCalc.style.removeProperty("--vsepr-scale");
     if (vseprPlaceholder && vseprPlaceholder.parentNode) {
       vseprPlaceholder.parentNode.insertBefore(vseprCalc, vseprPlaceholder);
       vseprPlaceholder.remove();
@@ -1743,6 +1865,10 @@
     vseprCalc.setAttribute("aria-pressed", "false");
     vseprCalc.addEventListener("click", (e) => {
       e.stopPropagation();
+      if (e.target.closest(".vsepr-resize-handle")) {
+        vseprSuppressClick = false;
+        return;
+      }
       if (vseprSuppressClick) {
         vseprSuppressClick = false;
         return;
@@ -1755,6 +1881,7 @@
       toggleVseprFloat();
     });
     vseprCalc.addEventListener("pointerdown", (e) => {
+      if (e.target.closest(".vsepr-resize-handle")) return;
       if (!vseprFloating || (e.button !== undefined && e.button !== 0)) return;
       e.stopPropagation();
       e.preventDefault();
