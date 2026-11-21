@@ -923,8 +923,52 @@
     border-left: 3px solid currentColor;
     border-right: 3px solid currentColor;
   }
-  .range-wrap { flex: 1; min-width: 0; }
+  .range-wrap { position: relative; flex: 1; min-width: 0; }
+  .range-marker {
+    position: absolute;
+    left: var(--at, 60%);
+    top: -7px;
+    z-index: 4;
+    width: 22px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    transform: translateX(-50%);
+    cursor: pointer;
+  }
+  .range-marker::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    width: 1px;
+    height: 10px;
+    transform: translateX(-50%);
+    background: rgba(103, 232, 249, 0.55);
+  }
+  .range-marker .marker-dot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid #06111f;
+    background: #bdfbf1;
+    box-shadow: 0 0 0 2px rgba(103, 232, 249, 0.2), 0 0 10px rgba(103, 232, 249, 0.65);
+    transform: translate(-50%, -50%);
+    transition: transform 0.16s ease, box-shadow 0.16s ease;
+  }
+  .range-marker:hover .marker-dot,
+  .range-marker:focus-visible .marker-dot {
+    transform: translate(-50%, -50%) scale(1.2);
+    box-shadow: 0 0 0 3px rgba(103, 232, 249, 0.25), 0 0 16px rgba(103, 232, 249, 0.85);
+  }
+  .range-marker:focus-visible { outline: 2px solid #67e8f9; outline-offset: 3px; }
   .range-labels {
+    position: relative;
     display: flex;
     justify-content: space-between;
     gap: 10px;
@@ -932,6 +976,12 @@
     color: var(--dim);
     font-size: 9px;
     letter-spacing: 0.04em;
+  }
+  .range-labels .mid {
+    position: absolute;
+    left: 60%;
+    transform: translateX(-50%);
+    white-space: nowrap;
   }
   .range-labels span:last-child { color: rgba(103, 232, 249, 0.62); }
 
@@ -1251,6 +1301,7 @@
             <span id="playLabel">自动演示</span>
           </button>
           <div class="range-wrap">
+            <button class="range-marker" id="hybridMarker" type="button" style="--at:60%" title="杂化完成（60%）：点击查看" aria-label="跳到杂化完成（60%）"><span class="marker-dot" aria-hidden="true"></span></button>
             <input id="progressRange" type="range" min="0" max="100" step="1" value="0" aria-label="杂化程度，从 0% 未杂化到 100% 杂化完成" aria-valuetext="0%，未杂化" />
             <div class="range-labels"><span>原子轨道</span><span class="mid">杂化完成</span><span>成键完成</span></div>
           </div>
@@ -1832,6 +1883,7 @@
   const progressPercent = document.getElementById("progressPercent");
   const progressMessage = document.getElementById("progressMessage");
   const progressRange = document.getElementById("progressRange");
+  const hybridMarker = document.getElementById("hybridMarker");
   const playBtn = document.getElementById("playBtn");
   const playLabel = document.getElementById("playLabel");
   const resetViewBtn = document.getElementById("resetViewBtn");
@@ -1900,6 +1952,8 @@
   let playFrom = 0;
   let lastUiPercent = -1;
   let lastUiPhase = "";
+  let hybridPauseArmed = false;
+  let lastPaintAt = 0;
 
   const VIEWS = {
     sp: { yaw: 1.18, pitch: 0.12, distance: 8.9 },
@@ -2372,7 +2426,7 @@
     currentType = typeKey;
     uploadScene(getScene(typeKey));
     syncTypeUI();
-    if (progress > 0.555) ensureBondFrame();
+    if (progress > 0.45) ensureBondFrame();
     const v = VIEWS[typeKey];
     yawTarget = v.yaw;
     pitchTarget = v.pitch;
@@ -2387,6 +2441,7 @@
   function stopPlaying() {
     if (!playing) return;
     playing = false;
+    hybridPauseArmed = false;
     playBtn.classList.remove("playing");
     playBtn.setAttribute("aria-pressed", "false");
     playLabel.textContent = "自动演示";
@@ -2398,6 +2453,8 @@
     playing = true;
     playFrom = progress;
     playStart = performance.now();
+    // 只在从 60% 之前起步时，自动在“杂化完成”处停一次。
+    hybridPauseArmed = progress < 0.6;
     playBtn.classList.add("playing");
     playBtn.setAttribute("aria-pressed", "true");
     playLabel.textContent = "暂停";
@@ -2904,7 +2961,13 @@
     if (playing) {
       const u = clamp((now - playStart) / PLAY_MS, 0, 1);
       progress = playFrom + (1 - playFrom) * easeInOut(u);
-      if (u >= 1) {
+      if (hybridPauseArmed && progress >= 0.6) {
+        // 自动演示在杂化完成（60%）处停顿一次，避免直接掠过关键帧。
+        progress = 0.6;
+        hybridPauseArmed = false;
+        stopPlaying();
+        updateUI(true);
+      } else if (u >= 1) {
         progress = 1;
         stopPlaying();
       }
@@ -2917,14 +2980,21 @@
     }
     distance += (distanceTarget - distance) * Math.min(1, dt * 8.5);
 
+    // 32fps 上限：WebGL 点云 + Canvas 叠加层不必跟随 120Hz 屏幕反复重绘。
+    if (now - lastPaintAt < 30) {
+      requestAnimationFrame(frame);
+      return;
+    }
+    lastPaintAt = now;
+
     hybridProgress = clamp(progress / 0.6, 0, 1);
     bondProgress = clamp((progress - 0.55) / 0.45, 0, 1);
-    if (progress > 0.555) {
+    if (progress > 0.45) {
       if (bondFrame.dataset.loaded !== "1") ensureBondFrame();
     } else if (bondFrame.dataset.mol) {
       unloadBondFrame();
     }
-    const bondVisible = progress > 0.555 && bondFrame.dataset.loaded === "1";
+    const bondVisible = progress > 0.6 && bondFrame.dataset.loaded === "1";
     stageView.classList.toggle("bond-phase", bondVisible);
     updateUI();
     if (!bondVisible) render();
@@ -2941,6 +3011,16 @@
     stopPlaying();
     progress = clamp(Number(progressRange.value) / 100, 0, 1);
     updateUI(true);
+  });
+
+  hybridMarker.addEventListener("click", () => {
+    stopPlaying();
+    progress = 0.6;
+    hybridProgress = 1;
+    bondProgress = clamp((progress - 0.55) / 0.45, 0, 1);
+    updateUI(true);
+    ensureBondFrame();
+    lastFrame = performance.now();
   });
 
   playBtn.addEventListener("click", () => {
