@@ -257,12 +257,25 @@
   .fact-row strong { color: #d8e9ff; font-size: 10.5px; font-weight: 550; text-align: right; line-height: 1.45; }
   .fact-row strong em { font-style: normal; color: var(--cyan); font-family: var(--mono); }
 
-  .vsepr-calc{margin-top:10px;padding:9px 10px;border:1px solid rgba(103,232,249,.15);border-radius:9px;background:rgba(103,232,249,.035)}
+  .vsepr-calc{position:relative;margin-top:10px;padding:9px 10px 8px;border:1px solid rgba(103,232,249,.34);border-radius:11px;background:linear-gradient(150deg,rgba(103,232,249,.09),rgba(103,232,249,.035));box-shadow:0 0 0 1px rgba(103,232,249,.05),0 8px 24px rgba(0,0,0,.16);cursor:pointer;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease,background .2s ease}
+  .vsepr-calc:hover{border-color:rgba(103,232,249,.62);background:linear-gradient(150deg,rgba(103,232,249,.14),rgba(103,232,249,.05));box-shadow:0 0 0 1px rgba(103,232,249,.1),0 10px 28px rgba(0,0,0,.2);transform:translateY(-1px)}
+  .vsepr-calc:focus-visible{outline:2px solid rgba(103,232,249,.75);outline-offset:2px}
   .vsepr-calc-head{display:flex;justify-content:space-between;gap:8px;color:rgba(103,232,249,.7);font-size:8.5px;letter-spacing:.06em}
   .vsepr-calc-head span{color:var(--dim);letter-spacing:0;font-size:7.5px}
   .vsepr-expr{margin-top:4px;color:rgba(148,163,184,.72);font-size:8px;line-height:1.5}
   .vsepr-line{margin-top:5px;color:#dffcff;font-family:var(--mono);font-size:10px;line-height:1.45}
   .vsepr-result{margin-top:3px;color:#bdfbf1;font-size:8.5px;line-height:1.5}
+  .vsepr-pop-hint{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:7px;padding-top:6px;border-top:1px dashed rgba(103,232,249,.22);color:rgba(103,232,249,.9);font-size:8px;letter-spacing:.02em}
+  .vsepr-pop-hint b{flex:0 0 auto;font-size:10px;font-weight:700;color:#67e8f9}
+  .vsepr-placeholder{padding:9px 10px;border:1px dashed rgba(103,232,249,.2);border-radius:9px;color:rgba(148,163,184,.7);font-size:8px;line-height:1.55;background:rgba(103,232,249,.02)}
+  .vsepr-calc.vsepr-float{position:absolute;z-index:40;width:min(320px,calc(100% - 24px));max-height:calc(100% - 24px);margin:0!important;padding:12px 13px 10px;overflow:auto;border:1px solid rgba(103,232,249,.55);border-radius:14px;background:linear-gradient(155deg,rgba(9,22,38,.98),rgba(5,12,23,.97));box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 0 1px rgba(103,232,249,.1) inset,0 0 30px rgba(34,211,238,.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);cursor:grab;user-select:none;touch-action:none;transform:none}
+  .vsepr-calc.vsepr-float:hover{transform:none;border-color:rgba(103,232,249,.72)}
+  .vsepr-calc.vsepr-float:active{cursor:grabbing}
+  .vsepr-calc.vsepr-float .vsepr-calc-head{font-size:9.5px}
+  .vsepr-calc.vsepr-float .vsepr-expr{font-size:8.5px}
+  .vsepr-calc.vsepr-float .vsepr-line{font-size:10.5px}
+  .vsepr-calc.vsepr-float .vsepr-result{font-size:9px}
+  .vsepr-calc.vsepr-float .vsepr-pop-hint{color:#67e8f9;border-top-color:rgba(103,232,249,.3)}
   .equation {
     margin-top: 12px;
     padding: 12px 13px;
@@ -859,11 +872,12 @@
             <em id="eqLone">0</em><span class="op">孤对</span>
           </div>
         </div>
-        <div class="vsepr-calc">
+        <div class="vsepr-calc" id="vseprCalc" role="button" tabindex="0" aria-label="把 VSEPR 计算固定到 3D 视图左上角">
           <div class="vsepr-calc-head">VSEPR 计算 <span>孤对 → 价层电子对 → 构型</span></div>
           <div class="vsepr-expr">孤对电子数 =（a − xb）÷ 2；价层电子对数 = σ键电子对 + 孤对电子</div>
           <div class="vsepr-line" id="vseprLine">a=4，x=4，b=1 →（4 − 4×1）÷ 2 = 0 对孤对</div>
           <div class="vsepr-result" id="vseprResult">价层电子对 = σ键 4 + 孤对 0 = 4 → 四面体；去掉孤对 → 正四面体形</div>
+          <div class="vsepr-pop-hint" id="vseprPopHint"><span>点击固定到 3D 视图左上角</span><b>↗</b></div>
         </div>
         <p class="note" id="sideNote">没有孤对电子，价层电子对构型与分子构型一致。</p>
       </section>
@@ -1134,6 +1148,8 @@
   const factHybrid = document.getElementById("factHybrid");
   const factPolarity = document.getElementById("factPolarity");
   const exampleList = document.getElementById("exampleList");
+  const vseprCalc = document.getElementById("vseprCalc");
+  const vseprPopHint = document.getElementById("vseprPopHint");
   const vseprLine = document.getElementById("vseprLine");
   const vseprResult = document.getElementById("vseprResult");
   const factExample = document.getElementById("factExample");
@@ -1634,6 +1650,142 @@
     pitchTarget = model.view.pitch;
     distanceTarget = model.view.distance;
   });
+
+  /* ── VSEPR 计算悬窗 ───────────────────────────────────── */
+  let vseprFloating = false;
+  let vseprPlaceholder = null;
+  let vseprDrag = null;
+  let vseprSuppressClick = false;
+  const vseprHintIdle = '<span>点击固定到 3D 视图左上角</span><b>↗</b>';
+  const vseprHintFloat = '<span>拖动移动 · 点击面板收回</span><b>↙</b>';
+
+  function clampVseprPosition(left, top) {
+    const cardW = stageCard.clientWidth;
+    const cardH = stageCard.clientHeight;
+    const w = vseprCalc.offsetWidth;
+    const h = vseprCalc.offsetHeight;
+    const minTop = (stageView.offsetTop || 0) + 8;
+    const maxTop = Math.max(minTop, cardH - h - 8);
+    return {
+      left: Math.max(8, Math.min(left, cardW - w - 8)),
+      top: Math.max(minTop, Math.min(top, maxTop))
+    };
+  }
+
+  function placeVseprFloat() {
+    if (!vseprFloating) return;
+    const baseLeft = (stageView.offsetLeft || 0) + 14;
+    const baseTop = (stageView.offsetTop || 0) + 14;
+    const p = clampVseprPosition(baseLeft, baseTop);
+    vseprCalc.style.left = p.left + "px";
+    vseprCalc.style.top = p.top + "px";
+  }
+
+  function openVseprFloat() {
+    if (vseprFloating) return;
+    vseprFloating = true;
+    vseprPlaceholder = document.createElement("div");
+    vseprPlaceholder.className = "vsepr-placeholder";
+    vseprPlaceholder.textContent = "VSEPR 计算已固定到 3D 视图";
+    vseprCalc.parentNode.insertBefore(vseprPlaceholder, vseprCalc);
+    stageCard.appendChild(vseprCalc);
+    vseprCalc.classList.add("vsepr-float");
+    vseprCalc.style.left = "";
+    vseprCalc.style.top = "";
+    vseprCalc.setAttribute("aria-label", "VSEPR 计算悬窗：拖动移动，点击面板收回");
+    vseprCalc.setAttribute("aria-pressed", "true");
+    vseprPopHint.innerHTML = vseprHintFloat;
+    requestAnimationFrame(placeVseprFloat);
+  }
+
+  function closeVseprFloat() {
+    if (!vseprFloating) return;
+    vseprFloating = false;
+    vseprCalc.classList.remove("vsepr-float");
+    vseprCalc.style.left = "";
+    vseprCalc.style.top = "";
+    if (vseprPlaceholder && vseprPlaceholder.parentNode) {
+      vseprPlaceholder.parentNode.insertBefore(vseprCalc, vseprPlaceholder);
+      vseprPlaceholder.remove();
+    }
+    vseprPlaceholder = null;
+    vseprCalc.setAttribute("aria-label", "把 VSEPR 计算固定到 3D 视图左上角");
+    vseprCalc.setAttribute("aria-pressed", "false");
+    vseprPopHint.innerHTML = vseprHintIdle;
+  }
+
+  function toggleVseprFloat() {
+    if (vseprFloating) closeVseprFloat();
+    else openVseprFloat();
+  }
+
+  if (vseprCalc) {
+    vseprCalc.setAttribute("aria-pressed", "false");
+    vseprCalc.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (vseprSuppressClick) {
+        vseprSuppressClick = false;
+        return;
+      }
+      toggleVseprFloat();
+    });
+    vseprCalc.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      toggleVseprFloat();
+    });
+    vseprCalc.addEventListener("pointerdown", (e) => {
+      if (!vseprFloating || (e.button !== undefined && e.button !== 0)) return;
+      e.stopPropagation();
+      e.preventDefault();
+      vseprSuppressClick = false;
+      const rect = vseprCalc.getBoundingClientRect();
+      vseprDrag = {
+        id: e.pointerId,
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top,
+        startX: e.clientX,
+        startY: e.clientY,
+        moved: false
+      };
+      vseprCalc.setPointerCapture?.(e.pointerId);
+    });
+    vseprCalc.addEventListener("pointermove", (e) => {
+      if (!vseprDrag || e.pointerId !== vseprDrag.id) return;
+      const dx = e.clientX - vseprDrag.startX;
+      const dy = e.clientY - vseprDrag.startY;
+      if (!vseprDrag.moved && Math.hypot(dx, dy) < 4) return;
+      vseprDrag.moved = true;
+      vseprCalc.classList.add("is-dragging");
+      const cardRect = stageCard.getBoundingClientRect();
+      const p = clampVseprPosition(
+        e.clientX - cardRect.left - vseprDrag.offsetX,
+        e.clientY - cardRect.top - vseprDrag.offsetY
+      );
+      vseprCalc.style.left = p.left + "px";
+      vseprCalc.style.top = p.top + "px";
+    });
+    const endVseprDrag = (e) => {
+      if (!vseprDrag) return;
+      if (vseprDrag.moved) vseprSuppressClick = true;
+      vseprDrag = null;
+      vseprCalc.classList.remove("is-dragging");
+      try { vseprCalc.releasePointerCapture?.(e.pointerId); } catch (err) {}
+    };
+    vseprCalc.addEventListener("pointerup", endVseprDrag);
+    vseprCalc.addEventListener("pointercancel", endVseprDrag);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && vseprFloating) closeVseprFloat();
+    });
+    window.addEventListener("resize", () => {
+      if (!vseprFloating) return;
+      const currentLeft = parseFloat(vseprCalc.style.left) || 0;
+      const currentTop = parseFloat(vseprCalc.style.top) || 0;
+      const p = clampVseprPosition(currentLeft, currentTop);
+      vseprCalc.style.left = p.left + "px";
+      vseprCalc.style.top = p.top + "px";
+    });
+  }
 
   let ro = null;
   if ("ResizeObserver" in window) {

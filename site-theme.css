@@ -711,11 +711,40 @@ html[data-theme="light"] .tip-card { background: #fff; border-color: rgba(20,49,
 html[data-theme="light"] .tip-card h4 { color: #14312e; }
 html[data-theme="light"] .tip-card p { color: #526b66; }
 html[data-theme="light"] .tip-icon { color: #0f766e; background: #eaf8f2; border-color: rgba(15,118,110,.14); }
-html[data-theme="light"] .vsepr-calc { padding: 11px 12px; }
+html[data-theme="light"] .vsepr-calc {
+  padding: 11px 12px;
+  border-color: rgba(15,118,110,.34);
+  background: linear-gradient(150deg,#e9f8f2,#f5fbf8);
+  box-shadow: 0 0 0 1px rgba(15,118,110,.05), 0 8px 20px rgba(20,49,46,.07);
+}
+html[data-theme="light"] .vsepr-calc:hover {
+  border-color: rgba(15,118,110,.6);
+  background: linear-gradient(150deg,#dff5ec,#f5fbf8);
+  box-shadow: 0 0 0 1px rgba(15,118,110,.1), 0 12px 26px rgba(20,49,46,.11);
+}
 html[data-theme="light"] .vsepr-calc-head { font-size: 10px; }
 html[data-theme="light"] .vsepr-expr { font-size: 10.5px; line-height: 1.6; }
 html[data-theme="light"] .vsepr-line { font-size: 11px; line-height: 1.65; }
 html[data-theme="light"] .vsepr-result { font-size: 10.5px; line-height: 1.6; }
+html[data-theme="light"] .vsepr-pop-hint {
+  color: #0f766e;
+  border-top-color: rgba(15,118,110,.18);
+}
+html[data-theme="light"] .vsepr-pop-hint b { color: #0b5f56; }
+html[data-theme="light"] .vsepr-placeholder {
+  color: #5f7570;
+  border-color: rgba(15,118,110,.22);
+  background: #f2f9f5;
+}
+html[data-theme="light"] .vsepr-calc.vsepr-float {
+  border-color: rgba(15,118,110,.48);
+  background: linear-gradient(155deg,#ffffff,#f2f9f5);
+  box-shadow: 0 24px 60px rgba(20,49,46,.28), 0 0 0 1px rgba(15,118,110,.08) inset, 0 0 30px rgba(15,118,110,.1);
+}
+html[data-theme="light"] .vsepr-calc.vsepr-float .vsepr-pop-hint {
+  color: #0f766e;
+  border-top-color: rgba(15,118,110,.2);
+}
 /* ── organic groups ─────────────────────────────────────── */
 html[data-theme="light"] .group-stage,
 html[data-theme="light"] .molecule-stage {
