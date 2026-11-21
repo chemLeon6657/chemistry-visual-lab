@@ -84,7 +84,7 @@
     if (a.ctx.state === "suspended") a.ctx.resume();
     a.master.gain.cancelScheduledValues(a.ctx.currentTime);
     a.master.gain.setValueAtTime(0.0001, a.ctx.currentTime);
-    a.master.gain.exponentialRampToValueAtTime(0.225, a.ctx.currentTime + 1.2);
+    a.master.gain.exponentialRampToValueAtTime(0.675, a.ctx.currentTime + 1.2);
     ambientPlaying = true;
     const notes = [261.63, 329.63, 392.00, 523.25, 440.00, 392.00, 329.63, 293.66];
     let step = 0;
