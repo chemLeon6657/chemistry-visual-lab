@@ -306,7 +306,28 @@ html[data-theme="light"] .must-sub,
 html[data-theme="light"] .step p,
 html[data-theme="light"] .must-card p,
 html[data-theme="light"] .must-pitfalls span,
-html[data-theme="light"] .guide { color: #526b66; }
+html[data-theme="light"] .guide { color: #3f5d57; }
+html[data-theme="light"] .must-card p strong,
+html[data-theme="light"] .must-card .formula-line,
+html[data-theme="light"] .must-card .mono {
+  color: #0b5f56;
+}
+html[data-theme="light"] .must-card p strong.violet,
+html[data-theme="light"] .must-card .violet {
+  color: #5b21b6;
+}
+html[data-theme="light"] .must-card h4 i {
+  background: #0f766e;
+  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.12);
+}
+html[data-theme="light"] .must-card .ext {
+  color: #92400e;
+}
+html[data-theme="light"] .must-head > .must-card {
+  color: #0f766e !important;
+  background: #e7f7f1 !important;
+  border-color: rgba(15, 118, 110, 0.24) !important;
+}
 html[data-theme="light"] .must-table-wrap { border-color: rgba(20,49,46,.1); background: #fff; }
 html[data-theme="light"] .must-table th { color: #0f766e; border-bottom-color: rgba(20,49,46,.12); background: #f5faf7; }
 html[data-theme="light"] .must-table td { color: #14312e; border-bottom-color: rgba(20,49,46,.08); }
