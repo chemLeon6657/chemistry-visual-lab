@@ -726,11 +726,13 @@ html[data-theme="light"] .vsepr-calc-head { font-size: 10px; }
 html[data-theme="light"] .vsepr-expr { font-size: 10.5px; line-height: 1.6; }
 html[data-theme="light"] .vsepr-line { font-size: 11px; line-height: 1.65; }
 html[data-theme="light"] .vsepr-result { font-size: 10.5px; line-height: 1.6; }
-html[data-theme="light"] .vsepr-pop-hint {
-  color: #0f766e;
-  border-top-color: rgba(15,118,110,.18);
+html[data-theme="light"] .vsepr-pop-hint,
+html[data-theme="light"] .vsepr-pop-hint span {
+  color: #0b3f3a !important;
+  font-weight: 600;
+  border-top-color: rgba(15,118,110,.24);
 }
-html[data-theme="light"] .vsepr-pop-hint b { color: #0b5f56; }
+html[data-theme="light"] .vsepr-pop-hint b { color: #064e3b !important; }
 html[data-theme="light"] .vsepr-placeholder {
   color: #5f7570;
   border-color: rgba(15,118,110,.22);
@@ -742,8 +744,8 @@ html[data-theme="light"] .vsepr-calc.vsepr-float {
   box-shadow: 0 24px 60px rgba(20,49,46,.28), 0 0 0 1px rgba(15,118,110,.08) inset, 0 0 30px rgba(15,118,110,.1);
 }
 html[data-theme="light"] .vsepr-calc.vsepr-float .vsepr-pop-hint {
-  color: #0f766e;
-  border-top-color: rgba(15,118,110,.2);
+  color: #0b3f3a;
+  border-top-color: rgba(15,118,110,.24);
 }
 /* ── organic groups ─────────────────────────────────────── */
 html[data-theme="light"] .group-stage,
