@@ -184,7 +184,7 @@
           <div class="fact-row"><span>条件</span><strong id="factCondition">NaOH 水溶液，加热</strong></div>
           <div class="fact-row"><span>能量变化</span><strong id="factEnergy">放热</strong></div>
         </div>
-        <p class="note" id="sideNote">OH⁻ 从 C–Br 的背面进攻，C–Br 断裂、C–O 形成，经过一个过渡态。</p>
+        <p class="note" id="sideNote">OH⁻ 从 C–Br 的背面进攻 α-C，C–O 形成与 C–Br 断裂协同完成；这是 SN2 一步反应，没有稳定中间体。</p>
       </section>
       <section class="card">
         <div class="card-kicker">机理要点</div>
@@ -198,7 +198,7 @@
       </section>
       <section class="card tip-card">
         <div class="tip-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17c4-10 12 0 16-10"/><path d="M17 7h3v3"/></svg></div>
-        <div class="tip-copy"><h4>箭头表示电子转移</h4><p>亲核试剂提供电子对进攻缺电子中心；加成反应中 π 电子对进攻亲电试剂。</p></div>
+        <div class="tip-copy"><h4>箭头表示电子转移</h4><p>弯箭头从一对电子出发：起点在负电荷上时，就从电荷标记画起；箭头指向新键形成的位置或电子最终落到的原子。</p></div>
       </section>
     </aside>
   </main>
@@ -227,27 +227,27 @@
       condition:"NaOH 水溶液，加热", equation:"CH₃Br + OH⁻ → CH₃OH + Br⁻",
       sideEquation:"CH₃Br + OH⁻", sideName:"溴甲烷的水解 · 亲核取代",
       breakBond:"C–Br", formBond:"C–O", energy:"放热", energyBadge:"放热 · ΔH < 0",
-      sideNote:"OH⁻ 从 C–Br 的背面进攻，C–Br 断裂、C–O 形成，经过一个过渡态。",
+      sideNote:"OH⁻ 从 C–Br 的背面进攻 α-C，C–O 形成与 C–Br 断裂协同完成；这是 SN2 一步反应，没有稳定中间体。水溶液取代，醇溶液加热才是 E2。",
       energyTitle:"放热反应", E0:.72, Ets:1.0, Eend:.28,
-      phaseText:v=>v<.2?"反应物：CH₃Br 与 OH⁻":v<.62?"过渡态：C–Br 将断，C–O 将成":v<.96?"产物正在形成：Br⁻ 离去":"产物：CH₃OH + Br⁻"
+      phaseText:v=>v<.2?"反应物：CH₃Br 与 OH⁻":v<.62?"SN2 过渡态：OH⁻ 进攻 α-C，C–Br 同步断裂":v<.96?"产物正在形成：Br⁻ 离去":"产物：CH₃OH + Br⁻"
     },
     addition: {
       key:"addition", tab:"加成", name:"亲电加成", sub:"Br₂", type:"加成反应", typeShort:"加成",
       condition:"溴水 / 常温", equation:"CH₂=CH₂ + Br₂ → CH₂Br–CH₂Br",
       sideEquation:"CH₂=CH₂ + Br₂", sideName:"乙烯与溴的加成 · 亲电加成",
       breakBond:"C=C 的 π 键、Br–Br", formBond:"两个 C–Br", energy:"放热", energyBadge:"放热 · ΔH < 0",
-      sideNote:"π 电子对进攻 Br₂，Br–Br 断裂，两个 Br 原子分别加到双键两端。",
+      sideNote:"π 电子对进攻 Br₂，先形成溴鎓离子（Br⁺ 桥连两个碳），Br⁻ 再从背面开环，两个 Br 反式加到双键两端。",
       energyTitle:"放热反应", E0:.7, Ets:.98, Eend:.32,
-      phaseText:v=>v<.2?"反应物：乙烯与 Br₂":v<.62?"过渡态：π 键参与进攻，Br–Br 将断":v<.96?"产物正在形成：两个 C–Br 键生成":"产物：1,2-二溴乙烷"
+      phaseText:v=>v<.2?"反应物：乙烯与 Br₂":v<.5?"溴鎓离子中间体：Br⁺ 桥连，Br⁻ 已离去":v<.92?"Br⁻ 背面进攻，三元环打开（反式加成）":"产物：1,2-二溴乙烷"
     },
     elimination: {
       key:"elimination", tab:"消去", name:"消去反应", sub:"E2", type:"消去反应", typeShort:"消去",
       condition:"NaOH 醇溶液，加热", equation:"CH₃CH₂Br + OH⁻ → CH₂=CH₂ + H₂O + Br⁻",
       sideEquation:"CH₃CH₂Br + OH⁻", sideName:"溴乙烷的消去 · E2",
       breakBond:"C–Br、C–H", formBond:"C=C、O–H", energy:"放热", energyBadge:"放热 · ΔH < 0",
-      sideNote:"OH⁻ 夺取 β-H，C–H 与 C–Br 同时断裂，形成 C=C，Br⁻ 和 H₂O 离去。",
+      sideNote:"NaOH 醇溶液加热才发生 E2：OH⁻ 夺取 β-H，C–H 与 C–Br 同时断裂，三根弯箭头协同完成，没有中间体；β-H 与 Br 需反式共平面。水溶液则是 SN2 取代。",
       energyTitle:"放热反应", E0:.68, Ets:.96, Eend:.34,
-      phaseText:v=>v<.2?"反应物：溴乙烷与 OH⁻":v<.62?"过渡态：C–Br 与 C–H 同时将断":v<.96?"产物正在形成：C=C 生成":"产物：乙烯 + H₂O + Br⁻"
+      phaseText:v=>v<.2?"反应物：溴乙烷与 OH⁻":v<.62?"E2 协同过渡态：β-H 与 Br 反式，三根箭头同时发生":v<.96?"产物正在形成：C=C 生成":"产物：乙烯 + H₂O + Br⁻"
     }
   };
 
@@ -325,7 +325,7 @@
     progressPercent.textContent=pct+"%";
     progressRange.value=String(pct);
     progressRange.style.setProperty("--p",pct+"%");
-    const phase=progress<.2?"反应物":progress<.62?"过渡态":progress<.96?"产物形成":"产物";
+    const phase=current==="addition"&&progress>=.2&&progress<.5?"中间体":progress<.2?"反应物":progress<.62?"过渡态":progress<.96?"产物形成":"产物";
     stageBadge.textContent=phase;
     stageBadge.parentElement.style.borderColor=phase==="过渡态"?"rgba(251,191,36,.3)":phase==="产物"?"rgba(94,234,212,.25)":"rgba(103,232,249,.18)";
     progressMessage.textContent=model.phaseText(progress);
@@ -394,7 +394,7 @@
     const ax=cx+from[0]*S,ay=cy+from[1]*S,bx=cx+to[0]*S,by=cy+to[1]*S;
     const mx=(ax+bx)/2+(ay-by)*bend,my=(ay+by)/2+(bx-ax)*bend;
     sctx.save();
-    sctx.strokeStyle=color;sctx.lineWidth=1.7;sctx.lineCap="round";
+    sctx.strokeStyle=color;sctx.lineWidth=2.0;sctx.lineCap="round";
     sctx.beginPath();sctx.moveTo(ax,ay);sctx.quadraticCurveTo(mx,my,bx,by);sctx.stroke();
     const dx=bx-mx,dy=by-my,l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l;
     const h=6.5;
@@ -432,41 +432,50 @@
     const ohH=[O[0]-.74,O[1]-.48];
     const coMid=[(O[0]+C[0])/2,(O[1]+C[1])/2];
     const cbMid=[(C[0]+Br[0])/2,(C[1]+Br[1])/2];
-    // 左侧孤对电子箭头：O 上的负电荷 → O–C 中点；成键后消失。
+    // 左侧孤对电子箭头：从 O 上的负电荷出发，进攻 α-C；成键后消失。
     const coArrow=Math.max(0,1-smooth(.4,.64,form));
     // 右侧成键电子箭头：C–Br 键中点 → Br；断键后消失。
     const brArrow=Math.max(0,1-smooth(.4,.64,brk));
     for(const h of H) drawBond(C,h,1,"rgba(148,163,184,.35)",2);
-    // 中间态：C–O 与 C–Br 都还连在 C 上，所以这时两条键都画实线。
+    // 协同过渡态：C–O 与 C–Br 都还连在 C 上，所以这时两条键都画实线。
     const cbrAlpha=.55*Math.max(0,1-brk*1.15);
     if(cbrAlpha>.02) drawBond(C,Br,1,`rgba(245,158,11,${cbrAlpha})`,2.5,brk>.58?[4,5]:[]);
     if(form>.01) drawBond(C,O,1,`rgba(252,165,165,${.18+form*.58})`,2.7);
     drawBond(O,ohH,1,"rgba(252,165,165,.4)",2);
-    if(coArrow>.02) drawElectronArrow([O[0]+.2,O[1]-.16],coMid,.3,`rgba(251,191,36,${.84*coArrow})`);
-    if(brArrow>.02) drawElectronArrow(cbMid,[Br[0]-.2,Br[1]+.02],.22,`rgba(251,191,36,${.8*brArrow})`);
+    if(brArrow>.02) drawElectronArrow(cbMid,[Br[0]-.18,Br[1]+.02],.22,`rgba(251,191,36,${.8*brArrow})`);
     drawAtom(C[0],C[1],"C","#cbd5e1",18);
     for(const h of H) drawAtom(h[0],h[1],"H","#f8fafc",10);
     drawAtom(O[0],O[1],"O","#fca5a5",14,p<.58?"−":"");
     drawAtom(ohH[0],ohH[1],"H","#f8fafc",9);
     drawAtom(Br[0],Br[1],"Br","#f59e0b",13,brk>.58?"−":"");
-    if(p>.36&&p<.64) drawLabel(0,1.3,"中间态示意：C–O 与 C–Br 同时连在 C 上","rgba(251,191,36,.95)",9);
-    else if(p>=.64&&p<.88) drawLabel(0,1.3,"过渡态：C–O 形成，C–Br 断裂","rgba(251,191,36,.95)",9);
-    else if(p>=.88) drawLabel(0,1.3,"CH₃OH + Br⁻","rgba(94,234,212,.96)",10);
-    else drawLabel(0,1.3,"CH₃Br + OH⁻","rgba(165,243,252,.9)",9);
+    // 从氧负电荷处起笔，画在原子之上，确保箭头起点落在电荷标记上。
+    if(coArrow>.02) drawElectronArrow([O[0]+.17,O[1]-.08],[C[0]-.18,C[1]+.02],.26,`rgba(251,191,36,${.84*coArrow})`);
+    if(p<.28) drawLabel(0,1.3,"SN2 一步：OH⁻ 从背面进攻 α-C","rgba(165,243,252,.9)",9);
+    else if(p<.88) drawLabel(0,1.3,"协同过渡态：C–O 形成，C–Br 断裂（无中间体）","rgba(251,191,36,.95)",9);
+    else drawLabel(0,1.3,"CH₃OH + Br⁻","rgba(94,234,212,.96)",10);
   }
 
   function drawAddition(p){
-    const brk=smooth(.25,.68,p), form=smooth(.32,.82,p), piFade=1-smooth(.2,.68,p);
+    const brk=smooth(.06,.44,p), bridge=smooth(.10,.48,p), open=smooth(.50,.90,p), form2=smooth(.55,.88,p);
+    const piFade=1-smooth(.02,.42,p);
     // Relative lengths: C=C 1.34, C–H 1.09, C–Br 1.93 Å.
     const c1=[-.615,0], c2=[.615,0];
     const h1=[-1.48,-.62], h2=[-1.48,.62], h3=[1.48,-.62], h4=[1.48,.62];
-    const b1=[lerp(-.615,-1.55,smooth(.3,.8,p)),lerp(1.75,1.25,form)];
-    const b2=[lerp(.615,1.55,smooth(.3,.8,p)),lerp(1.75,-1.22,form)];
+    const b1Start=[-.615,1.75], b2Start=[.615,1.75];
+    const b1Bridge=[0,-.82], b2Bridge=[0,1.12];
+    const b1Pre=[lerp(b1Start[0],b1Bridge[0],bridge),lerp(b1Start[1],b1Bridge[1],bridge)];
+    const b2Pre=[lerp(b2Start[0],b2Bridge[0],bridge),lerp(b2Start[1],b2Bridge[1],bridge)];
+    const b1=[lerp(b1Pre[0],-1.55,open),lerp(b1Pre[1],-1.25,open)];
+    const b2=[lerp(b2Pre[0],1.55,open),lerp(b2Pre[1],1.22,open)];
     const c1brMid=[(c1[0]+b1[0])/2,(c1[1]+b1[1])/2];
+    const c2brMid=[(c2[0]+b1[0])/2,(c2[1]+b1[1])/2];
     const brMid=[(b1[0]+b2[0])/2,(b1[1]+b2[1])/2];
-    // π 电子对去形成 C1–Br1；Br–Br 的电子对离去到 Br2。相应阶段后箭头消失。
-    const piArrow=Math.max(0,1-smooth(.55,.8,form));
-    const brArrow=Math.max(0,1-smooth(.55,.8,brk));
+    // 第一步：π 电子对进攻 Br1，Br–Br 的电子对给 Br2，形成溴鎓离子；箭头随后消失。
+    const piArrow=1-smooth(.20,.48,bridge);
+    const brArrow=1-smooth(.20,.46,brk);
+    // 第二步：Br⁻ 背面进攻 C2，同时 C2–Br1 桥键打开。
+    const attackArrow=bridge*(1-smooth(.72,.92,form2))*smooth(.40,.50,p);
+    const openArrow=bridge*(1-smooth(.58,.84,open))*smooth(.40,.50,p);
     // π cloud above/below the C=C
     if(piFade>.01){
       sctx.save();sctx.globalCompositeOperation="lighter";
@@ -477,26 +486,38 @@
       }
       sctx.restore();
     }
-    drawBond(c1,c2,form>.55?1:2,"rgba(103,232,249,.62)",3);
+    drawBond(c1,c2,bridge>.32?1:2,"rgba(103,232,249,.62)",3);
     for(const h of [h1,h2]) drawBond(c1,h,1,"rgba(148,163,184,.35)",2);
     for(const h of [h3,h4]) drawBond(c2,h,1,"rgba(148,163,184,.35)",2);
-    drawBond(b1,b2,1,`rgba(245,158,11,${.6*(1-brk*.8)})`,2.4,brk>.45?[4,5]:[]);
-    // 中间态：两个 C–Br 键逐步形成，所以两条键都画出；不再只画到 Br–Br 的一侧。
-    if(form>.03){
-      drawBond(c1,b1,1,`rgba(245,158,11,${.2+form*.5})`,2.4);
-      drawBond(c2,b2,1,`rgba(245,158,11,${.2+form*.5})`,2.4);
-    }
-    if(piArrow>.02) drawElectronArrow([0,.3],c1brMid,.28,`rgba(251,191,36,${.8*piArrow})`);
-    if(brArrow>.02) drawElectronArrow(brMid,[b2[0]+.22,b2[1]-.42],-.35,`rgba(251,191,36,${.76*brArrow})`);
+    // Br–Br 在形成溴鎓离子的过程中断裂。
+    const brBondAlpha=.55*(1-brk);
+    if(brBondAlpha>.02) drawBond(b1,b2,1,`rgba(245,158,11,${brBondAlpha})`,2.4,brk>.25?[4,5]:[]);
+    // 溴鎓三元环：C1–Br1 与 C2–Br1 都连到同一个 Br⁺。
+    if(bridge>.02) drawBond(c1,b1,1,`rgba(245,158,11,${.18+bridge*.52})`,2.4);
+    const bridgeBond=bridge*(1-smooth(.52,.78,open));
+    if(bridgeBond>.02) drawBond(c2,b1,1,`rgba(245,158,11,${.18+bridgeBond*.52})`,2.4);
+    // Br⁻ 背面进攻后，C2–Br2 成键。
+    if(form2>.02) drawBond(c2,b2,1,`rgba(245,158,11,${.18+form2*.52})`,2.4);
+    if(piArrow>.02) drawElectronArrow([0,.28],c1brMid,.28,`rgba(251,191,36,${.8*piArrow})`);
+    if(brArrow>.02) drawElectronArrow([brMid[0],brMid[1]-.16],[b2[0]+.15,b2[1]-.32],-.30,`rgba(251,191,36,${.76*brArrow})`);
     drawAtom(c1[0],c1[1],"C","#cbd5e1",17);
     drawAtom(c2[0],c2[1],"C","#cbd5e1",17);
     for(const h of [h1,h2,h3,h4]) drawAtom(h[0],h[1],"H","#f8fafc",9);
-    drawAtom(b1[0],b1[1],"Br","#f59e0b",12);
-    drawAtom(b2[0],b2[1],"Br","#f59e0b",12);
-    if(p>.34&&p<.7) drawLabel(0,2.15,"中间态示意：两个 C–Br 键正在形成","rgba(251,191,36,.95)",9);
-    else if(p>=.7&&p<.9) drawLabel(0,2.15,"过渡态：Br–Br 断裂，C–Br 形成","rgba(251,191,36,.95)",9);
-    else if(p>=.9) drawLabel(0,2.15,"CH₂Br–CH₂Br","rgba(94,234,212,.96)",10);
-    else drawLabel(0,2.15,"CH₂=CH₂ + Br₂","rgba(165,243,252,.9)",9);
+    drawAtom(b1[0],b1[1],"Br","#f59e0b",12,bridge>.28&&open<.62?"+":"");
+    drawAtom(b2[0],b2[1],"Br","#f59e0b",12,bridge>.28&&form2<.9?"−":"");
+    // 第二步的两根电子转移箭头画在原子上方，避免被原子遮住。
+    if(attackArrow>.02){
+      const av=[c2[0]-b2[0],c2[1]-b2[1]],al=Math.hypot(av[0],av[1])||1;
+      drawElectronArrow([b2[0]+av[0]/al*.18,b2[1]+av[1]/al*.18],[c2[0]-av[0]/al*.18,c2[1]-av[1]/al*.18],.30,`rgba(251,191,36,${.82*attackArrow})`);
+    }
+    if(openArrow>.02){
+      const ov=[b1[0]-c2brMid[0],b1[1]-c2brMid[1]],ol=Math.hypot(ov[0],ov[1])||1;
+      drawElectronArrow(c2brMid,[b1[0]-ov[0]/ol*.18,b1[1]-ov[1]/ol*.18],.55,`rgba(251,191,36,${.82*openArrow})`);
+    }
+    if(p<.22) drawLabel(0,2.15,"反应物：乙烯 + Br₂","rgba(165,243,252,.9)",9);
+    else if(p<.50) drawLabel(0,2.15,"溴鎓离子中间体：Br⁺ 桥连两个碳，Br⁻ 已离去","rgba(251,191,36,.95)",9);
+    else if(p<.92) drawLabel(0,2.15,"Br⁻ 背面进攻：三元环打开，两个 Br 反式加成","rgba(251,191,36,.95)",9);
+    else drawLabel(0,2.15,"反式-1,2-二溴乙烷（示意）","rgba(94,234,212,.96)",10);
   }
 
   function drawElimination(p){
@@ -504,8 +525,11 @@
     // Relative lengths: C–C 1.54, C–H 1.09, C–Br 1.93, C=C 1.34 Å.
     const c1=[-.705,0], c2=[.705,0];
     const br=[lerp(-2.45,-2.85,brk),lerp(.1,.42,brk)];
-    const hB=[lerp(1.55,-.45,oh),lerp(-.82,-1.25,oh)];
-    const o=[lerp(2.2,1.2,oh),lerp(-1.55,-1.0,oh)];
+    const oEnd=[1.2,-1.0];
+    // 终态水分子：两根 O–H 等长（0.80），夹角按 104.5° 示意。
+    const hBEnd=[oEnd[0]-.68,oEnd[1]-.42];
+    const hB=[lerp(1.55,hBEnd[0],oh),lerp(-.82,hBEnd[1],oh)];
+    const o=[lerp(2.2,oEnd[0],oh),lerp(-1.55,oEnd[1],oh)];
     const h2oH=[o[0]+.58,o[1]-.55];
     const ohMid=[(o[0]+hB[0])/2,(o[1]+hB[1])/2];
     const chMid=[(c2[0]+hB[0])/2,(c2[1]+hB[1])/2];
@@ -520,7 +544,7 @@
     const leftH=[[-1.62,.55],[-1.62,-.55]], rightH=[[1.62,.55],[1.62,-.55]];
     for(const h of leftH) drawBond(c1,h,1,"rgba(148,163,184,.35)",2);
     for(const h of rightH) drawBond(c2,h,1,"rgba(148,163,184,.35)",2);
-    // 中间态：C–Br 和 C–H 都还连在 C 上，用实线；接近断裂时才变虚线。
+    // 协同过渡态：C–Br 和 C–H 都还连在 C 上，用实线；接近断裂时才变虚线。
     const cbrAlpha=.55*Math.max(0,1-brk*1.15);
     if(cbrAlpha>.02){
       drawBond(c1,br,1,`rgba(245,158,11,${cbrAlpha})`,2.4,brk>.55?[4,5]:[]);
@@ -528,9 +552,8 @@
     }
     if(oh>.02) drawBond(o,hB,1,`rgba(252,165,165,${.16+form*.46})`,2.2);
     drawBond(o,h2oH,1,"rgba(252,165,165,.4)",2);
-    if(ohArrow>.02) drawElectronArrow([o[0]-.2,o[1]+.16],[hB[0]+.15,hB[1]-.12],.3,`rgba(251,191,36,${.82*ohArrow})`);
-    if(ccArrow>.02) drawElectronArrow([chMid[0],chMid[1]-.1],[ccMid[0],ccMid[1]-.22],-.3,`rgba(251,191,36,${.78*ccArrow})`);
-    if(brArrow>.02) drawElectronArrow([cbrMid[0],cbrMid[1]-.14],[br[0]-.2,br[1]-.28],.3,`rgba(251,191,36,${.78*brArrow})`);
+    if(ccArrow>.02) drawElectronArrow([chMid[0],chMid[1]-.10],[ccMid[0],ccMid[1]-.22],-.30,`rgba(251,191,36,${.78*ccArrow})`);
+    if(brArrow>.02) drawElectronArrow([cbrMid[0],cbrMid[1]-.14],[br[0]-.18,br[1]-.20],.30,`rgba(251,191,36,${.78*brArrow})`);
     drawAtom(c1[0],c1[1],"C","#cbd5e1",17);
     drawAtom(c2[0],c2[1],"C","#cbd5e1",17);
     drawAtom(-1.62,.55,"H","#f8fafc",9);drawAtom(-1.62,-.55,"H","#f8fafc",9);drawAtom(1.62,.55,"H","#f8fafc",9);drawAtom(1.62,-.55,"H","#f8fafc",9);
@@ -538,10 +561,11 @@
     drawAtom(o[0],o[1],"O","#fca5a5",13,p<.55?"−":"");
     drawAtom(h2oH[0],h2oH[1],"H","#f8fafc",8);
     drawAtom(br[0],br[1],"Br","#f59e0b",12,brk>.58?"−":"");
-    if(p>.34&&p<.66) drawLabel(0,1.9,"中间态示意：C–Br、C–H 仍在 C 上，O–H 正在形成","rgba(251,191,36,.95)",9);
-    else if(p>=.66&&p<.9) drawLabel(0,1.9,"过渡态：C–Br 与 C–H 断裂，C=C 形成","rgba(251,191,36,.95)",9);
-    else if(p>=.9) drawLabel(0,1.9,"CH₂=CH₂ + H₂O + Br⁻","rgba(94,234,212,.96)",10);
-    else drawLabel(0,1.9,"CH₃CH₂Br + OH⁻","rgba(165,243,252,.9)",9);
+    // O–H 箭头从氧负电荷处起笔，画在原子之上。
+    if(ohArrow>.02) drawElectronArrow([o[0]+.17,o[1]-.08],[hB[0]+.15,hB[1]-.12],.30,`rgba(251,191,36,${.82*ohArrow})`);
+    if(p<.30) drawLabel(0,1.9,"E2 一步：OH⁻ 夺取 β-H","rgba(165,243,252,.9)",9);
+    else if(p<.90) drawLabel(0,1.9,"E2 协同过渡态：β-H 与 Br 反式，三根箭头同时发生","rgba(251,191,36,.95)",9);
+    else drawLabel(0,1.9,"CH₂=CH₂ + H₂O + Br⁻","rgba(94,234,212,.96)",10);
   }
 
   // ── energy profile ─────────────────────────────────────────────────────
