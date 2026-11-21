@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#04070f" />
+<meta name="theme-color" content="#f5f8f5" />
 <title>C–C 成键过程 · 乙烷 / 乙烯 / 乙炔 · 高中化学可视化平台</title>
 <meta name="description" content="交互式碳碳成键过程：观察两个已杂化碳原子靠近，形成 σ 键，以及乙烯、乙炔中的 π 键。拖动进度条观看乙烷、乙烯、乙炔的成键过程。" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -439,8 +439,10 @@
   <meta name="rights" content="All rights reserved. No copying, modification or redistribution without prior written permission." />
   <link rel="license" href="rights.html" />
   <!-- © 2026 chemLeon6657. All rights reserved. See rights.html. -->
+<link rel="stylesheet" href="site-theme.css" />
+<script>try{var t=localStorage.getItem("cvl-theme");document.documentElement.dataset.theme=t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
 </head>
-<body>
+<body data-palette="cellbio">
 <div class="page-glow" aria-hidden="true"></div>
 
 <div class="shell">
@@ -1219,5 +1221,6 @@
 })();
 </script>
   <script src="platform-shell.js"></script>
+  <script src="site-ui.js"></script>
 </body>
 </html>

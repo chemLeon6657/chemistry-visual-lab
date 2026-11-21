@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#04070f" />
+<meta name="theme-color" content="#f5f8f5" />
 <title>酸碱滴定与 pH · 高中化学可视化平台</title>
 <meta name="description" content="可手动滴加的酸碱滴定实验：强酸强碱、弱酸强碱、酚酞与甲基橙变色、实时 pH 曲线与终点判断。" />
 <meta name="copyright" content="© 2026 chemLeon6657. All rights reserved." />
@@ -102,8 +102,10 @@
   @media(max-width:650px){.shell{padding:14px 12px 10px}.brand-mark{width:44px;height:44px}.brand h1{font-size:clamp(23px,7vw,31px)}.brand p,.header-meta{display:none}.mode-tab{font-size:9px;padding:0 8px}.mode-bar{padding:4px}.stage-panel{padding:12px}.stage-title{font-size:18px}.ph-badge b{font-size:15px}.sidebar{grid-template-columns:1fr}.sidebar .card:nth-child(3),.sidebar .card:nth-child(4){grid-column:auto}.dose-actions{grid-template-columns:1fr 1fr}.dose-actions .auto{grid-column:1/-1}.site-footer{flex-direction:column;gap:5px}}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 </style>
+<link rel="stylesheet" href="site-theme.css" />
+<script>try{var t=localStorage.getItem("cvl-theme");document.documentElement.dataset.theme=t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
 </head>
-<body>
+<body data-palette="nc">
 <div class="page-glow" aria-hidden="true"></div>
 <div class="shell">
   <header class="site-header">
@@ -465,5 +467,6 @@
 })();
 </script>
   <script src="platform-shell.js"></script>
+  <script src="site-ui.js"></script>
 </body>
 </html>

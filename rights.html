@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#04070f" />
+<meta name="theme-color" content="#f5f8f5" />
 <title>版权与使用条款 · 高中化学可视化平台</title>
 <meta name="description" content="高中化学可视化平台的版权归属、使用许可、禁止行为和授权申请说明。" />
 <meta name="copyright" content="© 2026 chemLeon6657. All rights reserved." />
@@ -37,8 +37,10 @@
   @media(max-width:820px){.shell{width:calc(100% - 24px);padding-top:16px}.grid{grid-template-columns:1fr}.side{position:static}.terms{padding:17px}.hero h1{font-size:clamp(28px,9vw,42px)}.foot{flex-direction:column;gap:5px}}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
+<link rel="stylesheet" href="site-theme.css" />
+<script>try{var t=localStorage.getItem("cvl-theme");document.documentElement.dataset.theme=t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
 </head>
-<body>
+<body data-palette="nc">
 <div class="glow" aria-hidden="true"></div>
 <div class="shell">
   <header class="top">
@@ -148,5 +150,6 @@
   </main>
 </div>
 <script src="platform-shell.js"></script>
+  <script src="site-ui.js"></script>
 </body>
 </html>

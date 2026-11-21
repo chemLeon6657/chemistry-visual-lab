@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#04070f" />
+<meta name="theme-color" content="#f5f8f5" />
 <title>分子空间构型 · VSEPR 与孤对电子 · 高中化学可视化平台</title>
 <meta name="description" content="交互式 VSEPR 分子空间构型演示：直线形、平面三角形、正四面体、三角锥、V 形、三角双锥和八面体，观察孤对电子如何压缩键角。" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -732,8 +732,10 @@
   <meta name="rights" content="All rights reserved. No copying, modification or redistribution without prior written permission." />
   <link rel="license" href="rights.html" />
   <!-- © 2026 chemLeon6657. All rights reserved. See rights.html. -->
+<link rel="stylesheet" href="site-theme.css" />
+<script>try{var t=localStorage.getItem("cvl-theme");document.documentElement.dataset.theme=t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
 </head>
-<body>
+<body data-palette="nc">
 <div class="page-glow" aria-hidden="true"></div>
 
 <div class="shell">
@@ -777,7 +779,7 @@
           <h2><span id="formula">CH₄</span> · <span id="geomName">正四面体</span></h2>
           <div class="stage-status" id="stageStatus" data-lone="false">
             <span class="status-dot"></span>
-            <span id="domainText">4 个电子域</span>
+            <span id="domainText">4 个价层电子对</span>
             <span class="status-sep">·</span>
             <span id="loneHeaderText">0 对孤对电子</span>
           </div>
@@ -826,8 +828,8 @@
 
       <div class="stage-foot">
         <div class="angle-pill">键角 <strong id="angleValue">109°28′</strong></div>
-        <div class="ideal-angle">电子域理想角 <span id="idealAngle">109°28′</span></div>
-        <div class="lone-note" id="loneNote"><i></i>所有电子域都是成键电子对</div>
+        <div class="ideal-angle">价层电子对理想夹角 <span id="idealAngle">109°28′</span></div>
+        <div class="lone-note" id="loneNote"><i></i>所有价层电子对都是成键电子对</div>
       </div>
     </section>
 
@@ -842,7 +844,7 @@
         <div class="fact-list">
           <div class="fact-row"><span>价层电子对数</span><strong id="factDomains">4</strong></div>
           <div class="fact-row"><span>孤对电子数</span><strong id="factLone">0</strong></div>
-          <div class="fact-row"><span>电子域构型</span><strong id="factElectronGeom">四面体</strong></div>
+          <div class="fact-row"><span>价层电子对构型</span><strong id="factElectronGeom">四面体</strong></div>
           <div class="fact-row"><span>分子构型</span><strong id="factMolecularGeom">正四面体形</strong></div>
           <div class="fact-row"><span>中心原子杂化</span><strong id="factHybrid">sp³</strong></div>
           <div class="fact-row"><span>分子极性</span><strong id="factPolarity">非极性分子</strong></div>
@@ -858,25 +860,25 @@
           </div>
         </div>
         <div class="vsepr-calc">
-          <div class="vsepr-calc-head">VSEPR 计算 <span>价层电子对数</span></div>
-          <div class="vsepr-expr">n =（中心原子价电子数 + 配体提供电子数 − 电荷）÷ 2</div>
-          <div class="vsepr-line" id="vseprLine">(4 + 4×1 − 0) ÷ 2 = 4</div>
-          <div class="vsepr-result" id="vseprResult">σ键 4 + 孤对 0 = 4 个电子域 → 四面体</div>
+          <div class="vsepr-calc-head">VSEPR 计算 <span>孤对 → 价层电子对 → 构型</span></div>
+          <div class="vsepr-expr">孤对电子数 =（a − xb）÷ 2；价层电子对数 = σ键电子对 + 孤对电子</div>
+          <div class="vsepr-line" id="vseprLine">a=4，x=4，b=1 →（4 − 4×1）÷ 2 = 0 对孤对</div>
+          <div class="vsepr-result" id="vseprResult">价层电子对 = σ键 4 + 孤对 0 = 4 → 四面体；去掉孤对 → 正四面体形</div>
         </div>
-        <p class="note" id="sideNote">没有孤对电子，电子域构型与分子构型一致。</p>
+        <p class="note" id="sideNote">没有孤对电子，价层电子对构型与分子构型一致。</p>
       </section>
 
       <section class="card">
         <div class="card-kicker">判断顺序</div>
-        <h3>先电子域，后分子形状</h3>
+        <h3>先价层电子对，后分子形状</h3>
         <div class="fact-list" style="margin-top:10px">
-          <div class="fact-row"><span>2 个电子域</span><strong>直线形</strong></div>
-          <div class="fact-row"><span>3 个电子域</span><strong>平面三角形</strong></div>
-          <div class="fact-row"><span>4 个电子域</span><strong>四面体</strong></div>
-          <div class="fact-row"><span>5 个电子域</span><strong>三角双锥 <em>拓展</em></strong></div>
-          <div class="fact-row"><span>6 个电子域</span><strong>八面体 <em>拓展</em></strong></div>
+          <div class="fact-row"><span>2 个价层电子对</span><strong>直线形</strong></div>
+          <div class="fact-row"><span>3 个价层电子对</span><strong>平面三角形</strong></div>
+          <div class="fact-row"><span>4 个价层电子对</span><strong>四面体</strong></div>
+          <div class="fact-row"><span>5 个价层电子对</span><strong>三角双锥 <em>拓展</em></strong></div>
+          <div class="fact-row"><span>6 个价层电子对</span><strong>八面体 <em>拓展</em></strong></div>
         </div>
-        <p class="note">孤对电子也占一个电子域，但看不见原子。去掉孤对后，才是分子构型。</p>
+        <p class="note">孤对电子也占一对价层电子对的位置，但看不见原子。去掉孤对后，才是分子构型。</p>
       </section>
 
       <section class="card tip-card">
@@ -893,7 +895,7 @@
 
   <section class="steps" aria-label="VSEPR 判断流程">
     <div class="step"><span class="step-num">01</span><h4>数电子对</h4><p>价层电子对数 = σ键电子对 + 中心原子孤对电子数。</p></div>
-    <div class="step"><span class="step-num">02</span><h4>定电子域</h4><p>2 对→直线，3 对→平面三角，4 对→四面体；5 对→三角双锥，6 对→八面体。</p></div>
+    <div class="step"><span class="step-num">02</span><h4>定价层电子对</h4><p>2 对→直线，3 对→平面三角，4 对→四面体；5 对→三角双锥，6 对→八面体。</p></div>
     <div class="step"><span class="step-num">03</span><h4>看孤对</h4><p>孤对占一个方向，但成键原子不放在那个方向。</p></div>
     <div class="step"><span class="step-num">04</span><h4>得分子构型</h4><p>去掉孤对，只看原子骨架：三角锥、V 形由此而来。</p></div>
   </section>
@@ -901,13 +903,13 @@
 
   <section class="mustknow" aria-labelledby="mustknow-title">
     <div class="must-head">
-      <div><div class="must-kicker">BEIJING / SELECTIVE COMPULSORY 2 · HIGH-FREQUENCY</div><h2 class="must-title" id="mustknow-title">分子构型：<span>必须知道的清单</span></h2><p class="must-sub">按人教版选择性必修 2 与北京等级考常见要求整理：先数电子域，再看孤对，最后判断构型、杂化和极性。PCl₅、SF₆ 也可在顶部切换到 3D 模型。</p></div>
+      <div><div class="must-kicker">BEIJING / SELECTIVE COMPULSORY 2 · HIGH-FREQUENCY</div><h2 class="must-title" id="mustknow-title">分子构型：<span>必须知道的清单</span></h2><p class="must-sub">按人教版选择性必修 2 与北京等级考常见要求整理：先数价层电子对，再看孤对，最后判断构型、杂化和极性。PCl₅、SF₆ 也可在顶部切换到 3D 模型。</p></div>
       <span class="must-card" style="padding:6px 9px;font-size:8px;color:rgba(103,232,249,.72)">VSEPR ≠ 分子构型</span>
     </div>
     <div class="must-grid">
       <div class="must-table-wrap">
         <table class="must-table">
-          <thead><tr><th>微粒</th><th>价层电子对</th><th>电子域构型</th><th>分子构型</th><th>杂化</th><th>键角</th><th>极性</th></tr></thead>
+          <thead><tr><th>微粒</th><th>价层电子对</th><th>价层电子对构型</th><th>分子构型</th><th>杂化</th><th>键角</th><th>极性</th></tr></thead>
           <tbody>
             <tr><td>BeCl₂ / CO₂</td><td>2（2σ + 0 孤对）</td><td>直线形</td><td>直线形</td><td class="mono">sp</td><td>180°</td><td>非极性</td></tr>
             <tr><td>BF₃ / SO₃ / CO₃²⁻ / NO₃⁻</td><td>3（3σ + 0）</td><td>平面三角形</td><td>平面三角形</td><td class="mono">sp²</td><td>120°</td><td>非极性</td></tr>
@@ -924,9 +926,9 @@
         <div class="must-card"><h4><i></i>键角大小：先看孤对</h4><p>CH₄ <strong>109.5°</strong> &gt; NH₃ <strong>107°</strong> &gt; H₂O <strong>104.5°</strong>。孤对电子斥力：孤对—孤对 &gt; 孤对—成键 &gt; 成键—成键。</p><div class="formula-line">H₂O &gt; H₂S；NH₃ &gt; PH₃；NF₃ &lt; NH₃（拓展）</div></div>
         <div class="must-card"><h4><i></i>等电子体：结构相似</h4><p>原子数相同、价电子总数相同，空间结构往往相似。</p><div class="formula-line">CO₂ / N₂O；CO₃²⁻ / NO₃⁻ / SO₃；SO₂ / O₃；CH₄ / NH₄⁺；BF₃ / CO₃²⁻</div></div>
         <div class="must-card"><h4><i></i>极性：看对称性</h4><p>极性键不一定得到极性分子；<strong>对称抵消</strong>时分子非极性。CO₂、BF₃、CH₄、CCl₄、PCl₅、SF₆ 非极性；H₂O、NH₃、SO₂、CHCl₃ 极性。</p></div>
-        <div class="must-card"><h4><i></i>杂化速记</h4><p><strong>sp</strong> 直线 180°；<strong>sp²</strong> 平面三角 120°；<strong>sp³</strong> 四面体 109.5°。有孤对时，电子域构型不变，分子构型变。</p></div>
+        <div class="must-card"><h4><i></i>杂化速记</h4><p><strong>sp</strong> 直线 180°；<strong>sp²</strong> 平面三角 120°；<strong>sp³</strong> 四面体 109.5°。有孤对时，价层电子对构型不变，分子构型变。</p></div>
         <div class="must-card"><h4><i></i>构型怎么测</h4><p><strong>红外光谱</strong>看化学键/官能团；<strong>质谱</strong>测相对分子质量；<strong>X 射线衍射</strong>测定晶体中分子的空间结构。</p></div>
-        <div class="must-card"><h4><i></i>平面正方形（拓展）</h4><p><strong>XeF₄</strong>：4 个成键电子对 + 2 对孤对，电子域八面体，分子为平面正方形；sp³d²，键角 90°，非极性。</p></div>
+        <div class="must-card"><h4><i></i>平面正方形（拓展）</h4><p><strong>XeF₄</strong>：4 个成键电子对 + 2 对孤对，价层电子对构型为八面体，分子为平面正方形；sp³d²，键角 90°，非极性。</p></div>
 
 
       </div>
@@ -987,7 +989,7 @@
       angle: "180°", ideal: "180°", example: "BeCl₂、CO₂",
       view: { yaw: .12, pitch: .12, distance: 7.2 },
       desc: "两个成键电子对相距最远，中心原子与两个配位原子在同一直线上。",
-      note: "没有孤对电子，电子域构型与分子构型一致。"
+      note: "没有孤对电子，价层电子对构型与分子构型一致。"
     },
     planar: {
       key: "planar",
@@ -1000,7 +1002,7 @@
       hybrid: "sp²", polarity: "非极性分子",
       angle: "120°", ideal: "120°", example: "BF₃、SO₃",
       view: { yaw: 0, pitch: .62, distance: 7.4 },
-      desc: "三个电子域在同一平面内尽量分开，形成 120° 的平面三角形。",
+      desc: "三个价层电子对在同一平面内尽量分开，形成 120° 的平面三角形。",
       note: "没有孤对电子，三个 B—F 键完全等价。"
     },
     tetra: {
@@ -1026,7 +1028,7 @@
       hybrid: "sp³", polarity: "极性分子",
       angle: "107°", ideal: "109°28′", example: "NH₃、PCl₃",
       view: { yaw: 1.57, pitch: .2, distance: 7.4 },
-      desc: "三个 N—H 键加一对孤对电子构成四个电子域；孤对占据四面体的一个顶点。",
+      desc: "三个 N—H 键加一对孤对电子构成四个价层电子对；孤对占据四面体的一个顶点。",
       note: "孤对电子斥力更大，把三个 N—H 键压缩到约 107°；分子骨架是三角锥。"
     },
     bent: {
@@ -1039,7 +1041,7 @@
       hybrid: "sp³", polarity: "极性分子",
       angle: "104.5°", ideal: "109°28′", example: "H₂O、H₂S",
       view: { yaw: .58, pitch: .3, distance: 7.4 },
-      desc: "两个 O—H 键加两对孤对电子构成四个电子域；孤对占据两个四面体顶点。",
+      desc: "两个 O—H 键加两对孤对电子构成四个价层电子对；孤对占据两个四面体顶点。",
       note: "两对孤对电子的斥力更强，把 H—O—H 键角压缩到约 104.5°，形成 V 形。"
     },
     bipyramidal: {
@@ -1052,8 +1054,8 @@
       hybrid: "sp³d", polarity: "非极性分子",
       angle: "90° / 120°", ideal: "90° / 120°", example: "PCl₅",
       view: { yaw: 1.1, pitch: .22, distance: 8.2 },
-      desc: "五个电子域指向三角双锥的五个顶点：两个轴向、三个赤道方向。",
-      note: "PCl₅ 是三角双锥形；轴向与赤道方向键角为 90°，三个赤道方向之间为 120°。属于拓展内容。"
+      desc: "五个价层电子对指向三角双锥的五个顶点：两个轴向、三个赤道方向。",
+      note: "PCl₅ 是三角双锥形；轴向与赤道方向键角为 90°，三个赤道方向之间为 120°。"
     },
     octahedral: {
       key: "octahedral",
@@ -1065,8 +1067,8 @@
       hybrid: "sp³d²", polarity: "非极性分子",
       angle: "90° / 180°", ideal: "90° / 180°", example: "SF₆",
       view: { yaw: .78, pitch: .3, distance: 8.4 },
-      desc: "六个电子域沿三个坐标轴的正负方向伸展，形成八面体。",
-      note: "SF₆ 是八面体形；相邻键角 90°，相对方向 180°。属于拓展内容。"
+      desc: "六个价层电子对沿三个坐标轴的正负方向伸展，形成八面体。",
+      note: "SF₆ 是八面体形；相邻键角 90°，相对方向 180°。"
     },
     xef4: {
       key: "squarePlanar", tabKey: "octahedral", exampleGroup: "octahedral",
@@ -1079,8 +1081,8 @@
       angle: "90°", ideal: "90°", example: "XeF₄",
       valence: 8, ligandElectrons: 1, charge: 0,
       view: { yaw: .72, pitch: .42, distance: 8.2 },
-      desc: "XeF₄ 的 6 个电子域中，4 个成键电子对在平面内，2 对孤对在轴向；去掉孤对后是平面正方形。",
-      note: "XeF₄ 是八面体电子域的特例：4 个成键电子对 + 2 对孤对，分子构型为平面正方形，键角 90°，非极性。"
+      desc: "XeF₄ 的 6 个价层电子对中，4 个成键电子对在平面内，2 对孤对在轴向；去掉孤对后是平面正方形。",
+      note: "XeF₄ 是八面体价层电子对的特例：4 个成键电子对 + 2 对孤对，分子构型为平面正方形，键角 90°，非极性。"
     }
   };
 
@@ -1095,7 +1097,7 @@
     pyramidal: [{ text: "NH₃ / H₃O⁺ / PCl₃", tag: "三角锥" }],
     bent: [
       { text: "H₂O / H₂S", tag: "V 形" },
-      { text: "SO₂ / O₃", tag: "V 形 · 3 电子域" }
+      { text: "SO₂ / O₃", tag: "V 形 · 3 价层电子对" }
     ],
     bipyramidal: [{ text: "PCl₅", tag: "三角双锥" }],
     octahedral: [
@@ -1167,13 +1169,13 @@
     axeBadge.textContent = model.axe;
     sideName.textContent = `${model.molecule} · ${model.molecularGeometry}`;
     stageStatus.dataset.lone = lone > 0 ? "true" : "false";
-    domainText.textContent = `${model.dirs.length + lone} 个电子域`;
+    domainText.textContent = `${model.dirs.length + lone} 个价层电子对`;
     loneHeaderText.textContent = `${lone} 对孤对电子`;
     angleValue.textContent = model.angle;
     idealAngle.textContent = model.ideal;
     loneNote.innerHTML = lone > 0
       ? `<i></i>孤对电子占据方向，键角被压缩`
-      : `<i></i>所有电子域都是成键电子对`;
+      : `<i></i>所有价层电子对都是成键电子对`;
     factDomains.textContent = String(model.dirs.length + lone);
     factLone.textContent = String(lone);
     factElectronGeom.textContent = model.electronGeometry;
@@ -1184,9 +1186,12 @@
     const coreValence = model.valence ?? 4;
     const ligandElectrons = model.ligandElectrons ?? 1;
     const charge = model.charge ?? 0;
-    const calcTotal = Math.round((coreValence + model.dirs.length * ligandElectrons - charge) / 2);
-    if(vseprLine)vseprLine.textContent = `(${coreValence} + ${model.dirs.length}×${ligandElectrons} − ${charge}) ÷ 2 = ${calcTotal}`;
-    if(vseprResult)vseprResult.textContent = `σ键 ${model.dirs.length} + 孤对 ${lone} = ${calcTotal} 个电子域 → ${model.electronGeometry}`;
+    const a = coreValence - charge;
+    const sigma = model.dirs.length;
+    const loneCalc = Math.max(0, Math.round((a - sigma * ligandElectrons) / 2));
+    const totalPairs = sigma + loneCalc;
+    if(vseprLine)vseprLine.innerHTML = `a=${a}，x=${sigma}，b=${ligandElectrons}<br>（${a} − ${sigma}×${ligandElectrons}）÷ 2 = ${loneCalc} 对孤对`;
+    if(vseprResult)vseprResult.innerHTML = `σ键 ${sigma} + 孤对 ${loneCalc} = ${totalPairs} 个价层电子对<br>→ VSEPR ${model.electronGeometry} → 去掉孤对：${model.molecularGeometry}`;
     exampleList.innerHTML = (EXAMPLES[exampleGroup] || []).map(ex => {
       const cls = `example-chip${ex.ext ? " ext" : ""}${ex.model && ex.model === current ? " active" : ""}`;
       if (ex.model) return `<button class="${cls}" type="button" data-example="${ex.model}"><b>${ex.text}</b><small>${ex.tag}</small></button>`;
@@ -1646,5 +1651,6 @@
 })();
 </script>
   <script src="platform-shell.js"></script>
+  <script src="site-ui.js"></script>
 </body>
 </html>
