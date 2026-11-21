@@ -367,7 +367,18 @@
     sctx.strokeStyle="rgba(255,255,255,.3)";sctx.lineWidth=1;sctx.stroke();
     sctx.fillStyle=lightColor(color)?"rgba(5,14,26,.92)":"rgba(255,255,255,.96)";
     sctx.font=`600 ${Math.max(9,r*.75)}px "Segoe UI","Microsoft YaHei",sans-serif`;sctx.textAlign="center";sctx.textBaseline="middle";sctx.fillText(label,px,py+.5);
-    if(charge){sctx.fillStyle="rgba(252,211,77,.95)";sctx.font=`600 ${Math.max(8,r*.55)}px "Segoe UI",sans-serif`;sctx.fillText(charge,px+r*.75,py-r*.7);}
+    if(charge){
+      const fs=Math.max(10,r*.62);
+      sctx.textAlign="center";sctx.textBaseline="middle";
+      const qx=px+r*.78,qy=py-r*.72;
+      sctx.save();
+      sctx.beginPath();sctx.arc(qx,qy,7,0,TAU);
+      sctx.fillStyle="rgba(4,10,20,.82)";sctx.fill();
+      sctx.strokeStyle="rgba(252,211,77,.9)";sctx.lineWidth=1;sctx.stroke();
+      sctx.font=`700 ${fs}px "Segoe UI","Microsoft YaHei",sans-serif`;
+      sctx.fillStyle="#fef3c7";sctx.fillText(charge,qx,qy+.5);
+      sctx.restore();
+    }
   }
   function drawBond(a,b,order=1,color="rgba(148,163,184,.5)",width=3,dash=[]){
     const ax=cx+a[0]*S,ay=cy+a[1]*S,bx=cx+b[0]*S,by=cy+b[1]*S;
@@ -414,96 +425,121 @@
   }
 
   function drawSubstitution(p){
-    const approach=smooth(.04,.6,p), brk=smooth(.35,.68,p), form=smooth(.44,.82,p);
+    const approach=smooth(.04,.6,p), brk=smooth(.35,.68,p), form=smooth(.3,.8,p);
     // 相对键长：C–H 1.09、C–O 1.43、C–Br 1.93 Å，按 C–H = 1.0 归一化。
     const C=[0,0], H=[[0,1.0],[-.866,-.5],[.866,-.5]];
     const O=[-1.9+.59*approach,.14], Br=[1.77+.55*brk,.06];
     const ohH=[O[0]-.74,O[1]-.48];
+    const coMid=[(O[0]+C[0])/2,(O[1]+C[1])/2];
+    const cbMid=[(C[0]+Br[0])/2,(C[1]+Br[1])/2];
+    // 左侧孤对电子箭头：O 上的负电荷 → O–C 中点；成键后消失。
+    const coArrow=Math.max(0,1-smooth(.4,.64,form));
+    // 右侧成键电子箭头：C–Br 键中点 → Br；断键后消失。
+    const brArrow=Math.max(0,1-smooth(.4,.64,brk));
     for(const h of H) drawBond(C,h,1,"rgba(148,163,184,.35)",2);
-    drawBond(C,Br,1,`rgba(245,158,11,${.55*(1-brk*.75)})`,2.5,brk>.2&&brk<.9?[4,5]:[]);
-    drawBond(C,O,1,`rgba(252,165,165,${.3+form*.45})`,2.7,form<.8?[4,5]:[]);
+    // 中间态：C–O 与 C–Br 都还连在 C 上，所以这时两条键都画实线。
+    const cbrAlpha=.55*Math.max(0,1-brk*1.15);
+    if(cbrAlpha>.02) drawBond(C,Br,1,`rgba(245,158,11,${cbrAlpha})`,2.5,brk>.58?[4,5]:[]);
+    if(form>.01) drawBond(C,O,1,`rgba(252,165,165,${.18+form*.58})`,2.7);
     drawBond(O,ohH,1,"rgba(252,165,165,.4)",2);
-    // Electron flow: OH lone pair -> C; C–Br bond -> Br.
-    drawElectronArrow([O[0]+.1,O[1]+.08],[C[0]-.38,.2],.3,"rgba(251,191,36,.82)");
-    drawElectronArrow([.55,.08],[Br[0]-.22,.06],.26,"rgba(251,191,36,.82)");
-    // p/π not in substitution; show leaving group charge
+    if(coArrow>.02) drawElectronArrow([O[0]+.2,O[1]-.16],coMid,.3,`rgba(251,191,36,${.84*coArrow})`);
+    if(brArrow>.02) drawElectronArrow(cbMid,[Br[0]-.2,Br[1]+.02],.22,`rgba(251,191,36,${.8*brArrow})`);
     drawAtom(C[0],C[1],"C","#cbd5e1",18);
     for(const h of H) drawAtom(h[0],h[1],"H","#f8fafc",10);
-    drawAtom(O[0],O[1],"O","#fca5a5",14,p>.55?"":"−");
+    drawAtom(O[0],O[1],"O","#fca5a5",14,p<.58?"−":"");
     drawAtom(ohH[0],ohH[1],"H","#f8fafc",9);
-    drawAtom(Br[0],Br[1],"Br","#f59e0b",13,p>.55?"−":"");
-    if(p>.3&&p<.85) drawLabel(0,1.3,"过渡态 · C–Br 将断 / C–O 将成","rgba(251,191,36,.95)",9);
-    else if(p>=.85) drawLabel(0,1.3,"CH₃OH + Br⁻","rgba(94,234,212,.96)",10);
+    drawAtom(Br[0],Br[1],"Br","#f59e0b",13,brk>.58?"−":"");
+    if(p>.36&&p<.64) drawLabel(0,1.3,"中间态示意：C–O 与 C–Br 同时连在 C 上","rgba(251,191,36,.95)",9);
+    else if(p>=.64&&p<.88) drawLabel(0,1.3,"过渡态：C–O 形成，C–Br 断裂","rgba(251,191,36,.95)",9);
+    else if(p>=.88) drawLabel(0,1.3,"CH₃OH + Br⁻","rgba(94,234,212,.96)",10);
     else drawLabel(0,1.3,"CH₃Br + OH⁻","rgba(165,243,252,.9)",9);
   }
 
   function drawAddition(p){
-    const brk=smooth(.25,.65,p), form=smooth(.45,.82,p), piFade=1-smooth(.2,.68,p);
+    const brk=smooth(.25,.68,p), form=smooth(.32,.82,p), piFade=1-smooth(.2,.68,p);
     // Relative lengths: C=C 1.34, C–H 1.09, C–Br 1.93 Å.
     const c1=[-.615,0], c2=[.615,0];
     const h1=[-1.48,-.62], h2=[-1.48,.62], h3=[1.48,-.62], h4=[1.48,.62];
     const b1=[lerp(-.615,-1.55,smooth(.3,.8,p)),lerp(1.75,1.25,form)];
     const b2=[lerp(.615,1.55,smooth(.3,.8,p)),lerp(1.75,-1.22,form)];
+    const c1brMid=[(c1[0]+b1[0])/2,(c1[1]+b1[1])/2];
+    const brMid=[(b1[0]+b2[0])/2,(b1[1]+b2[1])/2];
+    // π 电子对去形成 C1–Br1；Br–Br 的电子对离去到 Br2。相应阶段后箭头消失。
+    const piArrow=Math.max(0,1-smooth(.55,.8,form));
+    const brArrow=Math.max(0,1-smooth(.55,.8,brk));
     // π cloud above/below the C=C
     if(piFade>.01){
       sctx.save();sctx.globalCompositeOperation="lighter";
       for(const sy of [-1,1]){
         const g=sctx.createRadialGradient(cx,cy+sy*.85*S,0,cx,cy+sy*.85*S,2.1*S);
         g.addColorStop(0,`rgba(167,139,250,${.26*piFade})`);g.addColorStop(1,"rgba(167,139,250,0)");
-        sctx.fillStyle=g;sctx.beginPath();sctx.ellipse(cx,cy+sy*.85*S,2.1*S,.55*S,0,0,TAU);sctx.fill();
+        sctx.fillStyle=g;sctx.beginPath();sctx.ellipse(cx,cy+sy*.8*S,2.0*S,.52*S,0,0,TAU);sctx.fill();
       }
       sctx.restore();
     }
     drawBond(c1,c2,form>.55?1:2,"rgba(103,232,249,.62)",3);
     for(const h of [h1,h2]) drawBond(c1,h,1,"rgba(148,163,184,.35)",2);
     for(const h of [h3,h4]) drawBond(c2,h,1,"rgba(148,163,184,.35)",2);
-    drawBond(b1,b2,1,`rgba(245,158,11,${.6*(1-brk*.8)})`,2.4,brk>.2?[4,5]:[]);
-    // π electrons attack Br; the Br–Br bond pair leaves toward the other Br.
-    drawElectronArrow([-.12,.72],[b1[0]+.15,b1[1]-.18],.24,"rgba(251,191,36,.8)");
-    drawElectronArrow([.1,1.65],[b2[0]-.12,b2[1]+.2],-.24,"rgba(251,191,36,.76)");
-    if(form>.1){
-      drawBond(c1,b1,1,`rgba(245,158,11,${.25+form*.45})`,2.4,form<.8?[4,5]:[]);
-      drawBond(c2,b2,1,`rgba(245,158,11,${.25+form*.45})`,2.4,form<.8?[4,5]:[]);
+    drawBond(b1,b2,1,`rgba(245,158,11,${.6*(1-brk*.8)})`,2.4,brk>.45?[4,5]:[]);
+    // 中间态：两个 C–Br 键逐步形成，所以两条键都画出；不再只画到 Br–Br 的一侧。
+    if(form>.03){
+      drawBond(c1,b1,1,`rgba(245,158,11,${.2+form*.5})`,2.4);
+      drawBond(c2,b2,1,`rgba(245,158,11,${.2+form*.5})`,2.4);
     }
+    if(piArrow>.02) drawElectronArrow([0,.3],c1brMid,.28,`rgba(251,191,36,${.8*piArrow})`);
+    if(brArrow>.02) drawElectronArrow(brMid,[b2[0]+.22,b2[1]-.42],-.35,`rgba(251,191,36,${.76*brArrow})`);
     drawAtom(c1[0],c1[1],"C","#cbd5e1",17);
     drawAtom(c2[0],c2[1],"C","#cbd5e1",17);
     for(const h of [h1,h2,h3,h4]) drawAtom(h[0],h[1],"H","#f8fafc",9);
     drawAtom(b1[0],b1[1],"Br","#f59e0b",12);
     drawAtom(b2[0],b2[1],"Br","#f59e0b",12);
-    if(p>.3&&p<.9) drawLabel(0,2.15,"过渡态：π 键参与，Br–Br 将断","rgba(251,191,36,.95)",9);
+    if(p>.34&&p<.7) drawLabel(0,2.15,"中间态示意：两个 C–Br 键正在形成","rgba(251,191,36,.95)",9);
+    else if(p>=.7&&p<.9) drawLabel(0,2.15,"过渡态：Br–Br 断裂，C–Br 形成","rgba(251,191,36,.95)",9);
     else if(p>=.9) drawLabel(0,2.15,"CH₂Br–CH₂Br","rgba(94,234,212,.96)",10);
     else drawLabel(0,2.15,"CH₂=CH₂ + Br₂","rgba(165,243,252,.9)",9);
   }
 
   function drawElimination(p){
-    const brk=smooth(.3,.7,p), form=smooth(.42,.82,p), oh=smooth(.05,.62,p);
+    const brk=smooth(.3,.72,p), form=smooth(.38,.82,p), oh=smooth(.05,.62,p);
     // Relative lengths: C–C 1.54, C–H 1.09, C–Br 1.93, C=C 1.34 Å.
     const c1=[-.705,0], c2=[.705,0];
     const br=[lerp(-2.45,-2.85,brk),lerp(.1,.42,brk)];
     const hB=[lerp(1.55,-.45,oh),lerp(-.82,-1.25,oh)];
     const o=[lerp(2.2,1.2,oh),lerp(-1.55,-1.0,oh)];
     const h2oH=[o[0]+.58,o[1]-.55];
+    const ohMid=[(o[0]+hB[0])/2,(o[1]+hB[1])/2];
+    const chMid=[(c2[0]+hB[0])/2,(c2[1]+hB[1])/2];
+    const ccMid=[(c1[0]+c2[0])/2,(c1[1]+c2[1])/2];
+    const cbrMid=[(c1[0]+br[0])/2,(c1[1]+br[1])/2];
+    // O–H 形成、C=C 形成、C–Br 断裂后，对应箭头消失。
+    const ohArrow=Math.max(0,1-smooth(.52,.76,form));
+    const ccArrow=Math.max(0,1-smooth(.52,.76,form));
+    const brArrow=Math.max(0,1-smooth(.52,.76,brk));
     // C=C appears as C–Br/C–H break.
-    drawBond(c1,c2,form>.55?2:1,"rgba(103,232,249,.62)",3);
+    drawBond(c1,c2,form>.58?2:1,"rgba(103,232,249,.62)",3);
     const leftH=[[-1.62,.55],[-1.62,-.55]], rightH=[[1.62,.55],[1.62,-.55]];
     for(const h of leftH) drawBond(c1,h,1,"rgba(148,163,184,.35)",2);
     for(const h of rightH) drawBond(c2,h,1,"rgba(148,163,184,.35)",2);
-    drawBond(c1,br,1,`rgba(245,158,11,${.55*(1-brk*.85)})`,2.4,brk>.2?[4,5]:[]);
-    drawBond(c2,hB,1,`rgba(248,250,252,${.55*(1-brk*.85)})`,2.2,brk>.2?[4,5]:[]);
-    drawBond(o,hB,1,`rgba(252,165,165,${.3+form*.4})`,2.2,form<.8?[4,5]:[]);
+    // 中间态：C–Br 和 C–H 都还连在 C 上，用实线；接近断裂时才变虚线。
+    const cbrAlpha=.55*Math.max(0,1-brk*1.15);
+    if(cbrAlpha>.02){
+      drawBond(c1,br,1,`rgba(245,158,11,${cbrAlpha})`,2.4,brk>.55?[4,5]:[]);
+      drawBond(c2,hB,1,`rgba(248,250,252,${cbrAlpha})`,2.2,brk>.55?[4,5]:[]);
+    }
+    if(oh>.02) drawBond(o,hB,1,`rgba(252,165,165,${.16+form*.46})`,2.2);
     drawBond(o,h2oH,1,"rgba(252,165,165,.4)",2);
-    // E2 electron flow: OH -> β-H; C–H -> C=C; C–Br -> Br.
-    drawElectronArrow([o[0]-.1,o[1]+.08],[hB[0]+.15,hB[1]-.1],.28,"rgba(251,191,36,.82)");
-    drawElectronArrow([hB[0]-.25,hB[1]+.1],[c2[0],c2[1]+.25],-.3,"rgba(251,191,36,.78)");
-    drawElectronArrow([c1[0]-.3,.1],[br[0]+.18,br[1]+.12],.24,"rgba(251,191,36,.78)");
+    if(ohArrow>.02) drawElectronArrow([o[0]-.2,o[1]+.16],[hB[0]+.15,hB[1]-.12],.3,`rgba(251,191,36,${.82*ohArrow})`);
+    if(ccArrow>.02) drawElectronArrow([chMid[0],chMid[1]-.1],[ccMid[0],ccMid[1]-.22],-.3,`rgba(251,191,36,${.78*ccArrow})`);
+    if(brArrow>.02) drawElectronArrow([cbrMid[0],cbrMid[1]-.14],[br[0]-.2,br[1]-.28],.3,`rgba(251,191,36,${.78*brArrow})`);
     drawAtom(c1[0],c1[1],"C","#cbd5e1",17);
     drawAtom(c2[0],c2[1],"C","#cbd5e1",17);
     drawAtom(-1.62,.55,"H","#f8fafc",9);drawAtom(-1.62,-.55,"H","#f8fafc",9);drawAtom(1.62,.55,"H","#f8fafc",9);drawAtom(1.62,-.55,"H","#f8fafc",9);
     drawAtom(hB[0],hB[1],"H","#f8fafc",9);
-    drawAtom(o[0],o[1],"O","#fca5a5",13);
+    drawAtom(o[0],o[1],"O","#fca5a5",13,p<.55?"−":"");
     drawAtom(h2oH[0],h2oH[1],"H","#f8fafc",8);
-    drawAtom(br[0],br[1],"Br","#f59e0b",12,p>.55?"−":"");
-    if(p>.3&&p<.9) drawLabel(0,1.9,"过渡态：C–Br 与 C–H 同时将断","rgba(251,191,36,.95)",9);
+    drawAtom(br[0],br[1],"Br","#f59e0b",12,brk>.58?"−":"");
+    if(p>.34&&p<.66) drawLabel(0,1.9,"中间态示意：C–Br、C–H 仍在 C 上，O–H 正在形成","rgba(251,191,36,.95)",9);
+    else if(p>=.66&&p<.9) drawLabel(0,1.9,"过渡态：C–Br 与 C–H 断裂，C=C 形成","rgba(251,191,36,.95)",9);
     else if(p>=.9) drawLabel(0,1.9,"CH₂=CH₂ + H₂O + Br⁻","rgba(94,234,212,.96)",10);
     else drawLabel(0,1.9,"CH₃CH₂Br + OH⁻","rgba(165,243,252,.9)",9);
   }

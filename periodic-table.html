@@ -98,6 +98,9 @@
   .detail-rule{height:1px;margin:13px 0 10px;background:linear-gradient(90deg,rgba(103,232,249,.25),rgba(148,163,184,.05),transparent)}
   .shell-wrap{display:flex;align-items:center;justify-content:center;margin:2px 0 4px}
   #shellSvg{width:170px;height:170px;display:block;filter:drop-shadow(0 0 16px rgba(34,211,238,.08))}
+  .shell-counts{display:table;margin:2px auto 8px;padding:3px 10px;border:1px solid rgba(148,163,184,.14);border-radius:999px;background:rgba(148,163,184,.07);text-align:center;color:var(--text);font:700 10.5px/1.45 var(--mono,ui-monospace,monospace);letter-spacing:.08em}
+  html[data-theme="light"] .shell-counts{color:#0b5f56;background:#ecf8f4;border-color:rgba(15,118,110,.2)}
+  html[data-theme="light"] #factConfig{display:inline-block;margin-top:3px;padding:2px 7px;border-radius:6px;background:#ecf8f4;color:#0b5f56 !important;font-weight:700;font-size:10px;letter-spacing:.02em}
   .detail-facts{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
   .fact{padding:6px 0;border-bottom:1px solid rgba(148,163,184,.07);min-width:0}
   .fact span{display:block;color:var(--dim);font-size:7.8px;letter-spacing:.03em}.fact strong{display:block;margin-top:2px;color:#d8e9ff;font-size:9.3px;font-weight:550;line-height:1.4;word-break:break-word}
@@ -193,6 +196,7 @@
         </div>
         <div class="detail-rule"></div>
         <div class="shell-wrap"><svg id="shellSvg" viewBox="0 0 200 200" role="img" aria-label="原子电子层示意图"></svg></div>
+        <div class="shell-counts" id="shellCounts" aria-live="polite"></div>
         <div class="detail-facts">
           <div class="fact"><span>周期 / 族</span><strong id="factPosition">第 1 周期 · ⅠA</strong></div>
           <div class="fact"><span>电子排布</span><strong id="factConfig">1s¹</strong></div>
@@ -683,7 +687,40 @@
   }
 
   const ORBITALS=[["1s",2],["2s",2],["2p",6],["3s",2],["3p",6],["4s",2],["3d",10],["4p",6],["5s",2],["4d",10],["5p",6],["6s",2],["4f",14],["5d",10],["6p",6],["7s",2],["5f",14],["6d",10],["7p",6]];
+  const CORE_SHELLS={He:[2],Ne:[2,8],Ar:[2,8,8],Kr:[2,8,18,8],Xe:[2,8,18,18,8],Rn:[2,8,18,32,18,8],Og:[2,8,18,32,32,18,8]};
+  const SUP_DIGITS={"⁰":0,"¹":1,"²":2,"³":3,"⁴":4,"⁵":5,"⁶":6,"⁷":7,"⁸":8,"⁹":9};
+  // 电子层数不能只按 Aufbau 顺序硬填：Cr、Cu、Nb、Mo、Pd、Ag 等有半充满/全充满特例。
+  // 能解析电子排布式时优先按排布式展开；没有排布式的元素才退回 Aufbau 示意。
+  const SHELL_OVERRIDES={
+    24:[2,8,13,1], 29:[2,8,18,1],
+    41:[2,8,18,12,1], 42:[2,8,18,13,1], 43:[2,8,18,13,2], 44:[2,8,18,15,1], 45:[2,8,18,16,1], 46:[2,8,18,18], 47:[2,8,18,18,1],
+    57:[2,8,18,18,9,2], 58:[2,8,18,19,9,2], 64:[2,8,18,25,9,2],
+    78:[2,8,18,32,17,1], 79:[2,8,18,32,18,1],
+    89:[2,8,18,32,18,9,2], 90:[2,8,18,32,18,10,2], 91:[2,8,18,32,20,9,2], 92:[2,8,18,32,21,9,2], 93:[2,8,18,32,22,9,2], 96:[2,8,18,32,25,9,2]
+  };
+  function shellsFromConfig(config,z){
+    if(!config)return null;
+    const m=config.match(/^\[([A-Za-z]+)\]\s*(.*)$/);
+    const shells=(m&&CORE_SHELLS[m[1]]?CORE_SHELLS[m[1]]:[]).slice();
+    const rest=m?m[2]:config;
+    let total=shells.reduce((a,b)=>a+b,0);
+    const re=/(\d)([spdf])([⁰¹²³⁴⁵⁶⁷⁸⁹]+|\d+)/g;
+    let hit;
+    while((hit=re.exec(rest))){
+      const n=+hit[1];
+      const raw=hit[3];
+      const count=/^\d+$/.test(raw)?+raw:[...raw].reduce((v,ch)=>v*10+(SUP_DIGITS[ch]||0),0);
+      if(!n||!count)return null;
+      shells[n-1]=(shells[n-1]||0)+count;
+      total+=count;
+    }
+    return total===z?shells.filter((v,i)=>i===0||v>0):null;
+  }
   function shellCounts(z){
+    if(SHELL_OVERRIDES[z])return SHELL_OVERRIDES[z].slice();
+    const e=byZ[z];
+    const fromConfig=e&&shellsFromConfig(e.config,z);
+    if(fromConfig)return fromConfig;
     let left=z;const shells=[0,0,0,0,0,0,0];
     for(const [name,cap] of ORBITALS){
       const take=Math.min(cap,left);if(take<=0)continue;
@@ -707,6 +744,8 @@
       }
     });
     svg.innerHTML=out;
+    const countEl=document.getElementById("shellCounts");
+    if(countEl)countEl.textContent=shells.map((count,i)=>`${"KLMNOPQ"[i]} ${count}`).join(" · ");
   }
 
   function applySearch(){
