@@ -1952,7 +1952,6 @@
   let playFrom = 0;
   let lastUiPercent = -1;
   let lastUiPhase = "";
-  let hybridPauseArmed = false;
   let lastPaintAt = 0;
 
   const VIEWS = {
@@ -2441,7 +2440,6 @@
   function stopPlaying() {
     if (!playing) return;
     playing = false;
-    hybridPauseArmed = false;
     playBtn.classList.remove("playing");
     playBtn.setAttribute("aria-pressed", "false");
     playLabel.textContent = "自动演示";
@@ -2453,8 +2451,6 @@
     playing = true;
     playFrom = progress;
     playStart = performance.now();
-    // 只在从 60% 之前起步时，自动在“杂化完成”处停一次。
-    hybridPauseArmed = progress < 0.6;
     playBtn.classList.add("playing");
     playBtn.setAttribute("aria-pressed", "true");
     playLabel.textContent = "暂停";
@@ -2961,13 +2957,7 @@
     if (playing) {
       const u = clamp((now - playStart) / PLAY_MS, 0, 1);
       progress = playFrom + (1 - playFrom) * easeInOut(u);
-      if (hybridPauseArmed && progress >= 0.6) {
-        // 自动演示在杂化完成（60%）处停顿一次，避免直接掠过关键帧。
-        progress = 0.6;
-        hybridPauseArmed = false;
-        stopPlaying();
-        updateUI(true);
-      } else if (u >= 1) {
+      if (u >= 1) {
         progress = 1;
         stopPlaying();
       }

@@ -1194,7 +1194,7 @@
     if(vseprResult)vseprResult.innerHTML = `σ键 ${sigma} + 孤对 ${loneCalc} = ${totalPairs} 个价层电子对<br>→ VSEPR ${model.electronGeometry} → 去掉孤对：${model.molecularGeometry}`;
     exampleList.innerHTML = (EXAMPLES[exampleGroup] || []).map(ex => {
       const cls = `example-chip${ex.ext ? " ext" : ""}${ex.model && ex.model === current ? " active" : ""}`;
-      if (ex.model) return `<button class="${cls}" type="button" data-example="${ex.model}"><b>${ex.text}</b><small>${ex.tag}</small></button>`;
+      if (ex.model) return `<button class="${cls}" type="button" data-example="${ex.model}" title="${ex.ext ? "点击查看 " + ex.text + " 的平面正方形 3D 模型" : "点击查看 " + ex.text + " 的 3D 模型"}"><b>${ex.text}</b><small>${ex.tag}</small></button>`;
       return `<span class="${cls}"><b>${ex.text}</b><small>${ex.tag}</small></span>`;
     }).join("");
     factExample.textContent = model.example;

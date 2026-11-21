@@ -950,8 +950,6 @@ html[data-theme="light"] .angle-caption {
 }
 html[data-theme="light"] .angle-value {
   color: #0f766e !important;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75) !important;
-  -webkit-text-stroke: 0.3px rgba(15, 118, 110, 0.16);
 }
 html[data-theme="light"] .angle-shape {
   color: #0d9488 !important;
@@ -1013,12 +1011,6 @@ html[data-theme="light"] input[type="range"]::-webkit-slider-thumb {
   box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12), 0 2px 8px rgba(20, 49, 46, 0.16) !important;
 }
 
-/* accent headings: add a subtle ink outline so cyan/violet survive a white page */
-html[data-theme="light"] h1 span,
-html[data-theme="light"] .stage-heading h2 span {
-  -webkit-text-stroke: 0.7px rgba(15, 118, 110, 0.34);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.78);
-}
 html[data-theme="light"] .range-marker .marker-dot {
   border-color: #fff !important;
   background: #0f766e !important;
@@ -1034,10 +1026,71 @@ html[data-theme="light"] .range-labels .mid {
 html[data-theme="light"] .range-marker::before {
   background: rgba(15, 118, 110, 0.38) !important;
 }
-html[data-theme="light"] .brand h1 .accent,
-html[data-theme="light"] .page-title h1 .accent,
-html[data-theme="light"] .title h1 .accent,
-html[data-theme="light"] .stage-heading h2 span {
-  -webkit-text-stroke: 0.85px rgba(15, 49, 46, 0.36);
-  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.92));
+
+/* 浅色页里的功能入口不能再用淡薄荷字 */
+html[data-theme="light"] .bond-feature {
+  color: #0f766e !important;
+  background: #e7f7f1 !important;
+  border-color: rgba(15, 118, 110, 0.3) !important;
+  font-weight: 600;
+}
+html[data-theme="light"] .bond-feature:hover {
+  background: #d9f2e8 !important;
+  border-color: #0f766e !important;
+}
+html[data-theme="light"] .bond-feature .bond-icon {
+  color: #ffffff !important;
+  background: #0f766e !important;
+}
+html[data-theme="light"] .bond-feature .bond-arrow {
+  color: #0f766e !important;
+}
+html[data-theme="light"] .record-badge[data-state="done"] {
+  color: #065f46 !important;
+  border-color: rgba(5, 150, 105, 0.4) !important;
+  background: #d1fae5 !important;
+  font-weight: 650;
+}
+
+/* XeF₄ 是八面体下的可进入特例，做成明确的琥珀色入口 */
+html[data-theme="light"] .example-chip.ext {
+  color: #7c2d12 !important;
+  background: #fff4dc !important;
+  border-color: #d97706 !important;
+  box-shadow: 0 3px 10px rgba(180, 83, 9, 0.14);
+  cursor: pointer;
+}
+html[data-theme="light"] .example-chip.ext b {
+  color: #7c2d12 !important;
+}
+html[data-theme="light"] .example-chip.ext small {
+  color: #b45309 !important;
+}
+html[data-theme="light"] .example-chip.ext::after {
+  content: "→";
+  margin-left: 2px;
+  color: #b45309;
+  font-size: 11px;
+  line-height: 1;
+}
+html[data-theme="light"] .example-chip.ext:hover {
+  background: #ffe8bf !important;
+  border-color: #b45309 !important;
+  box-shadow: 0 5px 14px rgba(180, 83, 9, 0.22);
+}
+html[data-theme="light"] .example-chip.ext.active {
+  background: #fde68a !important;
+  border-color: #92400e !important;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.18), 0 5px 14px rgba(180, 83, 9, 0.2);
+}
+html[data-theme="dark"] .example-chip.ext {
+  border-color: rgba(251, 191, 36, 0.48);
+  background: rgba(251, 191, 36, 0.1);
+}
+html[data-theme="dark"] .example-chip.ext::after {
+  content: "→";
+  margin-left: 2px;
+  color: #fbbf24;
+  font-size: 11px;
+  line-height: 1;
 }
