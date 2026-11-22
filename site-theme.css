@@ -1453,3 +1453,48 @@ html[data-theme="dark"] .site-views b{color:#f0ffff}
 @media (max-width:760px){
   .site-views{display:none}
 }
+
+/* Quiz entry + Team / 致谢 footer */
+.quiz-nav-link{
+  display:inline-flex;align-items:center;height:30px;padding:0 12px;
+  border:1px solid rgba(94,234,212,.22);border-radius:999px;
+  background:rgba(94,234,212,.06);color:#bdfbf1;
+  text-decoration:none;font-size:11px;font-weight:650;letter-spacing:.02em;
+  transition:background .18s ease,border-color .18s ease,color .18s ease;
+}
+.quiz-nav-link:hover{border-color:rgba(94,234,212,.45);background:rgba(94,234,212,.12)}
+.quiz-nav-link--header{margin-left:auto;margin-right:6px}
+.quiz-nav-link.active{background:rgba(94,234,212,.15);border-color:rgba(94,234,212,.5);color:#f0ffff}
+html[data-theme="light"] .quiz-nav-link{
+  border-color:rgba(15,118,110,.22);background:#e7f7f1;color:#0f766e;
+}
+html[data-theme="light"] .quiz-nav-link:hover{background:#d9f2e9;border-color:rgba(15,118,110,.4)}
+html[data-theme="light"] .quiz-nav-link.active{background:#0f766e;border-color:#0f766e;color:#fff}
+@media (max-width:680px){
+  .quiz-nav-link{height:27px;padding:0 9px;font-size:10px}
+}
+
+.site-thanks{
+  flex:1 0 100%;display:flex;flex-wrap:wrap;align-items:center;
+  gap:4px 18px;margin-top:6px;padding-top:9px;
+  border-top:1px solid rgba(148,163,184,.13);
+  color:var(--dim,#6b8794);font-size:9.5px;line-height:1.65;
+}
+.site-thanks .thanks-label{
+  color:#5eead4;font-family:var(--mono,ui-monospace,monospace);
+  font-size:9px;font-weight:700;letter-spacing:.1em;white-space:nowrap;
+}
+.site-thanks a{
+  color:#a5f3fc;text-decoration:none;
+  border-bottom:1px solid rgba(94,234,212,.28);
+}
+.site-thanks a:hover{border-bottom-color:currentColor}
+html[data-theme="light"] .site-thanks{
+  border-top-color:rgba(20,49,46,.12);color:#526b66;
+}
+html[data-theme="light"] .site-thanks .thanks-label{color:#0f766e}
+html[data-theme="light"] .site-thanks a{color:#0b5f56;border-bottom-color:rgba(15,118,110,.28)}
+@media (max-width:680px){
+  .site-thanks{gap:3px 12px;font-size:9px;padding-top:8px}
+  .site-thanks .thanks-label{font-size:8.5px}
+}

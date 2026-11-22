@@ -315,9 +315,49 @@
     applyTheme(readTheme(), false);
   }
 
+  function injectQuizNav() {
+    const header = document.querySelector(".site-header") || document.querySelector("header");
+    if (!header || document.querySelector(".quiz-nav-link")) return;
+    const link = document.createElement("a");
+    link.className = "quiz-nav-link";
+    link.href = "quiz.html";
+    link.textContent = "Quiz";
+    if (location.pathname.replace(/\/+$/, "").endsWith("quiz.html")) link.classList.add("active");
+    const nav = header.querySelector(".top-nav");
+    if (nav) {
+      const github = nav.querySelector(".github");
+      if (github) nav.insertBefore(link, github); else nav.appendChild(link);
+    } else {
+      const meta = header.querySelector(".header-meta");
+      link.classList.add("quiz-nav-link--header");
+      if (meta) header.insertBefore(link, meta); else header.appendChild(link);
+    }
+  }
+
+  function injectThanks() {
+    if (document.querySelector(".site-thanks")) return;
+    let footer = document.querySelector(".site-footer") || document.querySelector("footer.foot") || document.querySelector("footer");
+    if (!footer) {
+      footer = document.createElement("footer");
+      footer.className = "site-footer site-thanks-fallback";
+      document.body.appendChild(footer);
+    }
+    const box = document.createElement("div");
+    box.className = "site-thanks";
+    box.innerHTML = `
+      <span class="thanks-label">TEAM / 致谢</span>
+      <span>网站制作：Leon</span>
+      <span>全部代码由 DeepSeek 完成</span>
+      <span>感谢 Dou Xiaoyan 提供的改进意见</span>
+      <span>感谢 <a href="https://sdeepak-dev.github.io/vchemlab/" target="_blank" rel="noopener">https://sdeepak-dev.github.io/vchemlab/</a> 在 quiz 部分提供的灵感</span>`;
+    footer.appendChild(box);
+  }
+
   function init() {
     applyTheme(readTheme(), false);
     buildTools();
+    injectQuizNav();
+    injectThanks();
     upgradeIcons();
     mountViews();
   }

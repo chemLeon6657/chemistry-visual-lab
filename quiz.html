@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f5f8f5" />
+  <title>化学闯关 Quiz · 化学可视化</title>
+  <meta name="description" content="按九个知识模块练习高中化学：电子云与成键、分子构型、晶体结构、反应机理、元素周期表、实验装置、反应观察、有机官能团和酸碱滴定。" />
+  <link rel="icon" href="favicon-whale.png" type="image/png" />
+  <link rel="apple-touch-icon" href="whale-icon.png" />
+  <link rel="stylesheet" href="site-theme.css" />
+  <style>
+    :root{
+      --q-bg:#04070f;--q-panel:#0a1724;--q-panel-2:#0d1e2d;
+      --q-text:#e8f7ff;--q-muted:#9fb8c8;--q-dim:#7e9bad;
+      --q-line:rgba(148,163,184,.16);--q-accent:#5eead4;--q-accent-2:#67e8f9;
+    }
+    html[data-theme="light"]{
+      --q-bg:#f5f8f5;--q-panel:#ffffff;--q-panel-2:#eef7f3;
+      --q-text:#14312e;--q-muted:#526b66;--q-dim:#5f7570;
+      --q-line:rgba(20,49,46,.13);--q-accent:#0f766e;--q-accent-2:#0891b2;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%}
+    body{
+      background:var(--q-bg);color:var(--q-text);
+      font-family:"Inter","Noto Sans SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+      -webkit-font-smoothing:antialiased;
+      background-image:
+        radial-gradient(900px 560px at 8% -10%,rgba(13,148,136,.14),transparent 64%),
+        radial-gradient(760px 520px at 100% 0%,rgba(109,40,217,.10),transparent 66%);
+      background-attachment:fixed;
+    }
+    .shell{max-width:1240px;margin:0 auto;padding:0 24px 24px}
+    .site-header{
+      position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;
+      gap:20px;padding:18px 0 22px;
+    }
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;min-width:0}
+    .brand-mark{
+      width:48px;height:48px;border-radius:15px;flex:0 0 auto;display:grid;place-items:center;
+      background:linear-gradient(145deg,rgba(103,232,249,.16),rgba(94,234,212,.06));
+      border:1px solid rgba(148,163,184,.2);overflow:hidden;
+    }
+    .brand-mark img{width:40px;height:40px;object-fit:contain;display:block}
+    .brand-kicker{font-size:9px;letter-spacing:.12em;color:var(--q-dim);text-transform:uppercase;line-height:1.4}
+    .brand-name{font-size:16px;font-weight:750;letter-spacing:.02em;line-height:1.35}
+    .header-meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding-top:3px;flex:0 0 auto}
+    .meta-pill{
+      display:inline-flex;align-items:center;gap:6px;height:27px;padding:0 10px;
+      border:1px solid rgba(94,234,212,.2);border-radius:999px;
+      background:rgba(94,234,212,.06);color:#bdfbf1;font-size:9.5px;font-weight:600;
+    }
+    .meta-pill::before{content:"";width:5px;height:5px;border-radius:50%;background:#5eead4;box-shadow:0 0 0 3px rgba(94,234,212,.1)}
+    .meta-note{font-size:9px;color:var(--q-dim);letter-spacing:.03em}
+    html[data-theme="light"] .meta-pill{background:#e7f7f1;border-color:rgba(15,118,110,.2);color:#0f766e}
+    html[data-theme="light"] .meta-pill::before{background:#0f766e;box-shadow:0 0 0 3px rgba(15,118,110,.1)}
+    html[data-theme="light"] .site-header .brand-mark{background:#e7f7f1;border-color:rgba(20,49,46,.12)}
+
+    .quiz-main{padding-top:2px}
+    .quiz-hero{
+      position:relative;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+      padding:30px 34px 26px;margin-bottom:16px;border:1px solid var(--q-line);border-radius:24px;
+      background:
+        radial-gradient(520px 260px at 8% 0%,rgba(94,234,212,.12),transparent 70%),
+        linear-gradient(150deg,rgba(14,34,48,.92),rgba(7,16,27,.88));
+      overflow:hidden;
+    }
+    html[data-theme="light"] .quiz-hero{
+      background:
+        radial-gradient(520px 260px at 8% 0%,rgba(13,148,136,.12),transparent 70%),
+        linear-gradient(150deg,#ffffff,#f0f8f4);
+      border-color:rgba(20,49,46,.12);
+    }
+    .quiz-hero::after{
+      content:"";position:absolute;right:7%;top:-70px;width:230px;height:230px;border-radius:50%;
+      border:1px solid rgba(94,234,212,.18);box-shadow:0 0 0 28px rgba(94,234,212,.03),0 0 0 58px rgba(94,234,212,.02);
+      pointer-events:none;
+    }
+    .quiz-kicker{font:650 10px/1.4 var(--mono,ui-monospace,monospace);letter-spacing:.16em;color:var(--q-accent);text-transform:uppercase;margin-bottom:10px}
+    .quiz-hero h1{font-size:clamp(34px,4.2vw,56px);line-height:1.08;letter-spacing:-.045em;margin:0 0 10px;font-weight:800}
+    .quiz-hero h1 span{color:var(--q-accent-2)}
+    .quiz-hero p{max-width:650px;margin:0;color:var(--q-muted);font-size:13px;line-height:1.8}
+    .quiz-stats{display:flex;gap:9px;flex-wrap:wrap;position:relative;z-index:1;flex:0 0 auto}
+    .quiz-stats b{
+      display:block;font-size:23px;line-height:1.1;color:var(--q-accent);font-weight:800;
+    }
+    .quiz-stats span{display:block;margin-top:4px;font-size:9px;color:var(--q-dim);letter-spacing:.08em;text-align:right}
+    .quiz-stats div{padding:0 12px;border-left:1px solid var(--q-line)}
+    .quiz-stats div:first-child{border-left:0;padding-left:0}
+
+    .quiz-view{border:1px solid var(--q-line);border-radius:22px;background:var(--q-panel);padding:24px;min-height:420px}
+    .quiz-view.hidden{display:none}
+    .view-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:16px}
+    .view-head h2{margin:5px 0 0;font-size:20px;letter-spacing:-.02em}
+    .view-kicker{font:650 9px/1.4 var(--mono,ui-monospace,monospace);letter-spacing:.14em;color:var(--q-dim)}
+    .view-head p{margin:0;color:var(--q-muted);font-size:10.5px}
+    .module-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .q-module{
+      position:relative;display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:
+        "num icon meta" "name name meta" "tag tag meta";
+      align-items:center;gap:2px 10px;text-align:left;width:100%;
+      padding:14px 14px 13px;border-radius:15px;border:1px solid var(--q-line);
+      background:var(--q-panel);color:var(--q-text);cursor:pointer;font:inherit;
+      transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+      overflow:hidden;
+    }
+    .q-module::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--mc,var(--q-accent));opacity:.75}
+    .q-module:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--mc,var(--q-accent)) 45%,var(--q-line));box-shadow:0 12px 26px rgba(0,0,0,.10)}
+    html[data-theme="light"] .q-module:hover{box-shadow:0 12px 24px rgba(20,49,46,.08)}
+    .q-module-num{grid-area:num;font:650 9px/1 var(--mono,monospace);color:var(--q-dim)}
+    .q-module-icon{
+      grid-area:icon;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;
+      color:var(--mc,var(--q-accent));background:color-mix(in srgb,var(--mc,var(--q-accent)) 12%,transparent);
+      font:800 12px/1 var(--mono,monospace);border:1px solid color-mix(in srgb,var(--mc,var(--q-accent)) 28%,transparent);
+    }
+    .q-module strong{grid-area:name;font-size:13px;font-weight:750;line-height:1.4}
+    .q-module small{grid-area:tag;color:var(--q-dim);font-size:9.5px;line-height:1.5}
+    .q-module em{
+      grid-area:meta;justify-self:end;color:var(--q-accent);font:650 9px/1 var(--mono,monospace);
+      letter-spacing:.04em;padding:4px 7px;border:1px solid color-mix(in srgb,var(--mc,var(--q-accent)) 24%,transparent);
+      border-radius:999px;background:color-mix(in srgb,var(--mc,var(--q-accent)) 7%,transparent);white-space:nowrap;
+    }
+    .q-note{margin:15px 0 0;color:var(--q-dim);font-size:10px;line-height:1.7}
+
+    .question-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+    .q-back{
+      border:1px solid var(--q-line);background:transparent;color:var(--q-muted);
+      border-radius:999px;height:28px;padding:0 10px;font:inherit;font-size:10px;cursor:pointer;
+    }
+    .q-back:hover{color:var(--q-accent);border-color:color-mix(in srgb,var(--q-accent) 35%,var(--q-line))}
+    .q-module-name{font-size:11px;font-weight:700;color:var(--q-text)}
+    .q-progress-text{margin-left:auto;color:var(--q-dim);font:600 9.5px/1 var(--mono,monospace)}
+    .q-progress{height:4px;border-radius:999px;background:var(--q-panel-2);overflow:hidden;margin-bottom:18px}
+    .q-progress i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--q-accent),var(--q-accent-2));transition:width .28s ease}
+    .question-card{max-width:780px}
+    .question-index{font:650 9px/1 var(--mono,monospace);letter-spacing:.14em;color:var(--q-accent);margin-bottom:9px}
+    .question-card h2{font-size:clamp(19px,2.2vw,25px);line-height:1.55;margin:0 0 16px;letter-spacing:-.01em;font-weight:750}
+    .option-list{display:grid;gap:8px}
+    .q-option{
+      display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;
+      padding:11px 12px;border:1px solid var(--q-line);border-radius:12px;background:transparent;
+      color:var(--q-text);font:inherit;font-size:12px;line-height:1.65;cursor:pointer;
+      transition:border-color .16s ease,background .16s ease,transform .16s ease;
+    }
+    .q-option:hover:not(:disabled){border-color:color-mix(in srgb,var(--q-accent) 40%,var(--q-line));background:color-mix(in srgb,var(--q-accent) 5%,transparent);transform:translateX(2px)}
+    .q-option:disabled{cursor:default;opacity:.72}
+    .q-letter{
+      flex:0 0 auto;width:22px;height:22px;border-radius:7px;display:grid;place-items:center;
+      border:1px solid var(--q-line);color:var(--q-dim);font:700 9px/1 var(--mono,monospace);
+    }
+    .q-option.correct{border-color:rgba(16,185,129,.55);background:rgba(16,185,129,.12);opacity:1}
+    .q-option.correct .q-letter{border-color:rgba(16,185,129,.5);color:#065f46;background:#d1fae5}
+    .q-option.wrong{border-color:rgba(244,63,94,.42);background:rgba(244,63,94,.09);opacity:1}
+    .q-option.wrong .q-letter{border-color:rgba(244,63,94,.35);color:#be123c;background:#ffe4e6}
+    html[data-theme="dark"] .q-option.correct .q-letter{color:#d1fae5;background:rgba(6,95,70,.4)}
+    html[data-theme="dark"] .q-option.wrong .q-letter{color:#ffe4e6;background:rgba(159,18,57,.3)}
+    .q-feedback{
+      margin-top:12px;padding:11px 13px;border-radius:11px;border:1px solid var(--q-line);
+      background:var(--q-panel-2);font-size:11px;line-height:1.75;color:var(--q-muted);
+    }
+    .q-feedback strong{display:block;font-size:10.5px;letter-spacing:.02em;margin-bottom:3px}
+    .q-feedback.ok strong{color:var(--q-accent)}
+    .q-feedback.no strong{color:#fb7185}
+    .q-feedback[hidden]{display:none}
+    .q-next{
+      margin-top:13px;height:36px;padding:0 18px;border:0;border-radius:10px;cursor:pointer;
+      background:var(--q-accent);color:#03221d;font:750 11px/1 "Inter","Microsoft YaHei",sans-serif;
+      display:inline-flex;align-items:center;gap:8px;
+    }
+    html[data-theme="dark"] .q-next{color:#03221d}
+    .q-next:hover{filter:brightness(1.06)}
+    .q-next[hidden]{display:none}
+
+    .result{max-width:720px;margin:0 auto;text-align:center;padding:22px 0 10px}
+    .result-badge{font:650 9px/1 var(--mono,monospace);letter-spacing:.15em;color:var(--q-accent);margin-bottom:12px}
+    .result h2{margin:0 0 6px;font-size:clamp(30px,4vw,46px);letter-spacing:-.04em}
+    .result .score{font-size:18px;color:var(--q-muted);margin:0 0 18px}
+    .result .score b{font-size:34px;color:var(--q-accent)}
+    .result p{color:var(--q-muted);font-size:12px;line-height:1.8;margin:0 auto 18px;max-width:540px}
+    .result-actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+    .result-actions button{
+      height:36px;padding:0 16px;border-radius:10px;border:1px solid var(--q-line);
+      background:transparent;color:var(--q-text);font:inherit;font-size:11px;cursor:pointer;
+    }
+    .result-actions button.primary{background:var(--q-accent);border-color:var(--q-accent);color:#03221d;font-weight:750}
+
+    .site-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--q-line);color:var(--q-dim);font-size:10px;display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between}
+    .site-footer strong{color:var(--q-text);font-weight:700}
+    .site-footer a{color:var(--q-accent);text-decoration:none}
+
+    @media (max-width:900px){
+      .module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .quiz-hero{align-items:flex-start;flex-direction:column;padding:24px}
+      .quiz-stats{padding-top:4px}
+    }
+    @media (max-width:680px){
+      .shell{padding:0 14px 18px}
+      .site-header{padding:14px 0 16px}
+      .header-meta{display:none}
+      .quiz-hero{padding:20px 18px;border-radius:18px}
+      .quiz-view{padding:16px;border-radius:17px}
+      .module-grid{grid-template-columns:1fr}
+      .quiz-stats span{text-align:left}
+      .q-module em{font-size:8.5px}
+      .question-card h2{font-size:18px}
+      .q-option{font-size:11.5px}
+      .q-progress-text{margin-left:0;width:100%}
+    }
+  </style>
+</head>
+<body data-palette="nc">
+  <div class="shell">
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="返回化学可视化首页">
+        <div class="brand-mark" aria-hidden="true"><img src="whale-icon.png" alt="" width="40" height="40" decoding="async" /></div>
+        <div>
+          <div class="brand-kicker">高中化学 · 可视化平台</div>
+          <div class="brand-name">化学可视化</div>
+        </div>
+      </a>
+      <div class="header-meta">
+        <div class="meta-pill">9 主题 · 36 题</div>
+        <div class="meta-note">单选即时判分 · 按模块闯关</div>
+      </div>
+    </header>
+
+    <main class="quiz-main">
+      <section class="quiz-hero" aria-labelledby="quiz-title">
+        <div>
+          <div class="quiz-kicker">QUIZ / NINE TOPICS</div>
+          <h1 id="quiz-title">化学闯关，<span>敢不敢全对？</span></h1>
+          <p>从电子云到酸碱滴定，按九个知识模块出题。每题只有一个正确选项，点下去立刻看到对错和解析。</p>
+        </div>
+        <div class="quiz-stats" aria-label="Quiz 概况">
+          <div><b>9</b><span>知识模块</span></div>
+          <div><b>36</b><span>道单选题</span></div>
+          <div><b>4</b><span>题 / 模块</span></div>
+        </div>
+      </section>
+
+      <section class="quiz-view" id="moduleView" aria-labelledby="module-title">
+        <div class="view-head">
+          <div>
+            <div class="view-kicker">PICK A TOPIC</div>
+            <h2 id="module-title">先选一个模块</h2>
+          </div>
+          <p>每个模块 4 题，答完立刻出分</p>
+        </div>
+        <div class="module-grid" id="moduleGrid"></div>
+        <p class="q-note">题目全部对应本站模块内容；答错会给出简短解释，换模块不会清空其它模块的当前作答。</p>
+      </section>
+
+      <section class="quiz-view hidden" id="questionView" aria-live="polite">
+        <div class="question-top">
+          <button class="q-back" id="backBtn" type="button">← 换模块</button>
+          <span class="q-module-name" id="currentModuleName"></span>
+          <span class="q-progress-text" id="progressText"></span>
+        </div>
+        <div class="q-progress" aria-hidden="true"><i id="progressBar"></i></div>
+        <div class="question-card">
+          <div class="question-index" id="questionIndex"></div>
+          <h2 id="questionText"></h2>
+          <div class="option-list" id="optionList"></div>
+          <div class="q-feedback" id="feedback" hidden></div>
+          <button class="q-next" id="nextBtn" type="button" hidden>下一题 <span aria-hidden="true">→</span></button>
+        </div>
+      </section>
+
+      <section class="quiz-view hidden" id="resultView" aria-live="polite">
+        <div class="result">
+          <div class="result-badge">MODULE COMPLETE</div>
+          <h2 id="resultTitle"></h2>
+          <p class="score">得分 <b id="resultScore">0</b> / 4</p>
+          <p id="resultNote"></p>
+          <div class="result-actions">
+            <button class="primary" id="retryBtn" type="button">再练一次</button>
+            <button id="backToModulesBtn" type="button">选择其他模块</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 chemLeon6657 · 化学可视化平台</span>
+      <span>题目仅用于课堂练习，不替代教材与考试要求。</span>
+    </footer>
+  </div>
+
+  <script src="platform-shell.js" defer></script>
+  <script src="site-ui.js" defer></script>
+  <script>
+  (() => {
+    const MODULES = [
+      {
+        id: "electron", title: "电子云与成键", tag: "杂化 · σ键 · π键", symbol: "sp³", color: "#0d9488",
+        questions: [
+          { q: "乙烷分子中的 C—C 单键主要由哪组轨道重叠形成？", opts: ["两个 sp³ 杂化轨道头碰头重叠", "两个未杂化 p 轨道肩并肩重叠", "一个 s 轨道与一个 p 轨道肩并肩重叠", "两个 sp² 杂化轨道肩并肩重叠"], a: 0, why: "乙烷的每个碳都是 sp³ 杂化，C—C σ 键由两个 sp³ 杂化轨道沿键轴头碰头重叠形成。" },
+          { q: "乙烯的 C=C 双键中，π 键由什么形成？", opts: ["两个 sp² 杂化轨道头碰头重叠", "两个未杂化 p 轨道肩并肩重叠", "两个 s 轨道头碰头重叠", "sp³ 与 s 轨道重叠"], a: 1, why: "乙烯碳为 sp² 杂化，每个碳还剩一个未参与杂化的 p 轨道，两个 p 轨道肩并肩重叠形成 π 键。" },
+          { q: "乙炔中每个碳原子的杂化方式是？", opts: ["sp³", "sp²", "sp", "sp³d"], a: 2, why: "乙炔中每个碳形成两个 σ 键，采用 sp 杂化，剩余两个 p 轨道形成两组互相垂直的 π 键。" },
+          { q: "甲烷的四个 C—H 键完全等价，最直接的原因是？", opts: ["碳原子有四个价电子", "碳采取 sp³ 杂化，四个杂化轨道等价", "氢原子半径相同", "C—H 键都是离子键"], a: 1, why: "sp³ 杂化产生四个能量、形状相同的杂化轨道，分别与四个 H 的 1s 轨道重叠，所以四个 C—H 键等价。" }
+        ]
+      },
+      {
+        id: "geometry", title: "分子空间构型", tag: "VSEPR · 键角 · 极性", symbol: "AXₙ", color: "#0891b2",
+        questions: [
+          { q: "甲烷 CH₄ 的 H—C—H 键角约为？", opts: ["90°", "120°", "109°28′", "180°"], a: 2, why: "CH₄ 是正四面体形，四个 C—H 键尽量远离，理想键角为 109°28′。" },
+          { q: "NH₃ 的键角约为 107°，小于 CH₄ 的 109°28′，主要原因是？", opts: ["N 的孤对电子对成键电子对排斥更强", "N—H 键比 C—H 键更长", "NH₃ 是平面三角形", "H 原子半径更大"], a: 0, why: "孤对电子只受一个原子核吸引，电子云更“胖”，对成键电子对的排斥大于成键电子对之间的排斥，把键角压小。" },
+          { q: "H₂O 的价层电子对构型和分子构型分别是？", opts: ["四面体、V 形", "平面三角形、V 形", "四面体、直线形", "八面体、V 形"], a: 0, why: "O 有 2 个 σ 键电子对和 2 对孤对电子，价层电子对构型为四面体；去掉孤对后，分子构型为 V 形。" },
+          { q: "SO₂ 为 V 形而 CO₂ 为直线形，主要因为？", opts: ["SO₂ 中 S 有 1 对孤对电子，CO₂ 中 C 没有孤对电子", "S 的原子半径更大", "CO₂ 是离子化合物", "SO₂ 中 S 为 sp 杂化"], a: 0, why: "SO₂ 的 S 上有 1 对孤对电子，价层电子对为平面三角形，去掉孤对后是 V 形；CO₂ 的 C 没有孤对，两个 σ 键呈 180°。" }
+        ]
+      },
+      {
+        id: "crystal", title: "晶体结构", tag: "晶胞 · 配位 · 作用力", symbol: "FCC", color: "#6d28d9",
+        questions: [
+          { q: "NaCl 晶体中，Na⁺ 和 Cl⁻ 的配位数分别是？", opts: ["6 和 6", "8 和 8", "4 和 4", "12 和 12"], a: 0, why: "NaCl 中每个 Na⁺ 周围有 6 个 Cl⁻，每个 Cl⁻ 周围也有 6 个 Na⁺，配位数为 6:6。" },
+          { q: "CsCl 晶体中，Cs⁺ 的配位数是？", opts: ["4", "6", "8", "12"], a: 2, why: "CsCl 是简单立方结构，Cl⁻ 在顶角、Cs⁺ 在体心，每个 Cs⁺ 周围有 8 个 Cl⁻，配位数为 8:8。" },
+          { q: "金刚石中每个碳原子与多少个碳原子成键？", opts: ["2", "3", "4", "6"], a: 2, why: "金刚石中每个碳采取 sp³ 杂化，与周围 4 个碳形成共价键，构成空间网状结构。" },
+          { q: "干冰晶体中，CO₂ 分子之间主要的作用力是？", opts: ["共价键", "离子键", "分子间作用力", "金属键"], a: 2, why: "干冰是分子晶体，CO₂ 分子内部是共价键，分子之间靠范德华力等分子间作用力结合。" }
+        ]
+      },
+      {
+        id: "mechanism", title: "反应机理", tag: "SN2 · 加成 · E2", symbol: "→", color: "#b45309",
+        questions: [
+          { q: "SN2 取代反应通常经历几步？", opts: ["一步协同，没有稳定中间体", "先形成碳正离子，再被进攻", "先消去，再加成", "两步，先断 C—Br 再成 C—O"], a: 0, why: "SN2 是协同的一步反应：亲核试剂从背面进攻，C—O 成键与 C—Br 断裂同时发生，没有稳定中间体。" },
+          { q: "乙烯与 Br₂ 的加成，产物以什么为主？", opts: ["顺式-1,2-二溴乙烷", "反式-1,2-二溴乙烷", "1,1-二溴乙烷", "溴乙烷"], a: 1, why: "反应经过溴鎓离子中间体，Br⁻ 从背面开环，两个 Br 加在双键两侧，主要得到反式加成产物。" },
+          { q: "E2 消去反应中，β-H 与离去基团 Br 通常要求什么空间关系？", opts: ["同侧共平面", "反式共平面", "互相垂直", "没有要求"], a: 1, why: "E2 是协同消去，β-H 与 Br 需要处于反式共平面位置，C—H 与 C—Br 的断裂和 C=C 的形成才能同步进行。" },
+          { q: "SN2 的电子转移箭头应从 OH⁻ 的哪里出发？", opts: ["氧上的孤对电子/负电荷", "氢原子核", "C—Br 键的中间", "Br 的孤对电子"], a: 0, why: "亲核试剂用氧上的孤对电子进攻 α-C；箭头起点应画在氧的负电荷或孤对电子上，终点指向 α-C。" }
+        ]
+      },
+      {
+        id: "periodic", title: "元素周期表", tag: "周期律 · 电子排布", symbol: "Z", color: "#4f6fa8",
+        questions: [
+          { q: "铬（Cr，Z=24）的基态电子排布式是？", opts: ["[Ar] 3d⁴ 4s²", "[Ar] 3d⁵ 4s¹", "[Ar] 3d⁶", "[Ar] 4s² 4p⁴"], a: 1, why: "Cr 为半充满的 3d⁵ 4s¹ 结构，能量更低、更稳定；不能按简单 Aufbau 写成 3d⁴ 4s²。" },
+          { q: "铜（Cu，Z=29）的基态电子排布式是？", opts: ["[Ar] 3d⁹ 4s²", "[Ar] 3d¹⁰ 4s¹", "[Ar] 3d¹⁰ 4s²", "[Ar] 4s² 4p⁶"], a: 1, why: "Cu 采取全充满的 3d¹⁰ 4s¹ 结构，3d 全充满带来的稳定性超过 4s 半充满。" },
+          { q: "同周期主族元素从左到右，原子半径的一般变化是？", opts: ["逐渐增大", "逐渐减小", "先增大后减小", "不变"], a: 1, why: "同周期从左到右核电荷数增大，核对外层电子吸引增强，原子半径总体逐渐减小。" },
+          { q: "卤族元素最外层电子排布的通式是？", opts: ["ns² np³", "ns² np⁴", "ns² np⁵", "ns² np⁶"], a: 2, why: "卤族位于第 17 族，最外层有 7 个电子，通式为 ns² np⁵，容易得到 1 个电子。" }
+        ]
+      },
+      {
+        id: "apparatus", title: "化学实验装置", tag: "发生 · 除杂 · 收集", symbol: "LAB", color: "#0f766e",
+        questions: [
+          { q: "用 KMnO₄ 加热制取氧气，收集氧气常用的方法是？", opts: ["排水法或向上排空气法", "向下排空气法", "只用向下排空气法", "用饱和食盐水收集"], a: 0, why: "O₂ 不易溶于水，可用排水法；密度比空气略大，也可用向上排空气法。" },
+          { q: "除去 CO₂ 中混有的少量 HCl，最好选用？", opts: ["NaOH 溶液", "饱和 NaHCO₃ 溶液", "浓硫酸", "饱和食盐水"], a: 1, why: "饱和 NaHCO₃ 与 HCl 反应生成 CO₂，同时抑制 CO₂ 溶解；NaOH 会吸收 CO₂。" },
+          { q: "干燥 NH₃ 时不能使用的干燥剂是？", opts: ["碱石灰", "无水 CaCl₂", "浓硫酸", "固体 NaOH"], a: 2, why: "NH₃ 是碱性气体，会与浓硫酸反应；碱石灰、固体 NaOH 可以干燥 NH₃。" },
+          { q: "实验尾气中含 CO 时，合适的处理方式是？", opts: ["直接排入空气", "点燃或收集", "用水吸收", "用饱和食盐水吸收"], a: 1, why: "CO 有毒且难溶于水，不能直接排放；可点燃转化为 CO₂，或集中收集处理。" }
+        ]
+      },
+      {
+        id: "gallery", title: "反应观察台", tag: "颜色 · 气体 · 沉淀", symbol: "Rx", color: "#be123c",
+        questions: [
+          { q: "H₂O₂ 分解时加入少量 I⁻，I⁻ 的作用是？", opts: ["氧化剂", "还原剂", "催化剂", "指示剂"], a: 2, why: "I⁻ 改变 H₂O₂ 分解的反应路径、降低活化能，反应前后质量和化学性质基本不变，起催化剂作用。" },
+          { q: "Fe³⁺ 与 SCN⁻ 反应，溶液呈现什么颜色？", opts: ["蓝色", "血红色", "浅绿色", "紫色"], a: 1, why: "Fe³⁺ 与 SCN⁻ 形成血红色配合物，常用于检验 Fe³⁺。" },
+          { q: "MnO₂ 加入 H₂O₂ 溶液中，观察到的现象是？", opts: ["无明显变化", "迅速产生大量气泡", "生成红色沉淀", "溶液变蓝"], a: 1, why: "MnO₂ 催化 H₂O₂ 分解，产生 O₂ 气泡；MnO₂ 本身在反应前后基本不变。" },
+          { q: "酸性 KMnO₄ 溶液与 H₂O₂ 反应，MnO₄⁻ 通常被还原为？", opts: ["Mn²⁺", "MnO₂", "Mn⁴⁺", "Mn"], a: 0, why: "在酸性条件下，MnO₄⁻ 被 H₂O₂ 还原为 Mn²⁺，溶液紫红色褪去，可用于检验还原性物质。" }
+        ]
+      },
+      {
+        id: "organic", title: "有机官能团", tag: "官能团 · 同分异构", symbol: "R", color: "#7a5aa6",
+        questions: [
+          { q: "羧基的结构简式是？", opts: ["—OH", "—CHO", "—COOH", "—COO—"], a: 2, why: "羧基由羰基和羟基组成，结构简式为 —COOH；—CHO 是醛基，—COO— 是酯基。" },
+          { q: "分子式为 C₄H₁₀O 的同分异构体共有几种（包括醇和醚）？", opts: ["3 种", "4 种", "6 种", "7 种"], a: 3, why: "C₄H₁₀O 包括 4 种醇和 3 种醚，共 7 种；本站同分异构模块逐一列出了它们的 3D 结构。" },
+          { q: "乙酸与乙醇发生酯化反应，通常需要的条件是？", opts: ["浓硫酸、加热", "NaOH 水溶液、加热", "常温、光照", "稀盐酸、冷却"], a: 0, why: "酯化反应常用浓硫酸作催化剂和吸水剂，并加热；生成乙酸乙酯和水。" },
+          { q: "正丁烷中 C—C—C 键角接近？", opts: ["90°", "109.5°", "120°", "180°"], a: 1, why: "正丁烷的碳为 sp³ 杂化，C—C—C 键角接近四面体角 109.5°；本站 3D 模型按此角度生成。" }
+        ]
+      },
+      {
+        id: "titration", title: "酸碱滴定", tag: "pH · 指示剂 · 终点", symbol: "pH", color: "#0891b2",
+        questions: [
+          { q: "强酸与强碱等物质的量反应，等当点的 pH 约为？", opts: ["4.0", "7.0", "8.7", "10.0"], a: 1, why: "强酸强碱完全中和生成强酸强碱盐，溶液呈中性，25 ℃ 时等当点 pH≈7.0。" },
+          { q: "用酚酞作指示剂，强酸强碱滴定的终点通常？", opts: ["正好在等当点", "略早于等当点", "略晚于等当点", "与指示剂无关"], a: 2, why: "酚酞变色范围约 pH 8.2–10.0，等当点 pH 7.0；变色时已经略过量，所以终点略晚于等当点。" },
+          { q: "弱酸与强碱滴定，等当点的 pH 通常？", opts: ["小于 7", "等于 7", "大于 7", "无法判断"], a: 2, why: "弱酸强碱盐会发生水解，使溶液显碱性，因此等当点 pH 大于 7；例如 CH₃COOH 与 NaOH 约为 8.7。" },
+          { q: "滴定接近终点时，为什么要半滴半滴加入？", opts: ["让颜色更漂亮", "防止过量、准确控制终点", "加快反应速率", "减少指示剂用量"], a: 1, why: "接近终点时 pH 变化极快，半滴加入可以避免一次过量，便于准确捕捉指示剂变色。" }
+        ]
+      }
+    ];
+
+    const grid = document.getElementById("moduleGrid");
+    const moduleView = document.getElementById("moduleView");
+    const questionView = document.getElementById("questionView");
+    const resultView = document.getElementById("resultView");
+    const currentModuleName = document.getElementById("currentModuleName");
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("progressBar");
+    const questionIndex = document.getElementById("questionIndex");
+    const questionText = document.getElementById("questionText");
+    const optionList = document.getElementById("optionList");
+    const feedback = document.getElementById("feedback");
+    const nextBtn = document.getElementById("nextBtn");
+    let current = null, qi = 0, score = 0, answered = false;
+
+    function show(view){
+      for(const v of [moduleView, questionView, resultView]) v.classList.toggle("hidden", v !== view);
+      window.scrollTo({top: Math.max(0, view.getBoundingClientRect().top + window.scrollY - 90), behavior: "smooth"});
+    }
+
+    function renderModules(){
+      grid.innerHTML = MODULES.map((m, i) => `
+        <button class="q-module" type="button" data-id="${m.id}" style="--mc:${m.color}">
+          <span class="q-module-num">${String(i + 1).padStart(2, "0")}</span>
+          <span class="q-module-icon" aria-hidden="true">${m.symbol}</span>
+          <strong>${m.title}</strong>
+          <small>${m.tag}</small>
+          <em>4 题</em>
+        </button>`).join("");
+    }
+
+    function startModule(id){
+      current = MODULES.find(m => m.id === id);
+      if(!current) return;
+      qi = 0; score = 0; answered = false;
+      show(questionView);
+      renderQuestion();
+    }
+
+    function renderQuestion(){
+      const q = current.questions[qi];
+      answered = false;
+      currentModuleName.textContent = current.title;
+      progressText.textContent = `第 ${qi + 1} / ${current.questions.length} 题`;
+      progressBar.style.width = `${(qi / current.questions.length) * 100}%`;
+      questionIndex.textContent = `QUESTION ${String(qi + 1).padStart(2, "0")} / ${String(current.questions.length).padStart(2, "0")}`;
+      questionText.textContent = q.q;
+      optionList.innerHTML = q.opts.map((opt, i) => `
+        <button class="q-option" type="button" data-i="${i}">
+          <span class="q-letter">${"ABCD"[i]}</span><span>${opt}</span>
+        </button>`).join("");
+      feedback.hidden = true;
+      feedback.className = "q-feedback";
+      feedback.innerHTML = "";
+      nextBtn.hidden = true;
+      optionList.querySelectorAll(".q-option").forEach(btn => {
+        btn.addEventListener("click", () => answer(Number(btn.dataset.i)));
+      });
+    }
+
+    function answer(index){
+      if(answered) return;
+      answered = true;
+      const q = current.questions[qi];
+      const correct = index === q.a;
+      if(correct) score++;
+      optionList.querySelectorAll(".q-option").forEach((btn, i) => {
+        btn.disabled = true;
+        if(i === q.a) btn.classList.add("correct");
+        if(i === index && !correct) btn.classList.add("wrong");
+      });
+      feedback.hidden = false;
+      feedback.className = `q-feedback ${correct ? "ok" : "no"}`;
+      feedback.innerHTML = `<strong>${correct ? "答对了" : "答错了"}</strong>${q.why}`;
+      nextBtn.hidden = false;
+      nextBtn.innerHTML = qi === current.questions.length - 1
+        ? '查看结果 <span aria-hidden="true">→</span>'
+        : '下一题 <span aria-hidden="true">→</span>';
+      progressBar.style.width = `${((qi + 1) / current.questions.length) * 100}%`;
+    }
+
+    function next(){
+      if(!answered) return;
+      if(qi < current.questions.length - 1){ qi++; renderQuestion(); }
+      else showResult();
+    }
+
+    function showResult(){
+      show(resultView);
+      const total = current.questions.length;
+      const pct = Math.round(score / total * 100);
+      document.getElementById("resultTitle").textContent =
+        pct === 100 ? "这个模块，满分。" : pct >= 75 ? "不错，再抠一下细节。" : pct >= 50 ? "基础还在，回去看一遍。" : "先回模块补课，再来。";
+      document.getElementById("resultScore").textContent = score;
+      document.getElementById("resultNote").textContent =
+        pct === 100 ? "四个知识点都接上了。去下一个模块，或者换一题检验手感。"
+        : pct >= 75 ? "大部分概念已经掌握，错题解析值得再看一遍。"
+        : pct >= 50 ? "有一半以上答对，但还有几个概念没串起来；建议回到对应模块看 3D 图。"
+        : "别急，先回到对应模块把结构、条件或公式看一遍，再回来答一次。";
+    }
+
+    grid.addEventListener("click", (e) => {
+      const card = e.target.closest(".q-module");
+      if(card) startModule(card.dataset.id);
+    });
+    document.getElementById("backBtn").addEventListener("click", () => { show(moduleView); });
+    document.getElementById("backToModulesBtn").addEventListener("click", () => { show(moduleView); });
+    document.getElementById("retryBtn").addEventListener("click", () => {
+      if(!current) return;
+      qi = 0; score = 0; answered = false; show(questionView); renderQuestion();
+    });
+    nextBtn.addEventListener("click", next);
+
+    renderModules();
+    const params = new URLSearchParams(location.search);
+    const initial = params.get("module");
+    if(initial && MODULES.some(m => m.id === initial)) startModule(initial);
+  })();
+  </script>
+</body>
+</html>
