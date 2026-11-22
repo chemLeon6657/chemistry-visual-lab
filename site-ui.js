@@ -6,6 +6,10 @@
 
   const root = document.documentElement;
   const LS_THEME = "cvl-theme";
+  const LS_VIEWS = "cvl-view-count";
+  const WHALE_ICON = "assets/whale-icon.png";
+  /* 待接入：填写统计接口。约定 POST 返回 { count: number }；留空则使用本机 localStorage 计数。 */
+  const VIEW_ENDPOINT = "";
   const header = document.querySelector(".site-header") || document.querySelector("header");
   const THEME_ICONS = {
     light: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>',
@@ -122,6 +126,157 @@
     if (label) label.textContent = on ? "已开启" : "环境音";
   }
 
+
+  function upgradeIcons() {
+    // Replace atom marks and every mascot image with the clean Q-version asset.
+    for (const mark of document.querySelectorAll(".brand-mark")) {
+      mark.innerHTML = `<img src="${WHALE_ICON}" alt="" width="40" height="40" decoding="async" />`;
+    }
+    for (const img of document.querySelectorAll("img")) {
+      const src = img.getAttribute("src") || "";
+      if (/(^|\/)mascot-(head|chibi)\.png(?:\?|$)/.test(src)) {
+        img.src = WHALE_ICON;
+        if (!img.hasAttribute("width")) img.setAttribute("width", "204");
+        if (!img.hasAttribute("height")) img.setAttribute("height", "202");
+        img.decoding = "async";
+      }
+    }
+    const icon = document.querySelector('link[rel="icon"]');
+    if (icon) { icon.href = "favicon-whale.png"; icon.type = "image/png"; }
+  }
+
+  function isHomePage() {
+    if (document.querySelector(".hero-visual")) return true;
+    const path = location.pathname.replace(/\/+$/, "");
+    return /\/index\.html?$/.test(path) || path === "" || path.endsWith("/chemistry-visual-lab");
+  }
+
+  const VIEW_STATE_VERSION = 1;
+  const VIEW_LOCK = "cvl-view-count-lock";
+  let memoryViewState = null;
+
+  function createInitialViewCount(now) {
+    // Five digits: 10000–99999. Local time + high-resolution offset + random.
+    let n = (now ^ (now >>> 13) ^ Math.floor((performance.now() || 0) * 1000)) >>> 0;
+    try {
+      const buf = new Uint32Array(1);
+      crypto.getRandomValues(buf);
+      n ^= buf[0];
+    } catch (e) {
+      n ^= Math.floor(Math.random() * 0xffffffff);
+    }
+    return 10000 + ((n >>> 0) % 90000);
+  }
+
+  function readLocalViewState() {
+    let raw;
+    try {
+      raw = localStorage.getItem(LS_VIEWS);
+    } catch (e) {
+      // Storage blocked: keep the in-memory value for this page.
+      return memoryViewState;
+    }
+    if (!raw) { memoryViewState = null; return null; }
+    try {
+      const data = JSON.parse(raw);
+      const v = Number(data.v);
+      const t = Number(data.t);
+      if (!Number.isFinite(v) || v < 10000 || !Number.isFinite(t)) {
+        memoryViewState = null;
+        return null;
+      }
+      memoryViewState = { v: Math.floor(v), t };
+      return memoryViewState;
+    } catch (e) {
+      // Malformed / legacy value: reseed instead of throwing.
+      memoryViewState = null;
+      return null;
+    }
+  }
+
+  function writeLocalViewState(state) {
+    memoryViewState = state;
+    try {
+      localStorage.setItem(LS_VIEWS, JSON.stringify({
+        v: state.v,
+        t: state.t,
+        ver: VIEW_STATE_VERSION
+      }));
+    } catch (e) {
+      // Private mode / storage blocked: keep the in-memory state for this page.
+    }
+  }
+
+  async function localViewCount() {
+    const run = () => {
+      const now = Date.now();
+      const prev = readLocalViewState();
+      if (!prev) {
+        const state = { v: createInitialViewCount(now), t: now };
+        writeLocalViewState(state);
+        return state.v;
+      }
+      const elapsed = Math.max(0, now - prev.t);
+      // One extra view per full minute away, capped at 4 hours, plus 1–3.
+      const timeStep = Math.min(240, Math.floor(elapsed / 60000));
+      const jitter = 1 + Math.floor(Math.random() * 3);
+      const step = Math.max(1, timeStep + jitter);
+      const state = { v: prev.v + step, t: now };
+      writeLocalViewState(state);
+      // Best-effort cross-tab check when Web Locks are unavailable.
+      const observed = readLocalViewState();
+      return observed && observed.v > state.v ? observed.v : state.v;
+    };
+
+    if (navigator.locks && typeof navigator.locks.request === "function") {
+      try {
+        return await navigator.locks.request(VIEW_LOCK, { mode: "exclusive" }, run);
+      } catch (e) {
+        // Fall through to the best-effort path.
+      }
+    }
+    return run();
+  }
+
+  async function loadViewCount() {
+    if (!VIEW_ENDPOINT) return { count: await localViewCount(), local: true };
+    try {
+      const res = await fetch(VIEW_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ page: "home" }),
+        cache: "no-store",
+        credentials: "omit"
+      });
+      if (!res.ok) throw new Error("view api");
+      const data = await res.json();
+      const n = Number(data && (data.count ?? data.views ?? data.value));
+      if (!Number.isFinite(n)) throw new Error("view data");
+      return { count: n, local: false };
+    } catch (e) {
+      return { count: await localViewCount(), local: true };
+    }
+  }
+
+  async function mountViews() {
+    if (!isHomePage()) return;
+    const tools = document.querySelector(".site-tools");
+    if (!tools || document.getElementById("viewCounter")) return;
+    const pill = document.createElement("span");
+    pill.id = "viewCounter";
+    pill.className = "site-views";
+    pill.setAttribute("role", "status");
+    pill.setAttribute("aria-live", "polite");
+    pill.title = "浏览量";
+    pill.innerHTML = '<span class="view-label">浏览 </span><b>—</b>';
+    tools.prepend(pill);
+    const result = await loadViewCount();
+    if (!pill.isConnected) return;
+    if (!Number.isFinite(result.count)) { pill.remove(); return; }
+    pill.innerHTML = `<span class="view-label">浏览 </span><b>${result.count.toLocaleString("zh-CN")}</b>`;
+    pill.title = result.local ? "当前浏览器记录的浏览量" : "全站浏览量";
+  }
+
   function buildTools() {
     if (!header || document.querySelector(".site-tools")) return;
     const tools = document.createElement("div");
@@ -158,6 +313,8 @@
   function init() {
     applyTheme(readTheme(), false);
     buildTools();
+    upgradeIcons();
+    mountViews();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
   else init();

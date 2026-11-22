@@ -72,7 +72,7 @@
   button.type = "button";
   button.setAttribute("aria-label", "和鲸鱼娘助教说句话");
   button.setAttribute("aria-expanded", "false");
-  button.innerHTML = '<img src="mascot-head.png" alt="鲸鱼娘助教">';
+  button.innerHTML = '<img src="assets/whale-icon.png" alt="鲸鱼娘助教" width="204" height="202">';
 
   const bubble = document.createElement("div");
   bubble.className = "pf-bubble";
@@ -81,7 +81,7 @@
   bubble.setAttribute("aria-hidden", "true");
   bubble.innerHTML = `
     <div class="pf-bubble-head">
-      <img src="mascot-head.png" alt="">
+      <img src="assets/whale-icon.png" alt="" width="204" height="202">
       <div><h3>鲸鱼娘助教</h3><p>DEEPSEEK Q · 化学嘴替</p></div>
       <button class="pf-bubble-x" type="button" aria-label="收起对话">×</button>
     </div>

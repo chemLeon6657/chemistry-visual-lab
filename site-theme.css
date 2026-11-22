@@ -1402,3 +1402,54 @@ html[data-theme="light"] .iso-list-panel{
 }
 html[data-theme="light"] .iso-list-head span:first-child{color:#14312e}
 html[data-theme="light"] .iso-list-head span:last-child{color:#0f766e}
+
+/* Q-version brand mark replacing the inline atom SVG at runtime. */
+.brand-mark img{
+  width:80%;
+  height:80%;
+  object-fit:contain;
+  display:block;
+  border-radius:50%;
+  filter:drop-shadow(0 2px 6px rgba(15,118,110,.16));
+}
+html[data-theme="dark"] .brand-mark img{filter:drop-shadow(0 2px 7px rgba(103,232,249,.18))}
+
+/* Page-view pill, mounted by site-ui.js on the homepage. */
+.site-views{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  height:30px;
+  padding:0 10px;
+  border-radius:999px;
+  border:1px solid rgba(15,118,110,.22);
+  background:#e7f7f1;
+  color:#0b5f56;
+  font:650 10.5px/1 var(--mono,ui-monospace,monospace);
+  letter-spacing:.03em;
+  white-space:nowrap;
+  user-select:none;
+}
+.site-views::before{content:"";width:5px;height:5px;border-radius:50%;background:#0f766e;box-shadow:0 0 0 3px rgba(15,118,110,.12)}
+.site-views b{font-weight:750;color:#064e3b}
+html[data-theme="dark"] .site-views{
+  background:rgba(94,234,212,.08);
+  border-color:rgba(94,234,212,.20);
+  color:#bdfbf1;
+}
+html[data-theme="dark"] .site-views::before{background:#5eead4;box-shadow:0 0 0 3px rgba(94,234,212,.10)}
+html[data-theme="dark"] .site-views b{color:#f0ffff}
+@media (max-width:680px){
+  .site-views{height:27px;padding:0 8px;font-size:9.5px}
+  .site-views span{display:none}
+}
+@media (max-width:680px){
+  .site-tools{gap:5px}
+  .site-tools .tool-label{display:none}
+  .site-views .view-label{display:none}
+  .site-views{height:27px;padding:0 7px;font-size:9.5px}
+  .site-views span{display:none}
+}
+@media (max-width:760px){
+  .site-views{display:none}
+}

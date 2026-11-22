@@ -6,7 +6,8 @@
 <meta name="theme-color" content="#f5f8f5" />
 <title>晶体结构 · 晶胞与配位数 · 高中化学可视化平台</title>
 <meta name="description" content="交互式晶体结构演示：NaCl、CsCl、CaF₂、ZnS、金刚石、石墨、SiO₂、干冰和铜的晶胞、配位数、作用力与三维结构。" />
-<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="favicon-whale.png" type="image/png" />
+<link rel="apple-touch-icon" href="assets/whale-icon.png" />
 <style>
   :root {
     --bg:#04070f; --line:rgba(148,163,184,.14); --text:#eaf3ff; --muted:#8ea4c0; --dim:#5e728c;
@@ -134,9 +135,7 @@
 <div class="shell">
   <header class="site-header">
     <a class="brand" href="./" title="返回平台首页" aria-label="返回高中化学可视化平台首页">
-      <div class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 64 64" fill="none"><defs><linearGradient id="markGrad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#67e8f9"/><stop offset=".55" stop-color="#5eead4"/><stop offset="1" stop-color="#a78bfa"/></linearGradient><radialGradient id="coreGrad" cx="0" cy="0" r="1" gradientTransform="translate(32 32) rotate(90) scale(6)" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".45" stop-color="#c7feff"/><stop offset="1" stop-color="#67e8f9" stop-opacity="0"/></radialGradient></defs><circle cx="32" cy="32" r="7" fill="url(#coreGrad)"/><ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(28 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".8"/><ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(-32 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".5"/><ellipse cx="32" cy="32" rx="24" ry="8" transform="rotate(90 32 32)" stroke="url(#markGrad)" stroke-width="1.1" opacity=".32"/><circle cx="32" cy="32" r="2.5" fill="#f4ffff"/></svg>
-      </div>
+      <div class="brand-mark" aria-hidden="true"><img src="assets/whale-icon.png" alt="" width="40" height="40" decoding="async" /></div>
       <div><div class="kicker">高中化学可视化平台 · 物质结构与性质</div><h1>晶体<span>结构</span></h1><p>从晶胞出发，看离子、原子、分子和金属晶体</p></div>
     </a>
     <div class="header-meta"><div class="meta-pill"><span class="live-dot"></span>交互式 3D 晶胞</div><div class="meta-note">拖动旋转 · 滚轮缩放 · 切换晶体</div></div>
@@ -863,7 +862,7 @@
   requestAnimationFrame(now=>{lastFrame=now;frame(now);});
 })();
 </script>
-  <script src="platform-shell.js"></script>
-  <script src="site-ui.js"></script>
+  <script src="platform-shell.js" defer></script>
+  <script src="site-ui.js" defer></script>
 </body>
 </html>

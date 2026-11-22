@@ -6,7 +6,8 @@
 <meta name="theme-color" content="#f5f8f5" />
 <title>C–C 成键过程 · 乙烷 / 乙烯 / 乙炔 · 高中化学可视化平台</title>
 <meta name="description" content="交互式碳碳成键过程：观察两个已杂化碳原子靠近，形成 σ 键，以及乙烯、乙炔中的 π 键。拖动进度条观看乙烷、乙烯、乙炔的成键过程。" />
-<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="favicon-whale.png" type="image/png" />
+<link rel="apple-touch-icon" href="assets/whale-icon.png" />
 <style>
   :root {
     --bg: #04070f;
@@ -448,19 +449,7 @@
 <div class="shell">
   <header class="site-header">
     <a class="brand" href="./" title="返回平台首页" aria-label="返回高中化学可视化平台首页">
-      <div class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 64 64" fill="none">
-          <defs>
-            <linearGradient id="markGrad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#67e8f9"/><stop offset=".55" stop-color="#5eead4"/><stop offset="1" stop-color="#a78bfa"/></linearGradient>
-            <radialGradient id="coreGrad" cx="0" cy="0" r="1" gradientTransform="translate(32 32) rotate(90) scale(6)" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".45" stop-color="#c7feff"/><stop offset="1" stop-color="#67e8f9" stop-opacity="0"/></radialGradient>
-          </defs>
-          <circle cx="32" cy="32" r="7" fill="url(#coreGrad)"/>
-          <ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(28 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".8"/>
-          <ellipse cx="32" cy="32" rx="25" ry="8.5" transform="rotate(-32 32 32)" stroke="url(#markGrad)" stroke-width="1.4" opacity=".5"/>
-          <ellipse cx="32" cy="32" rx="24" ry="8" transform="rotate(90 32 32)" stroke="url(#markGrad)" stroke-width="1.1" opacity=".32"/>
-          <circle cx="32" cy="32" r="2.5" fill="#f4ffff"/>
-        </svg>
-      </div>
+      <div class="brand-mark" aria-hidden="true"><img src="assets/whale-icon.png" alt="" width="40" height="40" decoding="async" /></div>
       <div>
         <div class="kicker">电子云杂化实验室 · 成键过程</div>
         <h1>C–C <span>成键过程</span></h1>
@@ -1220,7 +1209,7 @@
   requestAnimationFrame((now) => { lastFrame = now; frame(now); });
 })();
 </script>
-  <script src="platform-shell.js"></script>
-  <script src="site-ui.js"></script>
+  <script src="platform-shell.js" defer></script>
+  <script src="site-ui.js" defer></script>
 </body>
 </html>
