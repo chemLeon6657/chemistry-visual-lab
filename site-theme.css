@@ -1316,6 +1316,37 @@ html[data-theme="light"] .formula-tab.active {
 html[data-theme="light"] .formula-tab .count {
   color: #0f766e !important;
 }
+/* 同分异构体页顶栏与 3D 复位按钮：跟其他模块统一为浅色/青绿，不再用深底按钮 */
+html[data-theme="light"] .mode-tab {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #526b66 !important;
+  box-shadow: none !important;
+}
+html[data-theme="light"] .mode-tab:hover {
+  background: #f1faf6 !important;
+  color: #0f766e !important;
+}
+html[data-theme="light"] .mode-tab.active {
+  background: #e7f7f1 !important;
+  border-color: rgba(15, 118, 110, 0.32) !important;
+  color: #0f766e !important;
+  box-shadow: inset 0 1px 0 #fff !important;
+}
+html[data-theme="light"] .mode-tab .num {
+  color: #5f7570 !important;
+}
+html[data-theme="light"] .iso-reset {
+  background: #ffffff !important;
+  border-color: rgba(15, 118, 110, 0.28) !important;
+  color: #0f766e !important;
+  box-shadow: 0 1px 2px rgba(20, 49, 46, 0.06) !important;
+}
+html[data-theme="light"] .iso-reset:hover {
+  background: #e7f7f1 !important;
+  border-color: rgba(15, 118, 110, 0.45) !important;
+  color: #0b5f56 !important;
+}
 html[data-theme="light"] .iso-card {
   background: #ffffff !important;
   border-color: rgba(20, 49, 46, 0.13) !important;
@@ -1341,32 +1372,6 @@ html[data-theme="light"] .iso-cond {
 }
 html[data-theme="light"] .iso-card .iso-tick {
   color: #0f766e !important;
-}
-html[data-theme="light"] .compare-panel {
-  background: #ffffff !important;
-  border-color: rgba(20, 49, 46, 0.13) !important;
-}
-html[data-theme="light"] .compare-title {
-  color: #14312e !important;
-}
-html[data-theme="light"] .compare-empty {
-  color: #5f7570 !important;
-}
-html[data-theme="light"] .compare-item {
-  background: #f5fbf8 !important;
-  border-color: rgba(15, 118, 110, 0.13) !important;
-}
-html[data-theme="light"] .compare-item strong {
-  color: #14312e !important;
-}
-html[data-theme="light"] .compare-item span {
-  color: #3f5d57 !important;
-}
-html[data-theme="light"] .compare-summary {
-  color: #526b66 !important;
-}
-html[data-theme="light"] .compare-summary strong {
-  color: #0b5f56 !important;
 }
 html[data-theme="light"] .isonote {
   background: #ffffff !important;

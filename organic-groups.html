@@ -139,7 +139,7 @@
   .formula-tab:hover{color:#e7fdff;background:rgba(103,232,249,.05)}
   .formula-tab.active{color:#f1ffff;border-color:rgba(103,232,249,.36);background:rgba(103,232,249,.09)}
   .formula-tab .count{color:rgba(103,232,249,.65);font-family:var(--mono);font-size:8.5px}
-  .isomer-layout{display:grid;grid-template-columns:220px minmax(0,1fr) 280px;gap:13px;align-items:start}
+  .isomer-layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:13px;align-items:start}
   .iso-list-panel{min-width:0;padding:10px;border:1px solid rgba(148,163,184,.1);border-radius:12px;background:rgba(4,10,20,.24)}
   .iso-list-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:#e7f8ff;font-size:9.5px;font-weight:600;letter-spacing:.03em}.iso-list-head span:last-child{color:var(--dim);font-size:8.5px;font-weight:400}
   .iso-list-panel .isomer-grid{grid-template-columns:1fr}
@@ -161,19 +161,14 @@
   .iso-top{display:flex;justify-content:space-between;gap:6px;align-items:baseline}.iso-name{color:#e8f9ff;font-size:11px;font-weight:600;line-height:1.3}.iso-type{color:rgba(103,232,249,.65);font-size:8px;white-space:nowrap}
   .iso-cond{margin-top:5px;color:rgba(195,225,240,.88);font-family:var(--mono);font-size:10px;line-height:1.55;word-break:break-word}
   .iso-card .iso-tick{position:absolute;right:7px;bottom:7px;color:#67e8f9;font-size:10px;opacity:0}.iso-card.selected .iso-tick{opacity:1}
-  .compare-panel{position:sticky;top:14px;padding:12px;border:1px solid rgba(148,163,184,.1);border-radius:12px;background:rgba(4,10,20,.26)}
-  .compare-title{color:#e7f8ff;font-size:10.5px;font-weight:600;margin-bottom:8px}.compare-empty{color:var(--dim);font-size:9px;line-height:1.6}
-  .compare-item{padding:7px 8px;border:1px solid rgba(148,163,184,.09);border-radius:7px;margin-bottom:6px;background:rgba(4,10,20,.25)}.compare-item strong{display:block;color:#e4f8ff;font-size:9.5px}.compare-item span{display:block;margin-top:2px;color:rgba(180,210,230,.78);font-family:var(--mono);font-size:8.5px;word-break:break-word}
-  .compare-summary{margin-top:7px;padding-top:7px;border-top:1px solid rgba(148,163,184,.08);color:var(--dim);font-size:8.5px;line-height:1.6}.compare-summary strong{color:#bdfbf1;font-weight:550}
   .isomer-notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:13px}
   .isonote{padding:9px 10px;border:1px solid rgba(148,163,184,.1);border-radius:8px;background:rgba(4,10,20,.25)}.isonote b{display:block;color:#dff8ff;font-size:9.5px;margin-bottom:2px}.isonote span{color:var(--dim);font-size:8.5px;line-height:1.55}
   .site-footer{display:flex;justify-content:space-between;gap:22px;padding:14px 4px 0;color:rgba(94,114,140,.9);font-size:9.2px;line-height:1.55}.site-footer p{margin:0;max-width:980px}.footer-tag{flex:0 0 auto;color:rgba(103,232,249,.48);white-space:nowrap}
   @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes breathe{0%,100%{opacity:.65;transform:scale(.9)}50%{opacity:1;transform:scale(1.12)}}
-  @media(max-width:1180px){.shell{padding-left:20px;padding-right:20px}.functional-view{grid-template-columns:235px minmax(0,1fr) 300px}.isomer-layout{grid-template-columns:1fr}.compare-panel{position:static}}
+  @media(max-width:1180px){.shell{padding-left:20px;padding-right:20px}.functional-view{grid-template-columns:235px minmax(0,1fr) 300px}.isomer-layout{grid-template-columns:200px minmax(0,1fr)}}
   @media(max-width:960px){.functional-view{grid-template-columns:1fr}.group-panel{max-height:none}.group-list{overflow:visible;display:grid;grid-template-columns:1fr 1fr;gap:4px}.group-card{margin-bottom:0}.detail-panel{max-height:none}.isomer-notes{grid-template-columns:1fr}.mode-tab{font-size:10px;padding:0 10px}.bar-tip{display:none}}
   @media(max-width:650px){.shell{padding:14px 12px 10px}.brand-mark{width:44px;height:44px}.brand h1{font-size:clamp(23px,7vw,31px)}.brand p{display:none}.header-meta{display:none}.kicker{font-size:8.5px}.mode-bar{padding:4px}.mode-tab{flex:1;padding:0 6px;font-size:9px}.stage-panel{padding:12px}.stage-title,.isomer-title{font-size:18px}.group-stage{min-height:260px}.group-list{grid-template-columns:1fr}.isomer-panel{padding:12px}.isomer-grid{grid-template-columns:1fr}.formula-tab{height:32px;font-size:9.5px}.site-footer{flex-direction:column;gap:5px}}
-  @media(max-width:1180px){.isomer-layout{grid-template-columns:200px minmax(0,1fr)}.compare-panel{grid-column:1/-1;position:static}}
-  @media(max-width:960px){.isomer-layout{grid-template-columns:1fr}.iso-list-panel .isomer-grid{grid-template-columns:1fr 1fr}.iso-stage{min-height:360px}.compare-panel{grid-column:auto}}
+  @media(max-width:960px){.isomer-layout{grid-template-columns:1fr}.iso-list-panel .isomer-grid{grid-template-columns:1fr 1fr}.iso-stage{min-height:360px}}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 </style>
   <meta name="copyright" content="© 2026 chemLeon6657. All rights reserved." />
@@ -286,7 +281,6 @@
             <div class="iso-stage-bar"><div><strong id="isoStageName">正丁烷</strong><span id="isoStageType">碳链异构</span></div><button class="iso-reset" id="isoReset" type="button" title="重置视角" aria-label="重置视角">重置视角</button></div>
             <div class="iso-stage-foot">拖动旋转 · 滚轮缩放 · 双击复位　|　键长 C–C 1.54 · C=C 1.34 · C–O 1.43 · C=O 1.22 · C–H 1.09 · O–H 0.96 Å　|　键角 sp³ 109.5° · sp² 120° · O 104.5/111°</div>
           </div>
-          <aside class="compare-panel"><div class="compare-title">对比区 <span id="compareCount" style="color:var(--dim);font-weight:400">0/2</span></div><div id="compareItems"><div class="compare-empty">点击左侧任意两张异构体卡片，查看它们的相同点和不同点。</div></div><div class="compare-summary" id="compareSummary"></div></aside>
         </div>
         <div class="isomer-notes"><div class="isonote"><b>碳链异构</b><span>碳骨架不同：正丁烷 / 异丁烷</span></div><div class="isonote"><b>位置异构</b><span>官能团位置不同：1-丁醇 / 2-丁醇</span></div><div class="isonote"><b>官能团异构</b><span>官能团不同：乙醇 / 二甲醚</span></div></div>
       </div>
@@ -527,9 +521,6 @@
   const energyDot=document.getElementById("energyDot");
   const formulaTabs=document.getElementById("formulaTabs");
   const isomerGrid=document.getElementById("isomerGrid");
-  const compareItems=document.getElementById("compareItems");
-  const compareCount=document.getElementById("compareCount");
-  const compareSummary=document.getElementById("compareSummary");
   const isoCanvas=document.getElementById("isoCanvas");
   const isoCtx=isoCanvas?isoCanvas.getContext("2d"):null;
   const isoStage=document.getElementById("isoStage");
@@ -673,7 +664,6 @@
 
   let currentGroup=GROUPS[0];
   let currentSet=SETS[0];
-  let selected=[];
   let currentIsoIndex=0;
   let isoCurrent=null, isoMaxR=2, isoYaw=.20, isoPitch=.28, isoZoom=1;
   let isoDragging=false, isoAuto=false, isoLastX=0, isoLastY=0, isoW=1, isoH=1;
@@ -702,7 +692,7 @@
     const w=isoW,h=isoH,cx=w*.5,cy=h*.47;
     isoCtx.clearRect(0,0,w,h);
     if(!isoCurrent){requestAnimationFrame(isoRender);return;}
-    const scale=Math.min(w,h)/(isoMaxR*2.85)*isoZoom;
+    const scale=Math.min(w-80,h-120)/(isoMaxR*2)*isoZoom;
     const pts=isoCurrent.atoms.map(([el,x,y,z])=>{const r=isoRotatePoint([x,y,z]);return {el,x:cx+r[0]*scale,y:cy-r[1]*scale,z:r[2]};});
     const bonds=isoCurrent.bonds.map(([i,j,order])=>({i,j,order:order||1,z:(pts[i].z+pts[j].z)/2})).sort((a,b)=>a.z-b.z);
     for(const b of bonds){
@@ -816,30 +806,20 @@
 
   function renderFormulaTabs(){
     formulaTabs.innerHTML=SETS.map(s=>`<button class="formula-tab ${s.id===currentSet.id?"active":""}" type="button" data-set="${s.id}">${s.formula}<span class="count">${s.count} 种</span></button>`).join("");
-    for(const tab of formulaTabs.querySelectorAll(".formula-tab"))tab.addEventListener("click",()=>{currentSet=SETS.find(s=>s.id===tab.dataset.set);selected=[];currentIsoIndex=0;renderFormulaTabs();renderIsomers();loadIsoModel(0);});
+    for(const tab of formulaTabs.querySelectorAll(".formula-tab"))tab.addEventListener("click",()=>{currentSet=SETS.find(s=>s.id===tab.dataset.set);currentIsoIndex=0;renderFormulaTabs();renderIsomers();loadIsoModel(0);});
   }
   function renderIsomers(){
     isoListCount.textContent=`${currentSet.isomers.length} 种`;
-    isomerGrid.innerHTML=currentSet.isomers.map((iso,i)=>`<button class="iso-card ${selected.includes(i)?"selected":""}" type="button" data-iso="${i}"><div class="iso-top"><span class="iso-name">${iso.name}</span><span class="iso-type">${iso.type}</span></div><div class="iso-cond">${iso.cond}</div><span class="iso-tick">✓</span></button>`).join("");
+    isomerGrid.innerHTML=currentSet.isomers.map((iso,i)=>`<button class="iso-card ${i===currentIsoIndex?"selected":""}" type="button" data-iso="${i}"><div class="iso-top"><span class="iso-name">${iso.name}</span><span class="iso-type">${iso.type}</span></div><div class="iso-cond">${iso.cond}</div><span class="iso-tick">✓</span></button>`).join("");
     for(const card of isomerGrid.querySelectorAll(".iso-card"))card.addEventListener("click",()=>selectIso(+card.dataset.iso));
     if(!currentSet.isomers[currentIsoIndex])currentIsoIndex=0;
     const iso=currentSet.isomers[currentIsoIndex];
     if(iso){isoStageName.textContent=iso.name;isoStageType.textContent=`${iso.type} · ${currentSet.formula}`;}
-    renderCompare();
   }
   function selectIso(i){
-    if(selected.includes(i))selected=selected.filter(x=>x!==i);
-    else{selected.push(i);if(selected.length>2)selected.shift();}
     currentIsoIndex=i;
     loadIsoModel(i);
     renderIsomers();
-  }
-  function renderCompare(){
-    compareCount.textContent=`${selected.length}/2`;
-    if(!selected.length){compareItems.innerHTML=`<div class="compare-empty">点击左侧任意两张异构体卡片，查看它们的相同点和不同点。</div>`;compareSummary.innerHTML="";return;}
-    compareItems.innerHTML=selected.map(i=>{const iso=currentSet.isomers[i];return `<div class="compare-item"><strong>${iso.name}</strong><span>${iso.cond}</span></div>`;}).join("");
-    if(selected.length===1){compareSummary.innerHTML=`再选一张卡片进行对比。`;return;}
-    compareSummary.innerHTML=`<strong>相同：</strong>分子式都是 ${currentSet.formula}。<br><strong>不同：</strong>结构不同，属于同分异构体。`;
   }
 
   for(const tab of modeTabs)tab.addEventListener("click",()=>{
@@ -867,7 +847,7 @@
   if(params.get("mode")==="isomers")document.querySelector('[data-mode="isomers"]').click();
   if(params.get("set")){
     const set=SETS.find(x=>x.id===params.get("set"));
-    if(set){currentSet=set;selected=[];currentIsoIndex=0;renderFormulaTabs();renderIsomers();loadIsoModel(0);}
+    if(set){currentSet=set;currentIsoIndex=0;renderFormulaTabs();renderIsomers();loadIsoModel(0);}
   }
 })();
 </script>
