@@ -7,7 +7,7 @@
   const root = document.documentElement;
   const LS_THEME = "cvl-theme";
   const LS_VIEWS = "cvl-view-count";
-  const WHALE_ICON = "assets/whale-icon.png";
+  const WHALE_ICON = "whale-icon.png";
   /* 待接入：填写统计接口。约定 POST 返回 { count: number }；留空则使用本机 localStorage 计数。 */
   const VIEW_ENDPOINT = "";
   const header = document.querySelector(".site-header") || document.querySelector("header");
@@ -131,6 +131,11 @@
     // Replace atom marks and every mascot image with the clean Q-version asset.
     for (const mark of document.querySelectorAll(".brand-mark")) {
       mark.innerHTML = `<img src="${WHALE_ICON}" alt="" width="40" height="40" decoding="async" />`;
+    }
+    // Pages uploaded before the root-level asset move may still point at assets/.
+    for (const img of document.querySelectorAll('img[src*="assets/whale-icon.png"]')) {
+      img.src = WHALE_ICON;
+      img.decoding = "async";
     }
     for (const img of document.querySelectorAll("img")) {
       const src = img.getAttribute("src") || "";
