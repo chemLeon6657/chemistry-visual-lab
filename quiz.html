@@ -134,6 +134,10 @@
     .q-progress{height:4px;border-radius:999px;background:var(--q-panel-2);overflow:hidden;margin-bottom:18px}
     .q-progress i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--q-accent),var(--q-accent-2));transition:width .28s ease}
     .question-card{max-width:780px}
+    .q-diff{display:inline-flex;align-items:center;margin-left:8px;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:700;letter-spacing:.08em;vertical-align:2px;border:1px solid transparent}
+    .q-diff.easy{color:#0f766e;background:rgba(15,118,110,.10);border-color:rgba(15,118,110,.22)}
+    .q-diff.medium{color:#b45309;background:rgba(180,83,9,.10);border-color:rgba(180,83,9,.24)}
+    .q-diff.hard{color:#be123c;background:rgba(190,18,60,.10);border-color:rgba(190,18,60,.24)}
     .question-index{font:650 9px/1 var(--mono,monospace);letter-spacing:.14em;color:var(--q-accent);margin-bottom:9px}
     .question-card h2{font-size:clamp(19px,2.2vw,25px);line-height:1.55;margin:0 0 16px;letter-spacing:-.01em;font-weight:750}
     .option-list{display:grid;gap:8px}
@@ -220,7 +224,7 @@
         </div>
       </a>
       <div class="header-meta">
-        <div class="meta-pill">9 主题 · 36 题</div>
+        <div class="meta-pill">9 主题 · 180 题</div>
         <div class="meta-note">单选即时判分 · 按模块闯关</div>
       </div>
     </header>
@@ -230,12 +234,12 @@
         <div>
           <div class="quiz-kicker">QUIZ / NINE TOPICS</div>
           <h1 id="quiz-title">化学闯关，<span>敢不敢全对？</span></h1>
-          <p>从电子云到酸碱滴定，按九个知识模块出题。每题只有一个正确选项，点下去立刻看到对错和解析。</p>
+          <p>从电子云到酸碱滴定，九个模块共 180 道单选题。每次随机抽 2 道简单、2 道中等、1 道困难，答完立刻看到对错和解析。</p>
         </div>
         <div class="quiz-stats" aria-label="Quiz 概况">
           <div><b>9</b><span>知识模块</span></div>
-          <div><b>36</b><span>道单选题</span></div>
-          <div><b>4</b><span>题 / 模块</span></div>
+          <div><b>180</b><span>道题库</span></div>
+          <div><b>5</b><span>题 / 每次</span></div>
         </div>
       </section>
 
@@ -245,10 +249,10 @@
             <div class="view-kicker">PICK A TOPIC</div>
             <h2 id="module-title">先选一个模块</h2>
           </div>
-          <p>每个模块 4 题，答完立刻出分</p>
+          <p>每个模块 20 题，每次随机抽 2 简单 + 2 中等 + 1 困难</p>
         </div>
         <div class="module-grid" id="moduleGrid"></div>
-        <p class="q-note">题目全部对应本站模块内容；答错会给出简短解释，换模块不会清空其它模块的当前作答。</p>
+        <p class="q-note">题目覆盖本站九个模块及延伸知识；每道题标注难度，答错会给出简短解释，换模块不会清空其它模块的当前作答。</p>
       </section>
 
       <section class="quiz-view hidden" id="questionView" aria-live="polite">
@@ -289,91 +293,10 @@
 
   <script src="platform-shell.js" defer></script>
   <script src="site-ui.js" defer></script>
+  <script src="quiz-bank.js"></script>
   <script>
   (() => {
-    const MODULES = [
-      {
-        id: "electron", title: "电子云与成键", tag: "杂化 · σ键 · π键", symbol: "sp³", color: "#0d9488",
-        questions: [
-          { q: "乙烷分子中的 C—C 单键主要由哪组轨道重叠形成？", opts: ["两个 sp³ 杂化轨道头碰头重叠", "两个未杂化 p 轨道肩并肩重叠", "一个 s 轨道与一个 p 轨道肩并肩重叠", "两个 sp² 杂化轨道肩并肩重叠"], a: 0, why: "乙烷的每个碳都是 sp³ 杂化，C—C σ 键由两个 sp³ 杂化轨道沿键轴头碰头重叠形成。" },
-          { q: "乙烯的 C=C 双键中，π 键由什么形成？", opts: ["两个 sp² 杂化轨道头碰头重叠", "两个未杂化 p 轨道肩并肩重叠", "两个 s 轨道头碰头重叠", "sp³ 与 s 轨道重叠"], a: 1, why: "乙烯碳为 sp² 杂化，每个碳还剩一个未参与杂化的 p 轨道，两个 p 轨道肩并肩重叠形成 π 键。" },
-          { q: "乙炔中每个碳原子的杂化方式是？", opts: ["sp³", "sp²", "sp", "sp³d"], a: 2, why: "乙炔中每个碳形成两个 σ 键，采用 sp 杂化，剩余两个 p 轨道形成两组互相垂直的 π 键。" },
-          { q: "甲烷的四个 C—H 键完全等价，最直接的原因是？", opts: ["碳原子有四个价电子", "碳采取 sp³ 杂化，四个杂化轨道等价", "氢原子半径相同", "C—H 键都是离子键"], a: 1, why: "sp³ 杂化产生四个能量、形状相同的杂化轨道，分别与四个 H 的 1s 轨道重叠，所以四个 C—H 键等价。" }
-        ]
-      },
-      {
-        id: "geometry", title: "分子空间构型", tag: "VSEPR · 键角 · 极性", symbol: "AXₙ", color: "#0891b2",
-        questions: [
-          { q: "甲烷 CH₄ 的 H—C—H 键角约为？", opts: ["90°", "120°", "109°28′", "180°"], a: 2, why: "CH₄ 是正四面体形，四个 C—H 键尽量远离，理想键角为 109°28′。" },
-          { q: "NH₃ 的键角约为 107°，小于 CH₄ 的 109°28′，主要原因是？", opts: ["N 的孤对电子对成键电子对排斥更强", "N—H 键比 C—H 键更长", "NH₃ 是平面三角形", "H 原子半径更大"], a: 0, why: "孤对电子只受一个原子核吸引，电子云更“胖”，对成键电子对的排斥大于成键电子对之间的排斥，把键角压小。" },
-          { q: "H₂O 的价层电子对构型和分子构型分别是？", opts: ["四面体、V 形", "平面三角形、V 形", "四面体、直线形", "八面体、V 形"], a: 0, why: "O 有 2 个 σ 键电子对和 2 对孤对电子，价层电子对构型为四面体；去掉孤对后，分子构型为 V 形。" },
-          { q: "SO₂ 为 V 形而 CO₂ 为直线形，主要因为？", opts: ["SO₂ 中 S 有 1 对孤对电子，CO₂ 中 C 没有孤对电子", "S 的原子半径更大", "CO₂ 是离子化合物", "SO₂ 中 S 为 sp 杂化"], a: 0, why: "SO₂ 的 S 上有 1 对孤对电子，价层电子对为平面三角形，去掉孤对后是 V 形；CO₂ 的 C 没有孤对，两个 σ 键呈 180°。" }
-        ]
-      },
-      {
-        id: "crystal", title: "晶体结构", tag: "晶胞 · 配位 · 作用力", symbol: "FCC", color: "#6d28d9",
-        questions: [
-          { q: "NaCl 晶体中，Na⁺ 和 Cl⁻ 的配位数分别是？", opts: ["6 和 6", "8 和 8", "4 和 4", "12 和 12"], a: 0, why: "NaCl 中每个 Na⁺ 周围有 6 个 Cl⁻，每个 Cl⁻ 周围也有 6 个 Na⁺，配位数为 6:6。" },
-          { q: "CsCl 晶体中，Cs⁺ 的配位数是？", opts: ["4", "6", "8", "12"], a: 2, why: "CsCl 是简单立方结构，Cl⁻ 在顶角、Cs⁺ 在体心，每个 Cs⁺ 周围有 8 个 Cl⁻，配位数为 8:8。" },
-          { q: "金刚石中每个碳原子与多少个碳原子成键？", opts: ["2", "3", "4", "6"], a: 2, why: "金刚石中每个碳采取 sp³ 杂化，与周围 4 个碳形成共价键，构成空间网状结构。" },
-          { q: "干冰晶体中，CO₂ 分子之间主要的作用力是？", opts: ["共价键", "离子键", "分子间作用力", "金属键"], a: 2, why: "干冰是分子晶体，CO₂ 分子内部是共价键，分子之间靠范德华力等分子间作用力结合。" }
-        ]
-      },
-      {
-        id: "mechanism", title: "反应机理", tag: "SN2 · 加成 · E2", symbol: "→", color: "#b45309",
-        questions: [
-          { q: "SN2 取代反应通常经历几步？", opts: ["一步协同，没有稳定中间体", "先形成碳正离子，再被进攻", "先消去，再加成", "两步，先断 C—Br 再成 C—O"], a: 0, why: "SN2 是协同的一步反应：亲核试剂从背面进攻，C—O 成键与 C—Br 断裂同时发生，没有稳定中间体。" },
-          { q: "乙烯与 Br₂ 的加成，产物以什么为主？", opts: ["顺式-1,2-二溴乙烷", "反式-1,2-二溴乙烷", "1,1-二溴乙烷", "溴乙烷"], a: 1, why: "反应经过溴鎓离子中间体，Br⁻ 从背面开环，两个 Br 加在双键两侧，主要得到反式加成产物。" },
-          { q: "E2 消去反应中，β-H 与离去基团 Br 通常要求什么空间关系？", opts: ["同侧共平面", "反式共平面", "互相垂直", "没有要求"], a: 1, why: "E2 是协同消去，β-H 与 Br 需要处于反式共平面位置，C—H 与 C—Br 的断裂和 C=C 的形成才能同步进行。" },
-          { q: "SN2 的电子转移箭头应从 OH⁻ 的哪里出发？", opts: ["氧上的孤对电子/负电荷", "氢原子核", "C—Br 键的中间", "Br 的孤对电子"], a: 0, why: "亲核试剂用氧上的孤对电子进攻 α-C；箭头起点应画在氧的负电荷或孤对电子上，终点指向 α-C。" }
-        ]
-      },
-      {
-        id: "periodic", title: "元素周期表", tag: "周期律 · 电子排布", symbol: "Z", color: "#4f6fa8",
-        questions: [
-          { q: "铬（Cr，Z=24）的基态电子排布式是？", opts: ["[Ar] 3d⁴ 4s²", "[Ar] 3d⁵ 4s¹", "[Ar] 3d⁶", "[Ar] 4s² 4p⁴"], a: 1, why: "Cr 为半充满的 3d⁵ 4s¹ 结构，能量更低、更稳定；不能按简单 Aufbau 写成 3d⁴ 4s²。" },
-          { q: "铜（Cu，Z=29）的基态电子排布式是？", opts: ["[Ar] 3d⁹ 4s²", "[Ar] 3d¹⁰ 4s¹", "[Ar] 3d¹⁰ 4s²", "[Ar] 4s² 4p⁶"], a: 1, why: "Cu 采取全充满的 3d¹⁰ 4s¹ 结构，3d 全充满带来的稳定性超过 4s 半充满。" },
-          { q: "同周期主族元素从左到右，原子半径的一般变化是？", opts: ["逐渐增大", "逐渐减小", "先增大后减小", "不变"], a: 1, why: "同周期从左到右核电荷数增大，核对外层电子吸引增强，原子半径总体逐渐减小。" },
-          { q: "卤族元素最外层电子排布的通式是？", opts: ["ns² np³", "ns² np⁴", "ns² np⁵", "ns² np⁶"], a: 2, why: "卤族位于第 17 族，最外层有 7 个电子，通式为 ns² np⁵，容易得到 1 个电子。" }
-        ]
-      },
-      {
-        id: "apparatus", title: "化学实验装置", tag: "发生 · 除杂 · 收集", symbol: "LAB", color: "#0f766e",
-        questions: [
-          { q: "用 KMnO₄ 加热制取氧气，收集氧气常用的方法是？", opts: ["排水法或向上排空气法", "向下排空气法", "只用向下排空气法", "用饱和食盐水收集"], a: 0, why: "O₂ 不易溶于水，可用排水法；密度比空气略大，也可用向上排空气法。" },
-          { q: "除去 CO₂ 中混有的少量 HCl，最好选用？", opts: ["NaOH 溶液", "饱和 NaHCO₃ 溶液", "浓硫酸", "饱和食盐水"], a: 1, why: "饱和 NaHCO₃ 与 HCl 反应生成 CO₂，同时抑制 CO₂ 溶解；NaOH 会吸收 CO₂。" },
-          { q: "干燥 NH₃ 时不能使用的干燥剂是？", opts: ["碱石灰", "无水 CaCl₂", "浓硫酸", "固体 NaOH"], a: 2, why: "NH₃ 是碱性气体，会与浓硫酸反应；碱石灰、固体 NaOH 可以干燥 NH₃。" },
-          { q: "实验尾气中含 CO 时，合适的处理方式是？", opts: ["直接排入空气", "点燃或收集", "用水吸收", "用饱和食盐水吸收"], a: 1, why: "CO 有毒且难溶于水，不能直接排放；可点燃转化为 CO₂，或集中收集处理。" }
-        ]
-      },
-      {
-        id: "gallery", title: "反应观察台", tag: "颜色 · 气体 · 沉淀", symbol: "Rx", color: "#be123c",
-        questions: [
-          { q: "H₂O₂ 分解时加入少量 I⁻，I⁻ 的作用是？", opts: ["氧化剂", "还原剂", "催化剂", "指示剂"], a: 2, why: "I⁻ 改变 H₂O₂ 分解的反应路径、降低活化能，反应前后质量和化学性质基本不变，起催化剂作用。" },
-          { q: "Fe³⁺ 与 SCN⁻ 反应，溶液呈现什么颜色？", opts: ["蓝色", "血红色", "浅绿色", "紫色"], a: 1, why: "Fe³⁺ 与 SCN⁻ 形成血红色配合物，常用于检验 Fe³⁺。" },
-          { q: "MnO₂ 加入 H₂O₂ 溶液中，观察到的现象是？", opts: ["无明显变化", "迅速产生大量气泡", "生成红色沉淀", "溶液变蓝"], a: 1, why: "MnO₂ 催化 H₂O₂ 分解，产生 O₂ 气泡；MnO₂ 本身在反应前后基本不变。" },
-          { q: "酸性 KMnO₄ 溶液与 H₂O₂ 反应，MnO₄⁻ 通常被还原为？", opts: ["Mn²⁺", "MnO₂", "Mn⁴⁺", "Mn"], a: 0, why: "在酸性条件下，MnO₄⁻ 被 H₂O₂ 还原为 Mn²⁺，溶液紫红色褪去，可用于检验还原性物质。" }
-        ]
-      },
-      {
-        id: "organic", title: "有机官能团", tag: "官能团 · 同分异构", symbol: "R", color: "#7a5aa6",
-        questions: [
-          { q: "羧基的结构简式是？", opts: ["—OH", "—CHO", "—COOH", "—COO—"], a: 2, why: "羧基由羰基和羟基组成，结构简式为 —COOH；—CHO 是醛基，—COO— 是酯基。" },
-          { q: "分子式为 C₄H₁₀O 的同分异构体共有几种（包括醇和醚）？", opts: ["3 种", "4 种", "6 种", "7 种"], a: 3, why: "C₄H₁₀O 包括 4 种醇和 3 种醚，共 7 种；本站同分异构模块逐一列出了它们的 3D 结构。" },
-          { q: "乙酸与乙醇发生酯化反应，通常需要的条件是？", opts: ["浓硫酸、加热", "NaOH 水溶液、加热", "常温、光照", "稀盐酸、冷却"], a: 0, why: "酯化反应常用浓硫酸作催化剂和吸水剂，并加热；生成乙酸乙酯和水。" },
-          { q: "正丁烷中 C—C—C 键角接近？", opts: ["90°", "109.5°", "120°", "180°"], a: 1, why: "正丁烷的碳为 sp³ 杂化，C—C—C 键角接近四面体角 109.5°；本站 3D 模型按此角度生成。" }
-        ]
-      },
-      {
-        id: "titration", title: "酸碱滴定", tag: "pH · 指示剂 · 终点", symbol: "pH", color: "#0891b2",
-        questions: [
-          { q: "强酸与强碱等物质的量反应，等当点的 pH 约为？", opts: ["4.0", "7.0", "8.7", "10.0"], a: 1, why: "强酸强碱完全中和生成强酸强碱盐，溶液呈中性，25 ℃ 时等当点 pH≈7.0。" },
-          { q: "用酚酞作指示剂，强酸强碱滴定的终点通常？", opts: ["正好在等当点", "略早于等当点", "略晚于等当点", "与指示剂无关"], a: 2, why: "酚酞变色范围约 pH 8.2–10.0，等当点 pH 7.0；变色时已经略过量，所以终点略晚于等当点。" },
-          { q: "弱酸与强碱滴定，等当点的 pH 通常？", opts: ["小于 7", "等于 7", "大于 7", "无法判断"], a: 2, why: "弱酸强碱盐会发生水解，使溶液显碱性，因此等当点 pH 大于 7；例如 CH₃COOH 与 NaOH 约为 8.7。" },
-          { q: "滴定接近终点时，为什么要半滴半滴加入？", opts: ["让颜色更漂亮", "防止过量、准确控制终点", "加快反应速率", "减少指示剂用量"], a: 1, why: "接近终点时 pH 变化极快，半滴加入可以避免一次过量，便于准确捕捉指示剂变色。" }
-        ]
-      }
-    ];
+    const MODULES = window.QUIZ_BANK || [];
 
     const grid = document.getElementById("moduleGrid");
     const moduleView = document.getElementById("moduleView");
@@ -401,13 +324,43 @@
           <span class="q-module-icon" aria-hidden="true">${m.symbol}</span>
           <strong>${m.title}</strong>
           <small>${m.tag}</small>
-          <em>4 题</em>
+          <em>20 题</em>
         </button>`).join("");
     }
 
+    function shuffled(list){
+      const a = list.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function pickQuestions(pool){
+      const by = {easy: [], medium: [], hard: []};
+      for(const q of pool){
+        const d = by[q.diff] ? q.diff : "medium";
+        by[d].push(q);
+      }
+      // 固定顺序：2 简单 → 2 中等 → 1 困难。
+      const picked = [
+        ...shuffled(by.easy).slice(0, 2),
+        ...shuffled(by.medium).slice(0, 2),
+        ...shuffled(by.hard).slice(0, 1)
+      ];
+      // 极端情况下题库不足 5 题时，从剩余题中补齐，避免出现 0 题。
+      if(picked.length < 5){
+        const rest = shuffled(pool.filter(q => !picked.includes(q)));
+        picked.push(...rest.slice(0, 5 - picked.length));
+      }
+      return picked;
+    }
+
     function startModule(id){
-      current = MODULES.find(m => m.id === id);
-      if(!current) return;
+      const bank = MODULES.find(m => m.id === id);
+      if(!bank) return;
+      current = {...bank, questions: pickQuestions(bank.questions)};
       qi = 0; score = 0; answered = false;
       show(questionView);
       renderQuestion();
@@ -419,7 +372,8 @@
       currentModuleName.textContent = current.title;
       progressText.textContent = `第 ${qi + 1} / ${current.questions.length} 题`;
       progressBar.style.width = `${(qi / current.questions.length) * 100}%`;
-      questionIndex.textContent = `QUESTION ${String(qi + 1).padStart(2, "0")} / ${String(current.questions.length).padStart(2, "0")}`;
+      const diffLabel = {easy: "简单", medium: "中等", hard: "困难"}[q.diff] || "中等";
+      questionIndex.innerHTML = `QUESTION ${String(qi + 1).padStart(2, "0")} / ${String(current.questions.length).padStart(2, "0")} <span class="q-diff ${q.diff || "medium"}">${diffLabel}</span>`;
       questionText.textContent = q.q;
       optionList.innerHTML = q.opts.map((opt, i) => `
         <button class="q-option" type="button" data-i="${i}">
@@ -483,7 +437,7 @@
     document.getElementById("backToModulesBtn").addEventListener("click", () => { show(moduleView); });
     document.getElementById("retryBtn").addEventListener("click", () => {
       if(!current) return;
-      qi = 0; score = 0; answered = false; show(questionView); renderQuestion();
+      startModule(current.id);
     });
     nextBtn.addEventListener("click", next);
 
