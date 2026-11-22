@@ -139,7 +139,21 @@
   .formula-tab:hover{color:#e7fdff;background:rgba(103,232,249,.05)}
   .formula-tab.active{color:#f1ffff;border-color:rgba(103,232,249,.36);background:rgba(103,232,249,.09)}
   .formula-tab .count{color:rgba(103,232,249,.65);font-family:var(--mono);font-size:8.5px}
-  .isomer-layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:13px;align-items:start}
+  .isomer-layout{display:grid;grid-template-columns:220px minmax(0,1fr) 280px;gap:13px;align-items:start}
+  .iso-list-panel{min-width:0;padding:10px;border:1px solid rgba(148,163,184,.1);border-radius:12px;background:rgba(4,10,20,.24)}
+  .iso-list-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:#e7f8ff;font-size:9.5px;font-weight:600;letter-spacing:.03em}.iso-list-head span:last-child{color:var(--dim);font-size:8.5px;font-weight:400}
+  .iso-list-panel .isomer-grid{grid-template-columns:1fr}
+  .iso-list-panel .iso-card{min-height:62px;padding:8px 9px}
+  .iso-list-panel .iso-cond{font-size:8.8px;margin-top:3px}
+  .iso-stage{position:relative;min-height:402px;border:1px solid rgba(148,163,184,.12);border-radius:14px;background:radial-gradient(70% 90% at 50% 45%,rgba(12,47,68,.42),transparent 72%),linear-gradient(180deg,rgba(4,11,22,.5),rgba(4,9,18,.82)),#04101d;overflow:hidden;isolation:isolate}
+  .iso-stage::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(148,163,184,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.035) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(circle at 50% 45%,black,transparent 78%);-webkit-mask-image:radial-gradient(circle at 50% 45%,black,transparent 78%);pointer-events:none}
+  #isoCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+  .iso-stage.dragging #isoCanvas{cursor:grabbing}
+  .iso-stage-bar{position:absolute;z-index:2;left:12px;right:12px;top:11px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none}
+  .iso-stage-bar strong{display:block;color:#f2ffff;font-size:12px;font-weight:650;line-height:1.2}.iso-stage-bar span{display:block;margin-top:3px;color:#78dce8;font-size:8.5px}
+  .iso-reset{pointer-events:auto;height:25px;padding:0 8px;border:1px solid rgba(103,232,249,.24);border-radius:7px;background:rgba(4,10,20,.5);color:#9feff5;font-size:8.5px;cursor:pointer;white-space:nowrap}
+  .iso-reset:hover{border-color:rgba(103,232,249,.5);color:#fff}
+  .iso-stage-foot{position:absolute;z-index:2;left:12px;right:12px;bottom:10px;color:rgba(165,243,252,.55);font-size:8px;letter-spacing:.03em;pointer-events:none}
   .isomer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:7px}
   .iso-card{position:relative;display:flex;flex-direction:column;min-height:100px;padding:9px 10px;border:1px solid rgba(148,163,184,.11);border-radius:9px;background:rgba(4,10,20,.3);color:inherit;text-align:left;cursor:pointer;transition:.18s}
   .iso-card:hover{border-color:rgba(103,232,249,.3);background:rgba(103,232,249,.05);transform:translateY(-1px)}
@@ -158,6 +172,8 @@
   @media(max-width:1180px){.shell{padding-left:20px;padding-right:20px}.functional-view{grid-template-columns:235px minmax(0,1fr) 300px}.isomer-layout{grid-template-columns:1fr}.compare-panel{position:static}}
   @media(max-width:960px){.functional-view{grid-template-columns:1fr}.group-panel{max-height:none}.group-list{overflow:visible;display:grid;grid-template-columns:1fr 1fr;gap:4px}.group-card{margin-bottom:0}.detail-panel{max-height:none}.isomer-notes{grid-template-columns:1fr}.mode-tab{font-size:10px;padding:0 10px}.bar-tip{display:none}}
   @media(max-width:650px){.shell{padding:14px 12px 10px}.brand-mark{width:44px;height:44px}.brand h1{font-size:clamp(23px,7vw,31px)}.brand p{display:none}.header-meta{display:none}.kicker{font-size:8.5px}.mode-bar{padding:4px}.mode-tab{flex:1;padding:0 6px;font-size:9px}.stage-panel{padding:12px}.stage-title,.isomer-title{font-size:18px}.group-stage{min-height:260px}.group-list{grid-template-columns:1fr}.isomer-panel{padding:12px}.isomer-grid{grid-template-columns:1fr}.formula-tab{height:32px;font-size:9.5px}.site-footer{flex-direction:column;gap:5px}}
+  @media(max-width:1180px){.isomer-layout{grid-template-columns:200px minmax(0,1fr)}.compare-panel{grid-column:1/-1;position:static}}
+  @media(max-width:960px){.isomer-layout{grid-template-columns:1fr}.iso-list-panel .isomer-grid{grid-template-columns:1fr 1fr}.iso-stage{min-height:360px}.compare-panel{grid-column:auto}}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 </style>
   <meta name="copyright" content="© 2026 chemLeon6657. All rights reserved." />
@@ -261,12 +277,18 @@
 
     <section class="isomer-view" id="isomerView">
       <div class="panel isomer-panel">
-        <div class="isomer-head"><div><div class="panel-kicker">ISOMER LAB</div><h2 class="isomer-title">同分异构体实验室</h2><p class="isomer-sub">分子式相同、结构不同；点两张卡片对比。</p></div><div class="mascot-note" style="margin:0;max-width:250px"><img class="fish" src="mascot-head.png" alt="" /><p><strong>同一分子式，不一定是同一种物质。</strong></p></div></div>
+        <div class="isomer-head"><div><div class="panel-kicker">ISOMER LAB</div><h2 class="isomer-title">同分异构体实验室</h2><p class="isomer-sub">同一个分子式，点左侧不同异构体，查看各自的 3D 结构。</p></div><div class="mascot-note" style="margin:0;max-width:250px"><img class="fish" src="mascot-head.png" alt="" /><p><strong>同一分子式，不一定是同一种物质。</strong></p></div></div>
         <div class="formula-tabs" id="formulaTabs"></div>
         <div class="isomer-layout">
-          <div><div class="isomer-grid" id="isomerGrid"></div><div class="isomer-notes"><div class="isonote"><b>碳链异构</b><span>碳骨架不同：正丁烷 / 异丁烷</span></div><div class="isonote"><b>位置异构</b><span>官能团位置不同：1-丁醇 / 2-丁醇</span></div><div class="isonote"><b>官能团异构</b><span>官能团不同：乙醇 / 二甲醚</span></div></div></div>
+          <aside class="iso-list-panel"><div class="iso-list-head"><span>异构体清单</span><span id="isoListCount"></span></div><div class="isomer-grid" id="isomerGrid"></div></aside>
+          <div class="iso-stage" id="isoStage">
+            <canvas id="isoCanvas" aria-label="可拖动旋转的三维异构体球棍模型"></canvas>
+            <div class="iso-stage-bar"><div><strong id="isoStageName">正丁烷</strong><span id="isoStageType">碳链异构</span></div><button class="iso-reset" id="isoReset" type="button" title="重置视角" aria-label="重置视角">重置视角</button></div>
+            <div class="iso-stage-foot">拖动旋转 · 滚轮缩放 · 双击复位　|　键长 C–C 1.54 · C=C 1.34 · C–O 1.43 · C=O 1.22 · C–H 1.09 · O–H 0.96 Å　|　键角 sp³ 109.5° · sp² 120° · O 104.5/111°</div>
+          </div>
           <aside class="compare-panel"><div class="compare-title">对比区 <span id="compareCount" style="color:var(--dim);font-weight:400">0/2</span></div><div id="compareItems"><div class="compare-empty">点击左侧任意两张异构体卡片，查看它们的相同点和不同点。</div></div><div class="compare-summary" id="compareSummary"></div></aside>
         </div>
+        <div class="isomer-notes"><div class="isonote"><b>碳链异构</b><span>碳骨架不同：正丁烷 / 异丁烷</span></div><div class="isonote"><b>位置异构</b><span>官能团位置不同：1-丁醇 / 2-丁醇</span></div><div class="isonote"><b>官能团异构</b><span>官能团不同：乙醇 / 二甲醚</span></div></div>
       </div>
     </section>
   </main>
@@ -342,6 +364,136 @@
     ]}
   ];
 
+  /* 每个异构体的重原子连接图；氢原子由价键规则自动补齐 */
+  const ISO_GRAPHS={
+    "正丁烷":{atoms:"CCCC",bonds:[[0,1],[1,2],[2,3]]},
+    "异丁烷":{atoms:"CCCC",bonds:[[0,1],[0,2],[0,3]]},
+    "正戊烷":{atoms:"CCCCC",bonds:[[0,1],[1,2],[2,3],[3,4]]},
+    "异戊烷":{atoms:"CCCCC",bonds:[[0,1],[1,2],[2,3],[1,4]]},
+    "新戊烷":{atoms:"CCCCC",bonds:[[0,1],[0,2],[0,3],[0,4]]},
+    "1-丁醇":{atoms:"CCCCO",bonds:[[0,1],[1,2],[2,3],[3,4]]},
+    "2-丁醇":{atoms:"CCCCO",bonds:[[0,1],[1,2],[2,3],[1,4]]},
+    "2-甲基-1-丙醇":{atoms:"OCCCC",bonds:[[0,1],[1,2],[2,3],[2,4]]},
+    "2-甲基-2-丙醇":{atoms:"OCCCC",bonds:[[0,1],[1,2],[1,3],[1,4]]},
+    "1-甲氧基丙烷":{atoms:"COCCC",bonds:[[0,1],[1,2],[2,3],[3,4]]},
+    "2-甲氧基丙烷":{atoms:"COCCC",bonds:[[0,1],[1,2],[2,3],[2,4]]},
+    "乙醚":{atoms:"CCOCC",bonds:[[0,1],[1,2],[2,3],[3,4]]},
+    "丁酸":{atoms:"CCCCOO",bonds:[[0,1],[1,2],[2,3],[3,4,2],[3,5]]},
+    "2-甲基丙酸":{atoms:"CCCCOO",bonds:[[0,1],[1,2],[1,3],[3,4,2],[3,5]]},
+    "乙酸乙酯":{atoms:"CCOCCO",bonds:[[0,1],[1,2,2],[1,5],[5,3],[3,4]]},
+    "丙酸甲酯":{atoms:"CCCOOC",bonds:[[0,1],[1,2],[2,3,2],[2,4],[4,5]]},
+    "甲酸正丙酯":{atoms:"COOCCC",bonds:[[0,1,2],[0,2],[2,3],[3,4],[4,5]]},
+    "甲酸异丙酯":{atoms:"COOCCC",bonds:[[0,1,2],[0,2],[2,3],[3,4],[3,5]]},
+    "乙醇":{atoms:"CCO",bonds:[[0,1],[1,2]]},
+    "二甲醚":{atoms:"COC",bonds:[[0,1],[1,2]]}
+  };
+
+  const ISO_VALENCE={C:4,O:2};
+  const ISO_DIRS=(()=>{
+    const out=[],n=18;
+    for(let i=0;i<n;i++){
+      const y=1-2*(i+.5)/n, r=Math.sqrt(Math.max(0,1-y*y)), a=i*2.399963;
+      out.push([Math.cos(a)*r,y,Math.sin(a)*r]);
+    }
+    return out;
+  })();
+
+  function buildIsomerMolecule(name){
+    const g=ISO_GRAPHS[name];
+    if(!g)return null;
+    const els=[...g.atoms];
+    const heavyN=els.length;
+    const bonds=g.bonds.map(([a,b,order])=>[a,b,order||1]);
+    const adj=Array.from({length:heavyN},()=>[]);
+    for(const [a,b] of bonds){adj[a].push(b);adj[b].push(a);}
+    for(let i=0;i<heavyN;i++){
+      const orderSum=bonds.reduce((s,[a,b,order])=>s+((a===i||b===i)?order:0),0);
+      const hCount=Math.max(0,(ISO_VALENCE[els[i]]||0)-orderSum);
+      for(let h=0;h<hCount;h++){
+        const hi=els.length;els.push("H");adj.push([]);
+        adj[i].push(hi);adj[hi].push(i);bonds.push([i,hi,1]);
+      }
+    }
+    const N=els.length;
+    const add=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]];
+    const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+    const mul=(a,k)=>[a[0]*k,a[1]*k,a[2]*k];
+    const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+    const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+    const norm=a=>{const l=Math.hypot(...a)||1;return [a[0]/l,a[1]/l,a[2]/l];};
+    const rad=d=>d*Math.PI/180;
+    const bondLen=(a,b,order)=>{
+      if(order===2)return els[a]==="O"||els[b]==="O"?1.22:1.34;
+      if(els[a]==="H"||els[b]==="H")return els[a]==="O"||els[b]==="O"?.96:1.09;
+      if(els[a]==="O"||els[b]==="O")return 1.43;
+      return 1.54;
+    };
+    const basis=p=>{
+      const ref=Math.abs(p[0])<.9?[1,0,0]:[0,1,0];
+      const e1=norm(cross(p,ref)),e2=norm(cross(p,e1));
+      return [e1,e2];
+    };
+    const tetraRoot=()=>[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]].map(norm);
+    const planarRoot=()=>[[1,0,0],[-.5,0,.866025],[-.5,0,-.866025]].map(norm);
+    const baseDirs=(el,deg,sp2,hasH)=>{
+      if(el==="C")return sp2?planarRoot():tetraRoot();
+      if(el==="O"){
+        const half=rad(hasH?52.25:55.5);
+        return [[Math.cos(half),Math.sin(half),0],[Math.cos(half),-Math.sin(half),0]];
+      }
+      return [[1,0,0]];
+    };
+    const around=(p,el,deg,sp2,hasH)=>{
+      const [e1,e2]=basis(p);
+      if(el==="C"&&sp2){
+        const t=rad(120),c=Math.cos(t),sn=Math.sin(t);
+        return [norm(add(mul(p,c),mul(e1,sn))),norm(add(mul(p,c),mul(e1,-sn)))];
+      }
+      if(el==="C"){
+        const t=rad(109.47),c=Math.cos(t),sn=Math.sin(t);
+        const out=[];
+        for(let k=0;k<3;k++){
+          const a=2*Math.PI*k/3;
+          out.push(norm(add(mul(p,c),add(mul(e1,sn*Math.cos(a)),mul(e2,sn*Math.sin(a))))));
+        }
+        return out;
+      }
+      if(el==="O"){
+        const t=rad(hasH?104.5:111),c=Math.cos(t),sn=Math.sin(t);
+        return [norm(add(mul(p,c),mul(e1,sn)))];
+      }
+      return [[1,0,0]];
+    };
+    const coords=Array(N).fill(null);
+    const placed=Array(N).fill(false);
+    coords[0]=[0,0,0];placed[0]=true;
+    const queue=[0];
+    while(queue.length){
+      const i=queue.shift();
+      const unplaced=adj[i].filter(j=>!placed[j]);
+      if(!unplaced.length)continue;
+      const parent=adj[i].filter(j=>placed[j])[0];
+      const hasDouble=bonds.some(([a,b,order])=>order===2&&(a===i||b===i));
+      const sp2=els[i]==="C"&&hasDouble;
+      const hasH=adj[i].some(j=>els[j]==="H");
+      let dirs;
+      if(parent===undefined)dirs=baseDirs(els[i],adj[i].length,sp2,hasH);
+      else dirs=around(norm(sub(coords[parent],coords[i])),els[i],adj[i].length,sp2,hasH);
+      for(let k=0;k<unplaced.length;k++){
+        const j=unplaced[k];
+        const bond=bonds.find(([a,b])=>a===i&&b===j||a===j&&b===i);
+        const order=bond?bond[2]:1;
+        const d=dirs[k%dirs.length];
+        coords[j]=add(coords[i],mul(d,bondLen(i,j,order)));
+        placed[j]=true;queue.push(j);
+      }
+    }
+    for(let i=0;i<N;i++)if(!coords[i])coords[i]=[0,0,0];
+    const cx=coords.reduce((s,a)=>s+a[0],0)/N,cy=coords.reduce((s,a)=>s+a[1],0)/N,cz=coords.reduce((s,a)=>s+a[2],0)/N;
+    for(const a of coords){a[0]-=cx;a[1]-=cy;a[2]-=cz;}
+    return {atoms:els.map((el,i)=>[el,...coords[i]]),bonds};
+  }
+
   const groupList=document.getElementById("groupList");
   const modeTabs=Array.from(document.querySelectorAll(".mode-tab"));
   const functionalView=document.getElementById("functionalView");
@@ -378,6 +530,13 @@
   const compareItems=document.getElementById("compareItems");
   const compareCount=document.getElementById("compareCount");
   const compareSummary=document.getElementById("compareSummary");
+  const isoCanvas=document.getElementById("isoCanvas");
+  const isoCtx=isoCanvas?isoCanvas.getContext("2d"):null;
+  const isoStage=document.getElementById("isoStage");
+  const isoStageName=document.getElementById("isoStageName");
+  const isoStageType=document.getElementById("isoStageType");
+  const isoListCount=document.getElementById("isoListCount");
+  const isoReset=document.getElementById("isoReset");
 
 
   const ETHANE_BASE=JSON.parse(JSON.stringify(MOLECULES.alkane));
@@ -515,6 +674,107 @@
   let currentGroup=GROUPS[0];
   let currentSet=SETS[0];
   let selected=[];
+  let currentIsoIndex=0;
+  let isoCurrent=null, isoMaxR=2, isoYaw=.20, isoPitch=.28, isoZoom=1;
+  let isoDragging=false, isoAuto=false, isoLastX=0, isoLastY=0, isoW=1, isoH=1;
+
+  function resizeIso(){
+    if(!isoCanvas)return;
+    const r=isoCanvas.getBoundingClientRect();
+    isoW=Math.max(1,Math.floor(r.width));isoH=Math.max(1,Math.floor(r.height));
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    isoCanvas.width=Math.round(isoW*dpr);isoCanvas.height=Math.round(isoH*dpr);
+    if(isoCtx)isoCtx.setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  function isoRotatePoint(p){
+    const cy=Math.cos(isoYaw),sy=Math.sin(isoYaw),cp=Math.cos(isoPitch),sp=Math.sin(isoPitch);
+    let x=p[0]*cy-p[2]*sy;
+    let z=p[0]*sy+p[2]*cy;
+    let y=p[1]*cp-z*sp;
+    z=p[1]*sp+z*cp;
+    return [x,y,z];
+  }
+
+  function isoRender(){
+    if(!isoCtx){return;}
+    if(!isoDragging&&isoAuto)isoYaw+=.0035;
+    const w=isoW,h=isoH,cx=w*.5,cy=h*.47;
+    isoCtx.clearRect(0,0,w,h);
+    if(!isoCurrent){requestAnimationFrame(isoRender);return;}
+    const scale=Math.min(w,h)/(isoMaxR*2.85)*isoZoom;
+    const pts=isoCurrent.atoms.map(([el,x,y,z])=>{const r=isoRotatePoint([x,y,z]);return {el,x:cx+r[0]*scale,y:cy-r[1]*scale,z:r[2]};});
+    const bonds=isoCurrent.bonds.map(([i,j,order])=>({i,j,order:order||1,z:(pts[i].z+pts[j].z)/2})).sort((a,b)=>a.z-b.z);
+    for(const b of bonds){
+      const a=pts[b.i],c=pts[b.j];if(!a||!c)continue;
+      const dx=c.x-a.x,dy=c.y-a.y,len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len;
+      const base=Math.max(2.2,3.4*(scale/70));
+      const gap=Math.max(5.2,6.4*(scale/80));
+      const offs=b.order===2?[-gap,gap]:b.order===3?[-gap,0,gap]:[0];
+      isoCtx.save();isoCtx.lineCap="round";isoCtx.lineJoin="round";
+      for(const o of offs){
+        const bow=b.order===1?0:(o===0?0:Math.sign(o)*(b.order===2?8.0:10.0));
+        const sx=a.x+nx*o,sy=a.y+ny*o,ex=c.x+nx*o,ey=c.y+ny*o;
+        const mx=(sx+ex)/2+nx*bow,my=(sy+ey)/2+ny*bow;
+        const path=()=>{isoCtx.beginPath();isoCtx.moveTo(sx,sy);isoCtx.quadraticCurveTo(mx,my,ex,ey);};
+        isoCtx.strokeStyle="rgba(3,10,20,.88)";isoCtx.lineWidth=base+2.2;path();isoCtx.stroke();
+        isoCtx.strokeStyle=b.order>1?"rgba(218,240,252,.9)":"rgba(187,211,231,.78)";isoCtx.lineWidth=base;path();isoCtx.stroke();
+        isoCtx.strokeStyle="rgba(255,255,255,.2)";isoCtx.lineWidth=Math.max(1,base*.3);path();isoCtx.stroke();
+      }
+      isoCtx.restore();
+    }
+    const atoms=pts.map((p,i)=>({...p,i})).sort((a,b)=>a.z-b.z);
+    for(const a of atoms){
+      const st=ATOM_STYLE[a.el]||ATOM_STYLE.C;
+      const depth=1+Math.max(-1,Math.min(1,a.z/(isoMaxR||2)))*.12;
+      const r=Math.max(a.el==="H"?5:8,st.r*scale*depth);
+      isoCtx.save();
+      const g=isoCtx.createRadialGradient(a.x-r*.32,a.y-r*.35,r*.12,a.x,a.y,r);
+      g.addColorStop(0,"#ffffff");g.addColorStop(.22,st.color);g.addColorStop(1,"#334155");
+      isoCtx.shadowColor=st.color+"66";isoCtx.shadowBlur=Math.min(18,r*.8);
+      isoCtx.fillStyle=g;isoCtx.beginPath();isoCtx.arc(a.x,a.y,r,0,Math.PI*2);isoCtx.fill();
+      isoCtx.shadowBlur=0;isoCtx.strokeStyle="rgba(255,255,255,.42)";isoCtx.lineWidth=1;isoCtx.stroke();
+      isoCtx.fillStyle=a.el==="H"?"#1e293b":"#07101e";
+      isoCtx.font=`600 ${Math.max(7,r*.78)}px "Segoe UI","Microsoft YaHei",sans-serif`;
+      isoCtx.textAlign="center";isoCtx.textBaseline="middle";isoCtx.fillText(st.label,a.x,a.y+.4);
+      isoCtx.restore();
+    }
+    requestAnimationFrame(isoRender);
+  }
+
+  function loadIsoModel(i){
+    const iso=currentSet.isomers[i];
+    if(!iso)return;
+    isoCurrent=buildIsomerMolecule(iso.name)||{atoms:[["C",0,0,0]],bonds:[]};
+    isoMaxR=1;
+    for(const [,x,y,z] of isoCurrent.atoms)isoMaxR=Math.max(isoMaxR,Math.hypot(x,y,z));
+    isoYaw=.20;isoPitch=.28;isoZoom=1;isoAuto=false;isoDragging=false;
+    if(isoStageName)isoStageName.textContent=iso.name;
+    if(isoStageType)isoStageType.textContent=`${iso.type} · ${currentSet.formula}`;
+    if(isoListCount)isoListCount.textContent=`${currentSet.isomers.length} 种`;
+  }
+
+  if(isoCanvas){
+    resizeIso();
+    if("ResizeObserver" in window)new ResizeObserver(resizeIso).observe(isoCanvas);
+    isoCanvas.addEventListener("pointerdown",e=>{
+      isoDragging=true;isoAuto=false;isoLastX=e.clientX;isoLastY=e.clientY;
+      isoStage?.classList.add("dragging");isoCanvas.setPointerCapture?.(e.pointerId);
+    });
+    isoCanvas.addEventListener("pointermove",e=>{
+      if(!isoDragging)return;
+      const dx=e.clientX-isoLastX,dy=e.clientY-isoLastY;
+      isoLastX=e.clientX;isoLastY=e.clientY;
+      isoYaw-=dx*.008;isoPitch=Math.max(-1.2,Math.min(1.2,isoPitch+dy*.008));
+    });
+    const stopIsoDrag=e=>{isoDragging=false;isoStage?.classList.remove("dragging");try{isoCanvas.releasePointerCapture?.(e.pointerId);}catch(err){}};
+    isoCanvas.addEventListener("pointerup",stopIsoDrag);
+    isoCanvas.addEventListener("pointercancel",stopIsoDrag);
+    isoCanvas.addEventListener("wheel",e=>{e.preventDefault();isoZoom=Math.max(.55,Math.min(2.3,isoZoom*Math.exp(-e.deltaY*.0012)));},{passive:false});
+    isoCanvas.addEventListener("dblclick",()=>{isoYaw=.20;isoPitch=.28;isoZoom=1;isoAuto=false;});
+    isoReset?.addEventListener("click",()=>{isoYaw=.20;isoPitch=.28;isoZoom=1;isoAuto=false;});
+    requestAnimationFrame(isoRender);
+  }
 
   function renderGroupList(){
     groupList.innerHTML=GROUPS.map(g=>`<button class="group-card ${g.id===currentGroup.id?"active":""}" type="button" data-group="${g.id}" style="--g-color:${g.color}"><span class="group-icon">${g.symbol}</span><span class="group-copy"><strong>${g.name}</strong><span>${g.type}</span></span></button>`).join("");
@@ -556,16 +816,22 @@
 
   function renderFormulaTabs(){
     formulaTabs.innerHTML=SETS.map(s=>`<button class="formula-tab ${s.id===currentSet.id?"active":""}" type="button" data-set="${s.id}">${s.formula}<span class="count">${s.count} 种</span></button>`).join("");
-    for(const tab of formulaTabs.querySelectorAll(".formula-tab"))tab.addEventListener("click",()=>{currentSet=SETS.find(s=>s.id===tab.dataset.set);selected=[];renderFormulaTabs();renderIsomers();});
+    for(const tab of formulaTabs.querySelectorAll(".formula-tab"))tab.addEventListener("click",()=>{currentSet=SETS.find(s=>s.id===tab.dataset.set);selected=[];currentIsoIndex=0;renderFormulaTabs();renderIsomers();loadIsoModel(0);});
   }
   function renderIsomers(){
+    isoListCount.textContent=`${currentSet.isomers.length} 种`;
     isomerGrid.innerHTML=currentSet.isomers.map((iso,i)=>`<button class="iso-card ${selected.includes(i)?"selected":""}" type="button" data-iso="${i}"><div class="iso-top"><span class="iso-name">${iso.name}</span><span class="iso-type">${iso.type}</span></div><div class="iso-cond">${iso.cond}</div><span class="iso-tick">✓</span></button>`).join("");
-    for(const card of isomerGrid.querySelectorAll(".iso-card"))card.addEventListener("click",()=>toggleIso(+card.dataset.iso));
+    for(const card of isomerGrid.querySelectorAll(".iso-card"))card.addEventListener("click",()=>selectIso(+card.dataset.iso));
+    if(!currentSet.isomers[currentIsoIndex])currentIsoIndex=0;
+    const iso=currentSet.isomers[currentIsoIndex];
+    if(iso){isoStageName.textContent=iso.name;isoStageType.textContent=`${iso.type} · ${currentSet.formula}`;}
     renderCompare();
   }
-  function toggleIso(i){
+  function selectIso(i){
     if(selected.includes(i))selected=selected.filter(x=>x!==i);
     else{selected.push(i);if(selected.length>2)selected.shift();}
+    currentIsoIndex=i;
+    loadIsoModel(i);
     renderIsomers();
   }
   function renderCompare(){
@@ -581,7 +847,7 @@
     for(const t of modeTabs)t.classList.toggle("active",t===tab);
     functionalView.classList.toggle("hidden",mode!=="groups");
     isomerView.classList.toggle("active",mode==="isomers");
-    if(mode==="isomers"){renderFormulaTabs();renderIsomers();}
+    if(mode==="isomers"){renderFormulaTabs();renderIsomers();loadIsoModel(currentIsoIndex);}
   });
 
   buildEnergyPath();
@@ -597,10 +863,11 @@
   if(params.get("angle"))setEthaneAngle(+params.get("angle"));
   renderFormulaTabs();
   renderIsomers();
+  loadIsoModel(0);
   if(params.get("mode")==="isomers")document.querySelector('[data-mode="isomers"]').click();
   if(params.get("set")){
     const set=SETS.find(x=>x.id===params.get("set"));
-    if(set){currentSet=set;selected=[];renderFormulaTabs();renderIsomers();}
+    if(set){currentSet=set;selected=[];currentIsoIndex=0;renderFormulaTabs();renderIsomers();loadIsoModel(0);}
   }
 })();
 </script>

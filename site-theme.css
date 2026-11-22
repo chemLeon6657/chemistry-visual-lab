@@ -1295,3 +1295,105 @@ html[data-theme="light"] .test-box {
 html[data-theme="light"] .test-box strong {
   color: #0f766e !important;
 }
+/* 同分异构体实验室：浅色模式下统一白底深字 */
+html[data-theme="light"] .isomer-sub {
+  color: #5f7570 !important;
+}
+html[data-theme="light"] .formula-tab {
+  background: #ffffff !important;
+  border-color: rgba(20, 49, 46, 0.13) !important;
+  color: #526b66 !important;
+}
+html[data-theme="light"] .formula-tab:hover {
+  color: #0f766e !important;
+  background: #f1faf6 !important;
+}
+html[data-theme="light"] .formula-tab.active {
+  color: #0f766e !important;
+  border-color: rgba(15, 118, 110, 0.36) !important;
+  background: #e7f7f1 !important;
+}
+html[data-theme="light"] .formula-tab .count {
+  color: #0f766e !important;
+}
+html[data-theme="light"] .iso-card {
+  background: #ffffff !important;
+  border-color: rgba(20, 49, 46, 0.13) !important;
+  color: #14312e !important;
+}
+html[data-theme="light"] .iso-card:hover {
+  background: #f3faf7 !important;
+  border-color: rgba(15, 118, 110, 0.34) !important;
+}
+html[data-theme="light"] .iso-card.selected {
+  background: #eaf8f2 !important;
+  border-color: rgba(15, 118, 110, 0.5) !important;
+  box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.08) !important;
+}
+html[data-theme="light"] .iso-name {
+  color: #14312e !important;
+}
+html[data-theme="light"] .iso-type {
+  color: #0f766e !important;
+}
+html[data-theme="light"] .iso-cond {
+  color: #3f5d57 !important;
+}
+html[data-theme="light"] .iso-card .iso-tick {
+  color: #0f766e !important;
+}
+html[data-theme="light"] .compare-panel {
+  background: #ffffff !important;
+  border-color: rgba(20, 49, 46, 0.13) !important;
+}
+html[data-theme="light"] .compare-title {
+  color: #14312e !important;
+}
+html[data-theme="light"] .compare-empty {
+  color: #5f7570 !important;
+}
+html[data-theme="light"] .compare-item {
+  background: #f5fbf8 !important;
+  border-color: rgba(15, 118, 110, 0.13) !important;
+}
+html[data-theme="light"] .compare-item strong {
+  color: #14312e !important;
+}
+html[data-theme="light"] .compare-item span {
+  color: #3f5d57 !important;
+}
+html[data-theme="light"] .compare-summary {
+  color: #526b66 !important;
+}
+html[data-theme="light"] .compare-summary strong {
+  color: #0b5f56 !important;
+}
+html[data-theme="light"] .isonote {
+  background: #ffffff !important;
+  border-color: rgba(20, 49, 46, 0.12) !important;
+}
+html[data-theme="light"] .isonote b {
+  color: #14312e !important;
+}
+html[data-theme="light"] .isonote span {
+  color: #5f7570 !important;
+}
+html[data-theme="light"] .mascot-note {
+  background: #eef8f4 !important;
+  border-color: rgba(15, 118, 110, 0.16) !important;
+}
+html[data-theme="light"] .mascot-note p {
+  color: #3f5d57 !important;
+}
+html[data-theme="light"] .mascot-note strong {
+  color: #0b5f56 !important;
+}
+
+/* Isomer lab: left list panel should be a light surface, not a dark overlay. */
+html[data-theme="light"] .iso-list-panel{
+  background:#ffffff;
+  border-color:rgba(20,49,46,.12);
+  box-shadow:0 10px 24px rgba(20,49,46,.05);
+}
+html[data-theme="light"] .iso-list-head span:first-child{color:#14312e}
+html[data-theme="light"] .iso-list-head span:last-child{color:#0f766e}
