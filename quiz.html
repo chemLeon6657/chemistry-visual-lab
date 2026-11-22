@@ -179,6 +179,11 @@
     .result{max-width:720px;margin:0 auto;text-align:center;padding:22px 0 10px}
     .result-badge{font:650 9px/1 var(--mono,monospace);letter-spacing:.15em;color:var(--q-accent);margin-bottom:12px}
     .result h2{margin:0 0 6px;font-size:clamp(30px,4vw,46px);letter-spacing:-.04em}
+    .result h2 .heisenberg{
+      color:var(--q-accent);background:rgba(15,118,110,.13);border-radius:8px;padding:0 5px;
+      text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:5px;
+    }
+    html[data-theme="dark"] .result h2 .heisenberg{color:#67e8f9;background:rgba(94,234,212,.12)}
     .result .score{font-size:18px;color:var(--q-muted);margin:0 0 18px}
     .result .score b{font-size:34px;color:var(--q-accent)}
     .result p{color:var(--q-muted);font-size:12px;line-height:1.8;margin:0 auto 18px;max-width:540px}
@@ -275,7 +280,7 @@
         <div class="result">
           <div class="result-badge">MODULE COMPLETE</div>
           <h2 id="resultTitle"></h2>
-          <p class="score">得分 <b id="resultScore">0</b> / 4</p>
+          <p class="score">得分 <b id="resultScore">0</b> / <span id="resultTotal">5</span></p>
           <p id="resultNote"></p>
           <div class="result-actions">
             <button class="primary" id="retryBtn" type="button">再练一次</button>
@@ -297,6 +302,21 @@
   <script>
   (() => {
     const MODULES = window.QUIZ_BANK || [];
+
+    const RESULT_COPY = {
+      high: {
+        titles: ["差一题，就满壳层。", "离满分只差一题。", "这成绩，能稳定存在。"],
+        note: "四题正确，一道题还需要回看解析；别让一个小漏洞变成系统性误差。"
+      },
+      mid: {
+        titles: ["三题正确，键能还差一点。", "半程反应，尚未到峰值。", "基础已经成键了。"],
+        note: "三题正确，另外两题回到对应模块，把结构、条件或公式再看一遍。"
+      },
+      low: {
+        titles: ["这次先补活化能。", "电子要一层层填。", "先把反应物认全。"],
+        note: "先把对应模块的 3D 图、反应条件和公式过一遍，再回来答一次。"
+      }
+    };
 
     const grid = document.getElementById("moduleGrid");
     const moduleView = document.getElementById("moduleView");
@@ -419,14 +439,18 @@
       show(resultView);
       const total = current.questions.length;
       const pct = Math.round(score / total * 100);
-      document.getElementById("resultTitle").textContent =
-        pct === 100 ? "这个模块，满分。" : pct >= 75 ? "不错，再抠一下细节。" : pct >= 50 ? "基础还在，回去看一遍。" : "先回模块补课，再来。";
+      const resultTitle = document.getElementById("resultTitle");
+      document.getElementById("resultTotal").textContent = total;
       document.getElementById("resultScore").textContent = score;
-      document.getElementById("resultNote").textContent =
-        pct === 100 ? "四个知识点都接上了。去下一个模块，或者换一题检验手感。"
-        : pct >= 75 ? "大部分概念已经掌握，错题解析值得再看一遍。"
-        : pct >= 50 ? "有一半以上答对，但还有几个概念没串起来；建议回到对应模块看 3D 图。"
-        : "别急，先回到对应模块把结构、条件或公式看一遍，再回来答一次。";
+      if(score === total){
+        resultTitle.innerHTML = '你简直就是<span class="heisenberg">Heisenberg</span>！';
+        document.getElementById("resultNote").textContent = "满分。五个知识点全部接通，直接去下一个模块。";
+      } else {
+        const tier = pct >= 75 ? "high" : pct >= 50 ? "mid" : "low";
+        const copy = RESULT_COPY[tier];
+        resultTitle.textContent = copy.titles[Math.floor(Math.random() * copy.titles.length)];
+        document.getElementById("resultNote").textContent = copy.note;
+      }
     }
 
     grid.addEventListener("click", (e) => {
