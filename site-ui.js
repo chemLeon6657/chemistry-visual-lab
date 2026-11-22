@@ -335,24 +335,26 @@
   }
 
   function injectThanks() {
-    if (document.querySelector(".site-thanks-link")) return;
+    if (document.querySelector(".footer-thanks-link")) return;
     let footer = document.querySelector(".site-footer") || document.querySelector("footer.foot") || document.querySelector("footer");
     if (!footer) {
       footer = document.createElement("footer");
       footer.className = "site-footer site-thanks-fallback";
       document.body.appendChild(footer);
     }
-    const box = document.createElement("div");
-    box.className = "site-thanks";
+    let links = footer.querySelector(".footer-links");
+    if (!links) {
+      links = document.createElement("div");
+      links.className = "footer-links";
+      footer.appendChild(links);
+    }
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "site-thanks-link";
+    btn.className = "footer-thanks-link";
+    btn.textContent = "TEAM / 致谢";
     btn.setAttribute("aria-haspopup", "dialog");
     btn.setAttribute("aria-expanded", "false");
-    btn.innerHTML = `<span>TEAM / 致谢</span><i>查看 →</i>`;
-    box.appendChild(btn);
-    footer.appendChild(box);
-
+    links.insertBefore(btn, links.firstElementChild);
     const modal = document.createElement("div");
     modal.className = "thanks-modal";
     modal.id = "thanksModal";

@@ -1592,3 +1592,17 @@ html[data-theme="dark"] .thanks-close:hover{background:#102534;color:#f0ffff}
 /* 页脚品牌/链接与致谢入口分行，避免窄列挤压 */
 .site-footer{flex-wrap:wrap;row-gap:8px}
 .site-thanks{min-width:100%}
+
+/* TEAM / 致谢：与 GitHub 仓库同款页脚链接样式 */
+.footer-links{display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+.footer-thanks-link{
+  appearance:none;-webkit-appearance:none;
+  margin:0;padding:0;border:0;background:none;
+  font:inherit;font-size:inherit;line-height:inherit;letter-spacing:inherit;
+  color:rgba(142,164,192,.76);text-decoration:none;cursor:pointer;
+  border-radius:0;
+}
+.footer-thanks-link:hover{color:var(--cyan,#67e8f9)}
+.footer-thanks-link:focus-visible{outline:2px solid rgba(94,234,212,.55);outline-offset:3px}
+html[data-theme="light"] .footer-thanks-link{color:#526b66}
+html[data-theme="light"] .footer-thanks-link:hover{color:#0f766e}
