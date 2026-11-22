@@ -335,7 +335,7 @@
   }
 
   function injectThanks() {
-    if (document.querySelector(".site-thanks")) return;
+    if (document.querySelector(".site-thanks-link")) return;
     let footer = document.querySelector(".site-footer") || document.querySelector("footer.foot") || document.querySelector("footer");
     if (!footer) {
       footer = document.createElement("footer");
@@ -344,13 +344,56 @@
     }
     const box = document.createElement("div");
     box.className = "site-thanks";
-    box.innerHTML = `
-      <span class="thanks-label">TEAM / 致谢</span>
-      <span>网站制作：Leon</span>
-      <span>全部代码由 DeepSeek 完成</span>
-      <span>感谢 Dou Xiaoyan 提供的改进意见</span>
-      <span>感谢 <a href="https://sdeepak-dev.github.io/vchemlab/" target="_blank" rel="noopener">https://sdeepak-dev.github.io/vchemlab/</a> 在 quiz 部分提供的灵感</span>`;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "site-thanks-link";
+    btn.setAttribute("aria-haspopup", "dialog");
+    btn.setAttribute("aria-expanded", "false");
+    btn.innerHTML = `<span>TEAM / 致谢</span><i>查看 →</i>`;
+    box.appendChild(btn);
     footer.appendChild(box);
+
+    const modal = document.createElement("div");
+    modal.className = "thanks-modal";
+    modal.id = "thanksModal";
+    modal.hidden = true;
+    modal.innerHTML = `
+      <div class="thanks-backdrop" data-close="1"></div>
+      <div class="thanks-card" role="dialog" aria-modal="true" aria-labelledby="thanksTitle">
+        <button class="thanks-close" type="button" aria-label="关闭致谢">×</button>
+        <div class="thanks-kicker">TEAM / 致谢</div>
+        <h2 id="thanksTitle">这个网站，是一起做出来的。</h2>
+        <ul class="thanks-list">
+          <li>网站制作：<strong>Leon</strong></li>
+          <li>全部代码由 <strong>DeepSeek</strong> 完成</li>
+          <li>感谢 <strong>Dou Xiaoyan</strong> 提供的改进意见</li>
+          <li>感谢 <a href="https://sdeepak-dev.github.io/vchemlab/" target="_blank" rel="noopener">https://sdeepak-dev.github.io/vchemlab/</a> 在 quiz 部分提供的灵感</li>
+        </ul>
+        <p class="thanks-note">名字可能不多，但这套页面确实是围着课堂一点点磨出来的。</p>
+      </div>`;
+    document.body.appendChild(modal);
+
+    let lastFocus = null;
+    function openThanks() {
+      lastFocus = document.activeElement;
+      modal.hidden = false;
+      btn.setAttribute("aria-expanded", "true");
+      document.body.classList.add("thanks-open");
+      modal.querySelector(".thanks-close").focus();
+    }
+    function closeThanks() {
+      modal.hidden = true;
+      btn.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("thanks-open");
+      if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+    }
+    btn.addEventListener("click", openThanks);
+    modal.addEventListener("click", (event) => {
+      if (event.target.closest("[data-close]") || event.target.closest(".thanks-close")) closeThanks();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !modal.hidden) closeThanks();
+    });
   }
 
   function init() {
