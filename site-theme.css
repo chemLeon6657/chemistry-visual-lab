@@ -1286,3 +1286,12 @@ html[data-theme="light"] .empty-orbit i {
   background: #0f766e !important;
   box-shadow: 0 0 14px rgba(15, 118, 110, 0.36) !important;
 }
+/* 有机官能团检验模块：浅色模式下不再使用深色底 */
+html[data-theme="light"] .test-box {
+  background: #f2f9f6 !important;
+  border-color: rgba(15, 118, 110, 0.16) !important;
+  color: #3f5d57 !important;
+}
+html[data-theme="light"] .test-box strong {
+  color: #0f766e !important;
+}

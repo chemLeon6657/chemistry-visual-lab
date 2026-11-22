@@ -1966,6 +1966,8 @@
   let pitchTarget = pitch;
   let distance = initialView.distance;
   let distanceTarget = initialView.distance;
+  const DIZZY_RAD = Math.PI * 2 * 5;
+  let rotationTravel = 0;
   let dragging = false;
   let lastPointerX = 0;
   let lastPointerY = 0;
@@ -3020,11 +3022,16 @@
   });
 
   resetViewBtn.addEventListener("click", () => {
+    const dizzy = rotationTravel >= DIZZY_RAD;
+    rotationTravel = 0;
     const v = VIEWS[currentType];
     yawTarget = v.yaw;
     pitchTarget = v.pitch;
     distanceTarget = v.distance;
     resumeRotateAt = performance.now() + 1800;
+    if (dizzy && typeof window.cvlWhaleSay === "function") {
+      window.cvlWhaleSay("我有点晕。", "Too many spins.");
+    }
   });
 
   fullscreenBtn.addEventListener("click", async () => {
@@ -3063,6 +3070,7 @@
     const dy = e.clientY - lastPointerY;
     lastPointerX = e.clientX;
     lastPointerY = e.clientY;
+    rotationTravel += Math.abs(dx) * 0.0062;
     yaw -= dx * 0.0062;
     pitch = clamp(pitch + dy * 0.0062, -1.32, 1.32);
     yawTarget = yaw;

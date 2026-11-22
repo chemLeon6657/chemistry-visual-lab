@@ -132,8 +132,8 @@
     return quotes[quoteIndex];
   }
 
-  function showBubble() {
-    const q = nextQuote();
+  function showBubble(qOverride, silent) {
+    const q = qOverride || nextQuote();
     quoteEn.textContent = q[0];
     quoteZh.textContent = q[1];
     bubble.classList.add("open");
@@ -141,8 +141,14 @@
     button.setAttribute("aria-expanded", "true");
     button.classList.add("is-talking");
     isOpen = true;
-    playWhaleSound();
+    if (!silent) playWhaleSound();
   }
+
+  // 给其他模块触发彩蛋用：cvlWhaleSay("我有点晕。", "Too many spins.")
+  window.cvlWhaleSay = function (text, english, silent) {
+    if (!text) return;
+    showBubble([english || "Whale says", text], silent !== false);
+  };
 
   function hideBubble() {
     bubble.classList.remove("open");
